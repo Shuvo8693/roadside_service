@@ -1,0 +1,128 @@
+import 'dart:collection';
+
+import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/my_booking/bindings/my_booking_binding.dart';
+import 'package:roadside_assistance/app/modules/my_booking/views/my_booking_view.dart';
+import 'package:roadside_assistance/app/modules/my_location_selection/views/map_view.dart';
+
+import '../modules/account/bindings/account_binding.dart';
+import '../modules/account/views/account_view.dart';
+import '../modules/change_password/bindings/change_password_binding.dart';
+import '../modules/change_password/views/change_password_view.dart';
+import '../modules/forgot_password/bindings/forgot_password_binding.dart';
+import '../modules/forgot_password/views/forgot_password_view.dart';
+import '../modules/home/bindings/home_binding.dart';
+import '../modules/home/views/home_view.dart';
+import '../modules/mechanic/bindings/mechanic_binding.dart';
+import '../modules/mechanic/views/mechanic_view.dart';
+import '../modules/my_location_selection/bindings/my_location_selection_binding.dart';
+import '../modules/notification/bindings/notification_binding.dart';
+import '../modules/notification/views/notification_view.dart';
+import '../modules/onboarding/bindings/onboarding_binding.dart';
+import '../modules/onboarding/views/onboarding1_view.dart';
+import '../modules/onboarding/views/onboarding2_view.dart';
+import '../modules/onboarding/views/onboarding3_view.dart';
+import '../modules/onboarding/views/role_view.dart';
+import '../modules/otp/bindings/otp_binding.dart';
+import '../modules/otp/views/otp_view.dart';
+import '../modules/sign_in/bindings/sign_in_binding.dart';
+import '../modules/sign_in/views/sign_in_view.dart';
+import '../modules/signup/bindings/signup_binding.dart';
+import '../modules/signup/views/signup_view.dart';
+import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/splash/views/splash_view.dart';
+
+part 'app_routes.dart';
+
+class AppPages {
+  AppPages._();
+
+  static const INITIAL = Routes.SPLASH;
+
+  static final routes = [
+    GetPage(
+      name: _Paths.ONBOARDING,
+      page: () => const Onboarding1View(),
+      binding: OnboardingBinding(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: _Paths.ONBOARDING2,
+      page: () => const Onboarding2View(),
+      binding: OnboardingBinding(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: _Paths.ONBOARDING3,
+      page: () => const Onboarding3View(),
+      binding: OnboardingBinding(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: _Paths.ROLE,
+      page: () => const RoleView(),
+      binding: OnboardingBinding(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: _Paths.SIGNUP,
+      page: () => const SignupView(),
+      binding: SignupBinding(),
+    ),
+    GetPage(
+      name: _Paths.OTP,
+      page: () => const OtpView(),
+      binding: OtpBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
+    ),
+    GetPage(
+        name: _Paths.SIGN_IN,
+        page: () => const SignInView(),
+        binding: SignInBinding(),
+        transition: Transition.cupertino),
+    GetPage(
+        name: _Paths.FORGOT_PASSWORD,
+        page: () => const ForgotPasswordView(),
+        binding: ForgotPasswordBinding(),
+        transition: Transition.cupertino),
+    GetPage(
+        name: _Paths.CHANGE_PASSWORD,
+        page: () => const ChangePasswordView(),
+        binding: ChangePasswordBinding(),
+        transition: Transition.cupertino),
+    GetPage(
+      name: _Paths.HOME,
+      page: () => const HomeView(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.SERVICE,
+      page: () => const MyBookingView(),
+      binding: MyBookingBinding(),
+    ),
+    GetPage(
+      name: _Paths.MECHANIC,
+      page: () => const MechanicView(),
+      binding: MechanicBinding(),
+    ),
+    GetPage(
+      name: _Paths.ACCOUNT,
+      page: () => const AccountView(),
+      binding: AccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.NOTIFICATION,
+      page: () => const NotificationView(),
+      binding: NotificationBinding(),
+    ),
+    GetPage(
+      name: _Paths.MAP,
+      page: () =>  MapLocationView(),
+      binding: MyLocationSelectionBinding(),
+    ),
+  ];
+}
