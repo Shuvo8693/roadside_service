@@ -16,7 +16,6 @@ import 'common/themes/light_theme.dart';
 import 'common/widgets/message.dart';
 
 String token = '';
-String myId = '';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +30,6 @@ void main() async {
     ));
   });
   token = await PrefsHelper.getString('token');
-  myId = await PrefsHelper.getString('userId');
 }
 
 class MyApp extends StatelessWidget {
@@ -52,7 +50,7 @@ class MyApp extends StatelessWidget {
                 title: AppConstants.APP_NAME,
                 debugShowCheckedModeBanner: false,
                 navigatorKey: Get.key,
-                // theme: themeController.darkTheme ? dark(): light(),
+                 //theme: themeController.darkTheme ? dark(): light(),
                 theme: light(),
                 defaultTransition: Transition.topLevel,
                 locale: localizeController.locale,

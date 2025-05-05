@@ -7,7 +7,6 @@ import 'api_constants.dart';
 
 class GoogleApiService{
 
-
 static  Future<List<String>> fetchSuggestions(String query)async{
    final response = await http.get(Uri.parse('${ApiConstants.googleBaseUrl}?input=$query&key=${SKey.googleApiKey}')); // All Country
   // final response = await http.get(Uri.parse('${ApiConstants.googleBaseUrl}?input=$query&components=country:BD&key=${ApiConstants.googleApiKey}')); // Individual Country

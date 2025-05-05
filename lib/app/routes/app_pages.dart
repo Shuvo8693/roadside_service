@@ -1,9 +1,6 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
-import 'package:roadside_assistance/app/modules/my_booking/bindings/my_booking_binding.dart';
-import 'package:roadside_assistance/app/modules/my_booking/views/my_booking_view.dart';
-import 'package:roadside_assistance/app/modules/my_location_selection/views/map_view.dart';
 
 import '../modules/account/bindings/account_binding.dart';
 import '../modules/account/views/account_view.dart';
@@ -15,7 +12,10 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/mechanic/bindings/mechanic_binding.dart';
 import '../modules/mechanic/views/mechanic_view.dart';
+import '../modules/my_booking/bindings/my_booking_binding.dart';
+import '../modules/my_booking/views/my_booking_view.dart';
 import '../modules/my_location_selection/bindings/my_location_selection_binding.dart';
+import '../modules/my_location_selection/views/map_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
@@ -121,7 +121,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.MAP,
-      page: () =>  MapLocationView(),
+      page: () => MapLocationView(),
       binding: MyLocationSelectionBinding(),
     ),
   ];
