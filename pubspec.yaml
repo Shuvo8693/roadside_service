@@ -69,6 +69,7 @@ dependencies:
   pdf: ^3.10.4
   printing: ^5.11.0
   share_plus:
+  flutter_polyline_points: ^2.1.0
 
 
 dev_dependencies:

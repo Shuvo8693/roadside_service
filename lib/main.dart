@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
-import 'package:roadside_assistance/sk_key.dart';
 
 import 'app/routes/app_pages.dart';
 import 'common/app_constant/app_constant.dart';

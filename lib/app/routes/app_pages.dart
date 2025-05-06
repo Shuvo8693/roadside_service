@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/my_booking/views/order_tracking_view.dart';
 
 import '../modules/account/bindings/account_binding.dart';
 import '../modules/account/views/account_view.dart';
@@ -102,6 +103,12 @@ class AppPages {
     GetPage(
       name: _Paths.SERVICE,
       page: () => const MyBookingView(),
+      binding: MyBookingBinding(),
+    ),
+
+    GetPage(
+      name: _Paths.ORDERTRACKING,
+      page: () => const OrderTrackingView(),
       binding: MyBookingBinding(),
     ),
     GetPage(

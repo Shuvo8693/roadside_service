@@ -20,6 +20,7 @@ abstract class Routes {
   static const NOTIFICATION = _Paths.NOTIFICATION;
   static const MY_LOCATION_SELECTION = _Paths.MY_LOCATION_SELECTION;
   static const MAP = _Paths.MAP;
+  static const ORDERTRACKING = _Paths.ORDERTRACKING;
 }
 
 abstract class _Paths {
@@ -41,4 +42,5 @@ abstract class _Paths {
   static const NOTIFICATION = '/notification';
   static const MY_LOCATION_SELECTION = '/my-location-selection';
   static const MAP = '/map-view';
+  static const ORDERTRACKING = '/order-tracking';
 }

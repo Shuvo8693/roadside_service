@@ -46,3 +46,7 @@ app.*.map.json
 
 # key
 /lib/sk_key.dart
+
+# Fvm
+.fvm/
+

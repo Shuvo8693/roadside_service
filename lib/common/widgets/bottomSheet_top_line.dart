@@ -13,8 +13,8 @@ class BottomSheetTopLine extends StatelessWidget {
       child: Align(
         alignment: Alignment.topCenter,
         child: Container(
-          height: 6.h,
-          width: 60.w,
+          height: 4.h,
+          width: 55.w,
           decoration: BoxDecoration(
             color: lineColor ??Colors.black,
             borderRadius: BorderRadius.circular(3.r),
