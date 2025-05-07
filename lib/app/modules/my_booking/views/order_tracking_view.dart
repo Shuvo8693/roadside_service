@@ -8,6 +8,7 @@ import 'package:roadside_assistance/app/modules/my_booking/widgets/order_progres
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_constant/app_constant.dart';
 import 'package:roadside_assistance/common/app_images/app_images.dart';
+import 'package:roadside_assistance/common/widgets/casess_network_image.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/spacing.dart';
 import 'package:roadside_assistance/sk_key.dart';
@@ -125,13 +126,12 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
                       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                       child: Row(
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(6.r),
-                            child: Image.network(AppConstants.mechanicImage,
-                              width: 60.h,
-                              height: 60.h,
-                              fit: BoxFit.cover,
-                            ),
+                          CustomNetworkImage(
+                            imageUrl:AppConstants.mechanicImage,
+                            width: 60.h,
+                            height: 60.h,
+                            boxFit: BoxFit.cover,
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
                           SizedBox(width: 12.w),
                           Expanded(
@@ -170,43 +170,6 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildProgressBar() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12),
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildStep(isActive: true, label: 'Order Confirmed'),
-          Expanded(child: Divider(color: Colors.grey[300], thickness: 2)),
-          _buildStep(isActive: true, label: 'Out For Pickup'),
-          Expanded(child: Divider(color: Colors.grey[300], thickness: 2)),
-          _buildStep(isActive: false, label: 'Almost Done'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStep({required bool isActive, required String label}) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircleAvatar(
-          radius: 8,
-          backgroundColor: isActive ? Colors.green : Colors.grey[300],
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: isActive ? Colors.green : Colors.grey,
-          ),
-        ),
-      ],
     );
   }
 }

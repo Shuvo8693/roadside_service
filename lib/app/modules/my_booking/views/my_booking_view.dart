@@ -24,7 +24,7 @@ class MyBookingView extends StatelessWidget {
       ),
       body: ListView.builder(
         itemCount: 3,
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(10.sp),
           itemBuilder: (context,index){
         return  ExpansionTile(
           showTrailingIcon: false,
@@ -52,10 +52,14 @@ class MyBookingView extends StatelessWidget {
             PriceRow(title: 'Total', amount: '\$70', isTotal: true),
 
             // Pay Now Button
-            SizedBox(height: 16),
-            CustomButton(onTap: (){
-                  ReviewRatingDialog();
-                }, text: 'Pay Now'),
+            SizedBox(height: 16.h),
+            CustomButton(
+              onTap: () {
+                showDialog(context: context, builder: (context) {
+                  return ReviewRatingDialog();
+                });
+              }, text: 'Pay Now',
+            ),
           ],
 
         );

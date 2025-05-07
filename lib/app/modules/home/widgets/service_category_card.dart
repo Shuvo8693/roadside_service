@@ -3,6 +3,8 @@ import 'package:roadside_assistance/app/modules/home/widgets/service_category_co
 import 'package:roadside_assistance/common/app_icons/app_icons.dart';
 
 class ServiceCategories extends StatefulWidget {
+  const ServiceCategories({super.key});
+
   @override
   State<ServiceCategories> createState() => _ServiceCategoriesState();
 }

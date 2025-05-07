@@ -21,6 +21,8 @@ abstract class Routes {
   static const MY_LOCATION_SELECTION = _Paths.MY_LOCATION_SELECTION;
   static const MAP = _Paths.MAP;
   static const ORDERTRACKING = _Paths.ORDERTRACKING;
+  static const MECHANICDETAILS = _Paths.MECHANICDETAILS;
+  static const RATINGANDREVIEW = _Paths.RATINGANDREVIEW;
 }
 
 abstract class _Paths {
@@ -43,4 +45,6 @@ abstract class _Paths {
   static const MY_LOCATION_SELECTION = '/my-location-selection';
   static const MAP = '/map-view';
   static const ORDERTRACKING = '/order-tracking';
+  static const MECHANICDETAILS = '/mechanic_details';
+  static const RATINGANDREVIEW = '/rating_and_review';
 }

@@ -1,6 +1,9 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/mechanic/controllers/mechanic_controller.dart';
+import 'package:roadside_assistance/app/modules/mechanic/views/mechanic_details_view.dart';
+import 'package:roadside_assistance/app/modules/mechanic/views/rating_and_review_view.dart';
 import 'package:roadside_assistance/app/modules/my_booking/views/order_tracking_view.dart';
 
 import '../modules/account/bindings/account_binding.dart';
@@ -113,7 +116,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.MECHANIC,
-      page: () => const MechanicView(),
+      page: () => MechanicView(),
       binding: MechanicBinding(),
     ),
     GetPage(
@@ -130,6 +133,16 @@ class AppPages {
       name: _Paths.MAP,
       page: () => MapLocationView(),
       binding: MyLocationSelectionBinding(),
+    ),
+    GetPage(
+      name: _Paths.MECHANICDETAILS,
+      page: () => MechanicDetailsView(),
+      binding: MechanicBinding(),
+    ),
+    GetPage(
+      name: _Paths.RATINGANDREVIEW,
+      page: () => RatingAndReviewView(),
+      binding: MechanicBinding(),
     ),
   ];
 }
