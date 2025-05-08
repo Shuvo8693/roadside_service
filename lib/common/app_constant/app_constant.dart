@@ -1,5 +1,6 @@
 
 
+import 'package:roadside_assistance/common/app_icons/app_icons.dart';
 import 'package:roadside_assistance/common/model/language_model.dart';
 
 class AppConstants {
@@ -11,6 +12,14 @@ class AppConstants {
   static const userId = 'userId';
   static const resetPasswordToken = 'resetPasswordToken';
 
+ static List<Map<String, dynamic>> serviceCategories =
+ [
+    {'category': 'Towing', 'icon': AppIcons.towingIcon},
+    {'category': 'Lockout', 'icon': AppIcons.lockoutIcon},
+    {'category': 'Jump Start', 'icon': AppIcons.jumpStartServiceIcon},
+    {'category': 'Flat Tire Repair', 'icon': AppIcons.flatTireIcon},
+    {'category': 'Gasoline Delivery', 'icon': AppIcons.gasolineIcon},
+  ];
 
 
   static const demoImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw_HeSzHfBorKS4muw4IIeVvvRgnhyO8Gn8w&s';

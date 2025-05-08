@@ -1,23 +1,25 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
-import 'package:roadside_assistance/app/modules/mechanic/controllers/mechanic_controller.dart';
-import 'package:roadside_assistance/app/modules/mechanic/views/mechanic_details_view.dart';
-import 'package:roadside_assistance/app/modules/mechanic/views/rating_and_review_view.dart';
-import 'package:roadside_assistance/app/modules/my_booking/views/order_tracking_view.dart';
 
 import '../modules/account/bindings/account_binding.dart';
 import '../modules/account/views/account_view.dart';
 import '../modules/change_password/bindings/change_password_binding.dart';
 import '../modules/change_password/views/change_password_view.dart';
+import '../modules/check_out/bindings/check_out_binding.dart';
+import '../modules/check_out/views/check_out_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/forgot_password/views/forgot_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/mechanic/bindings/mechanic_binding.dart';
+import '../modules/mechanic/controllers/mechanic_controller.dart';
+import '../modules/mechanic/views/mechanic_details_view.dart';
 import '../modules/mechanic/views/mechanic_view.dart';
+import '../modules/mechanic/views/rating_and_review_view.dart';
 import '../modules/my_booking/bindings/my_booking_binding.dart';
 import '../modules/my_booking/views/my_booking_view.dart';
+import '../modules/my_booking/views/order_tracking_view.dart';
 import '../modules/my_location_selection/bindings/my_location_selection_binding.dart';
 import '../modules/my_location_selection/views/map_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
@@ -108,7 +110,6 @@ class AppPages {
       page: () => const MyBookingView(),
       binding: MyBookingBinding(),
     ),
-
     GetPage(
       name: _Paths.ORDERTRACKING,
       page: () => const OrderTrackingView(),
@@ -143,6 +144,11 @@ class AppPages {
       name: _Paths.RATINGANDREVIEW,
       page: () => RatingAndReviewView(),
       binding: MechanicBinding(),
+    ),
+    GetPage(
+      name: _Paths.CHECK_OUT,
+      page: () => const CheckOutView(),
+      binding: CheckOutBinding(),
     ),
   ];
 }

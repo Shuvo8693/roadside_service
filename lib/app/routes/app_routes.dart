@@ -23,6 +23,7 @@ abstract class Routes {
   static const ORDERTRACKING = _Paths.ORDERTRACKING;
   static const MECHANICDETAILS = _Paths.MECHANICDETAILS;
   static const RATINGANDREVIEW = _Paths.RATINGANDREVIEW;
+  static const CHECK_OUT = _Paths.CHECK_OUT;
 }
 
 abstract class _Paths {
@@ -47,4 +48,5 @@ abstract class _Paths {
   static const ORDERTRACKING = '/order-tracking';
   static const MECHANICDETAILS = '/mechanic_details';
   static const RATINGANDREVIEW = '/rating_and_review';
+  static const CHECK_OUT = '/check-out';
 }

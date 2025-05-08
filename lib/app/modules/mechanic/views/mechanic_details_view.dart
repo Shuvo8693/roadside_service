@@ -103,8 +103,7 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
             SizedBox(height: 20),
 
             // Mechanic Description
-            Text(
-              'A car mechanic is a skilled professional who specializes in diagnosing, repairing, and maintaining vehicles. '
+            Text('A car mechanic is a skilled professional who specializes in diagnosing, repairing, and maintaining vehicles. '
                   'They are trained to work with various car models and perform a wide range of tasks, from routine maintenance like '
                   'oil changes and brake inspections.',
               style: TextStyle(fontSize: 13,color: Colors.grey),
@@ -137,6 +136,9 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                           icon: category['icon'],
                           isActiveBooking: true,
                           price: '\$60',
+                          bookNowOnTap: (){
+                            Get.toNamed(Routes.CHECK_OUT);
+                          },
                         ),
                       ),
                     );
