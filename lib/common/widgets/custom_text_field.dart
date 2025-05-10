@@ -21,6 +21,7 @@ class CustomTextField extends StatefulWidget {
   final bool isPassword;
   final int? maxLine;
   final bool? isEmail;
+  final bool? readOnly;
   final TextStyle? labelTextStyle;
   final Function(String?)? onChange;
 
@@ -43,7 +44,7 @@ class CustomTextField extends StatefulWidget {
       this.filColor,
       this.labelText,
       this.isPassword = false,
-        this.onChange});
+        this.onChange, this.readOnly});
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -66,6 +67,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       obscuringCharacter: widget.obscure!,
       maxLines: widget.maxLine??1,
       onChanged: widget.onChange,
+      readOnly: widget.readOnly??false,
       // validator: widget.validator,
       validator: widget.validator ??
           (value) {

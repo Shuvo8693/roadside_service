@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/account/views/my_info.dart';
+import 'package:roadside_assistance/app/modules/check_out/views/checkout_signup_view.dart';
 
 import '../modules/account/bindings/account_binding.dart';
 import '../modules/account/views/account_view.dart';
@@ -126,6 +128,11 @@ class AppPages {
       binding: AccountBinding(),
     ),
     GetPage(
+      name: _Paths.MYINFO,
+      page: () => const MyInfo(),
+      binding: AccountBinding(),
+    ),
+    GetPage(
       name: _Paths.NOTIFICATION,
       page: () => const NotificationView(),
       binding: NotificationBinding(),
@@ -148,6 +155,11 @@ class AppPages {
     GetPage(
       name: _Paths.CHECK_OUT,
       page: () => const CheckOutView(),
+      binding: CheckOutBinding(),
+    ),
+    GetPage(
+      name: _Paths.CHECK_OUT_SIGNUP,
+      page: () => CheckoutSignupView(),
       binding: CheckOutBinding(),
     ),
   ];

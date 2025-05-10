@@ -23,7 +23,7 @@ class MapLocationView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapLocationView> {
-  final MyLocationSelectionController _myLocationSelectionController = Get.put(MyLocationSelectionController());
+  final MyLocationSelectionController _locationSelectionCtrl = Get.put(MyLocationSelectionController());
   late final TextEditingController searchLocationCtrl = TextEditingController();
 
   GoogleMapController? mapController;
@@ -117,11 +117,9 @@ class _MapViewState extends State<MapLocationView> {
         CameraPosition(target: target, zoom: 15),
       ),
     );
-    // _addMarker(_pickedLocation!);
     setState(() {});
 
   }
-
 
   /// Api Call method
   void confirmLocation(String selectedLocation) {
@@ -135,32 +133,7 @@ class _MapViewState extends State<MapLocationView> {
     }
     print("Location confirmed: $pickedLocation");
   }
-  /// Custom icon
-  Future<void> _loadCustomIcon() async {
-    customIcon = await BitmapDescriptor.asset(
-        ImageConfiguration(devicePixelRatio: 3.2),
-        'assets/icons/pin.png',
-        height: 50.h,
-        width: 50.h
-    );
-    setState(() {});
-  }
 
-  Set<Marker> _markers = {};
-  void _addMarker(LatLng position) {
-    final marker = Marker(
-      markerId: MarkerId(position.toString()),
-      position: position,
-      icon: customIcon!,
-      draggable: true,
-      onDragEnd: (newPosition) {
-        print('New position: $newPosition');
-      },
-    );
-    _markers.add(marker);
-    setState(() {});
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +177,7 @@ class _MapViewState extends State<MapLocationView> {
             top: 55.h,
             child: InkWell(
               onTap: () {
-                Get.back();
+                Navigator.pop(context);
               },
               child: Icon(Icons.arrow_back_ios_new_outlined),
             ),
@@ -322,8 +295,13 @@ class _MapViewState extends State<MapLocationView> {
             right: 15.w,
             child: CustomButton(
               onTap: () {
-                if(pickedLocation !=null){
+                if(pickedLocation != null){
+                  _locationSelectionCtrl.pickedNewLocation = pickedLocation;
+                  _locationSelectionCtrl.pickupLocationCtrl.text = searchLocationCtrl.text;
+                  Get.back(result: pickedLocation);
                   confirmLocation(searchLocationCtrl.text);
+                  print(_locationSelectionCtrl.pickedNewLocation);
+                  Get.snackbar('Successfully selected', _locationSelectionCtrl.pickupLocationCtrl.text);
                 }else {
                   print("No location selected!");
                   Get.snackbar('No location selected!', 'Please select your location ');

@@ -24,6 +24,8 @@ abstract class Routes {
   static const MECHANICDETAILS = _Paths.MECHANICDETAILS;
   static const RATINGANDREVIEW = _Paths.RATINGANDREVIEW;
   static const CHECK_OUT = _Paths.CHECK_OUT;
+  static const CHECK_OUT_SIGNUP = _Paths.CHECK_OUT_SIGNUP;
+  static const MYINFO = _Paths.MYINFO;
 }
 
 abstract class _Paths {
@@ -49,4 +51,6 @@ abstract class _Paths {
   static const MECHANICDETAILS = '/mechanic_details';
   static const RATINGANDREVIEW = '/rating_and_review';
   static const CHECK_OUT = '/check-out';
+  static const CHECK_OUT_SIGNUP = '/check-out-signup';
+  static const MYINFO = '/my-info';
 }
