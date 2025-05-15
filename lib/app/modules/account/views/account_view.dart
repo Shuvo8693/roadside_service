@@ -40,13 +40,13 @@ class AccountView extends StatelessWidget {
           CustomDrawerTile(
             icon: Icons.favorite_border,
             title: 'Favourite',
-            routeName: '',
+            routeName: Routes.FAVOURITE,
           ),
           // About Us
           CustomDrawerTile(
             icon: Icons.info_outline,
             title: 'About Us',
-            routeName: '',
+            routeName: Routes.ABOUTUS,
           ),
           // Password Change
           CustomDrawerTile(
@@ -58,13 +58,13 @@ class AccountView extends StatelessWidget {
           CustomDrawerTile(
             icon: Icons.directions_car,
             title: 'My Vehicle',
-            routeName: '',
+            routeName:  Routes.MYVEHECLE,
           ),
           // FAQ
           CustomDrawerTile(
             icon: Icons.help_outline,
             title: 'FAQ',
-            routeName: '',
+            routeName: Routes.FAQ,
           ),
           // Create a Mechanic Account
           CustomDrawerTile(

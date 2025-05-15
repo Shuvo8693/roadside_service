@@ -32,13 +32,13 @@ class BottomSheetOrderDetails extends StatelessWidget {
             Center(
               child: BottomSheetTopLine(),
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Text('Order ID', style: TextStyle(fontWeight: FontWeight.bold)),
             Text('#89988788', style: TextStyle(color: Colors.grey)),
-            SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text('Address', style: TextStyle(fontWeight: FontWeight.bold)),
             Text('123 Main Street, London', style: TextStyle(color: Colors.grey)),
-            SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -46,7 +46,7 @@ class BottomSheetOrderDetails extends StatelessWidget {
                 _buildDetailColumn('Vehicle Brand', 'Suzuki'),
               ],
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -54,10 +54,10 @@ class BottomSheetOrderDetails extends StatelessWidget {
                 _buildDetailColumn('Payment', 'Online'),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text('Additional Note', style: TextStyle(fontWeight: FontWeight.bold)),
             Text('Please check the tire pressure.', style: TextStyle(color: Colors.grey)),
-            SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text('Price Summary', style: TextStyle(fontWeight: FontWeight.bold)),
             /// Towing Service Row
             PriceRow(title: 'Towing Service',amount:  '\$60'),
@@ -67,7 +67,7 @@ class BottomSheetOrderDetails extends StatelessWidget {
             Divider(),
             /// Total Row
             PriceRow(title: 'Total', amount: '\$70', isTotal: true),
-            SizedBox(height: 100), // space for buttons
+            SizedBox(height: 100.h), // space for buttons
           ],
         ),
       ),

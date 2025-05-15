@@ -26,6 +26,12 @@ abstract class Routes {
   static const CHECK_OUT = _Paths.CHECK_OUT;
   static const CHECK_OUT_SIGNUP = _Paths.CHECK_OUT_SIGNUP;
   static const MYINFO = _Paths.MYINFO;
+  static const PREVIOUSBOOKING = _Paths.PREVIOUSBOOKING;
+  static const FAQ = _Paths.FAQ;
+  static const FAVOURITE = _Paths.FAVOURITE;
+  static const ABOUTUS = _Paths.ABOUTUS;
+  static const MYVEHECLE = _Paths.MYVEHECLE;
+  static const ADDVEHICLE = _Paths.ADDVEHICLE;
 }
 
 abstract class _Paths {
@@ -53,4 +59,10 @@ abstract class _Paths {
   static const CHECK_OUT = '/check-out';
   static const CHECK_OUT_SIGNUP = '/check-out-signup';
   static const MYINFO = '/my-info';
+  static const PREVIOUSBOOKING = '/previous-booking';
+  static const FAQ = '/faq';
+  static const FAVOURITE = '/favourite';
+  static const ABOUTUS = '/about-us';
+  static const MYVEHECLE = '/my-vehicle';
+  static const ADDVEHICLE = '/add-vehicle';
 }

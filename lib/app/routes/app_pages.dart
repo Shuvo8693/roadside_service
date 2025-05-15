@@ -1,8 +1,14 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
-import 'package:roadside_assistance/app/modules/account/views/my_info.dart';
+import 'package:roadside_assistance/app/modules/account/views/about_screen.dart';
+import 'package:roadside_assistance/app/modules/account/views/add_vehicle_view.dart';
+import 'package:roadside_assistance/app/modules/account/views/faq_view.dart';
+import 'package:roadside_assistance/app/modules/account/views/favourite_view.dart';
+import 'package:roadside_assistance/app/modules/account/views/my_info_view.dart';
+import 'package:roadside_assistance/app/modules/account/views/my_vehicale_view.dart';
 import 'package:roadside_assistance/app/modules/check_out/views/checkout_signup_view.dart';
+import 'package:roadside_assistance/app/modules/my_booking/views/previous_booking.dart';
 
 import '../modules/account/bindings/account_binding.dart';
 import '../modules/account/views/account_view.dart';
@@ -161,6 +167,36 @@ class AppPages {
       name: _Paths.CHECK_OUT_SIGNUP,
       page: () => CheckoutSignupView(),
       binding: CheckOutBinding(),
+    ),
+    GetPage(
+      name: _Paths.PREVIOUSBOOKING,
+      page: () => PreviousBooking(),
+      binding: MyBookingBinding(),
+    ),
+    GetPage(
+      name: _Paths.FAQ,
+      page: () => FAQView(),
+      binding: AccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.FAVOURITE,
+      page: () => FavouriteView(),
+      binding: AccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.ABOUTUS,
+      page: () => AboutScreen(),
+      binding: AccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.MYVEHECLE,
+      page: () => MyVehicleView(),
+      binding: AccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADDVEHICLE,
+      page: () => AddVehicleView(),
+      binding: AccountBinding(),
     ),
   ];
 }

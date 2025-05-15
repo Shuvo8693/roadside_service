@@ -11,8 +11,25 @@ import 'package:roadside_assistance/common/bottom_menu/bottom_menu..dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 
 
-class MyBookingView extends StatelessWidget {
+class MyBookingView extends StatefulWidget {
   const MyBookingView({super.key});
+
+  @override
+  State<MyBookingView> createState() => _MyBookingViewState();
+}
+
+class _MyBookingViewState extends State<MyBookingView> {
+ List<Map<String,dynamic>> bookingStatus = [
+   {
+     'status':'pending'
+   } ,
+   {
+     'status':'completed'
+   },
+   {
+     'status':'canceled'
+   }
+ ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,9 +40,10 @@ class MyBookingView extends StatelessWidget {
         centerTitle: true,
       ),
       body: ListView.builder(
-        itemCount: 3,
+        itemCount: bookingStatus.length,
           padding: EdgeInsets.all(10.sp),
           itemBuilder: (context,index){
+          final bookingStatusIndex= bookingStatus[index];
         return  ExpansionTile(
           showTrailingIcon: false,
           maintainState: true,
@@ -37,9 +55,21 @@ class MyBookingView extends StatelessWidget {
             rating: 2.5,
             imageUrl: AppConstants.mechanicImage,
             onTap: (){
-              Get.toNamed(Routes.ORDERTRACKING);
+              switch(bookingStatusIndex['status']) {
+                  case 'pending':
+                  Get.toNamed(Routes.ORDERTRACKING);
+                  break;
+                  case 'completed' || 'canceled':
+                  Get.toNamed(Routes.PREVIOUSBOOKING);
+                  break;
+                default :
+                  Get.toNamed(Routes.PREVIOUSBOOKING);
+              }
+
+
+
             },
-            status: 'completed',
+            status: bookingStatusIndex['status'],
           ),
           children: [
             /// Towing Service Row

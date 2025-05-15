@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_container.dart';
+import 'package:roadside_assistance/app/modules/my_booking/widgets/price_row.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_constant/app_constant.dart';
@@ -9,33 +10,27 @@ import 'package:roadside_assistance/common/app_icons/app_icons.dart';
 import 'package:roadside_assistance/common/app_text_style/google_app_style.dart';
 import 'package:roadside_assistance/common/widgets/casess_network_image.dart';
 
-
-class MechanicDetailsView extends StatefulWidget {
-  const MechanicDetailsView({super.key});
+class PreviousBooking extends StatefulWidget {
+  const PreviousBooking({super.key});
 
   @override
-  State<MechanicDetailsView> createState() => _MechanicDetailsViewState();
+  State<PreviousBooking> createState() => _PreviousBookingState();
 }
 
-class _MechanicDetailsViewState extends State<MechanicDetailsView> {
-  List<Map<String, dynamic>> serviceCategories = [
-    {'category': 'Towing', 'icon': AppIcons.towingIcon},
-    {'category': 'Lockout', 'icon': AppIcons.lockoutIcon},
-    {'category': 'Jump Start', 'icon': AppIcons.jumpStartServiceIcon},
-    {'category': 'Flat Tire Repair', 'icon': AppIcons.flatTireIcon},
-    {'category': 'Gasoline Delivery', 'icon': AppIcons.gasolineIcon},
-  ];
+class _PreviousBookingState extends State<PreviousBooking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mechanic Details'),
+        title: Text('Previous Booking'),
         centerTitle: true,
       ),
       body: Padding(
-        padding:  EdgeInsets.all(16.0.sp),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding:  EdgeInsets.symmetric(
+          horizontal: 10.w
+        ),
+        child: ListView(
+          //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Mechanic Image and Name Section
             Row(
@@ -58,7 +53,7 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -97,56 +92,63 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 20.h),
 
             // Mechanic Description
             Text('A car mechanic is a skilled professional who specializes in diagnosing, repairing, and maintaining vehicles. '
-                  'They are trained to work with various car models and perform a wide range of tasks, from routine maintenance like '
-                  'oil changes and brake inspections.',
+                'They are trained to work with various car models and perform a wide range of tasks, from routine maintenance like '
+                'oil changes and brake inspections.',
               style: TextStyle(fontSize: 13,color: Colors.grey),
             ),
             SizedBox(height: 20.h),
-
-            // Service Section Title
-            Text(
-              'Service',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ///Order_detail_section
+            Text('Order ID', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('#89988788', style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 16.h),
+            Text('Address', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('123 Main Street, London', style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 16.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildDetailColumn('Vehicle Model', 'Maruti'),
+                _buildDetailColumn('Vehicle Brand', 'Suzuki'),
+              ],
+            ),
+            SizedBox(height: 12.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildDetailColumn('Vehicle Number', '12-22-11'),
+                _buildDetailColumn('Payment', 'Online'),
+              ],
             ),
             SizedBox(height: 16.h),
-
-            // Service Options in Grid
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: 1.0,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                children: [
-                  ...serviceCategories.asMap().map((index, category) {
-                    return MapEntry(index,
-                      GestureDetector(
-                        onTap: (){
-                          print(category['category']);
-                        },
-                        child: ServiceCategoryContainer(
-                          category: category['category'],
-                          icon: category['icon'],
-                          isActiveBooking: true,
-                          price: '\$60',
-                          bookNowOnTap: (){
-                            Get.toNamed(Routes.CHECK_OUT);
-                          },
-                        ),
-                      ),
-                    );
-                  }).values,
-                ],
-              ),
-            ),
+            Text('Additional Note', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('Please check the tire pressure.', style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 16.h),
+            Text('Price Summary', style: TextStyle(fontWeight: FontWeight.bold)),
+            /// Towing Service Row
+            PriceRow(title: 'Towing Service',amount:  '\$60'),
+            /// Service Charge Row
+            PriceRow(title: 'Service Charge',amount:  '\$10'),
+            /// Divider
+            Divider(),
+            /// Total Row
+            PriceRow(title: 'Total', amount: '\$70', isTotal: true),
+            SizedBox(height: 100.h),
           ],
         ),
       ),
     );
   }
+  Widget _buildDetailColumn(String title, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+        Text(value, style: TextStyle(color: Colors.grey)),
+      ],
+    );
+  }
 }
-
