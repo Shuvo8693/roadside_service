@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:roadside_assistance/app/modules/my_booking/widgets/bottom_sheet_order_details.dart';
 import 'package:roadside_assistance/app/modules/my_booking/widgets/order_progress_bar.dart';
+import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_constant/app_constant.dart';
 import 'package:roadside_assistance/common/app_images/app_images.dart';
@@ -75,6 +78,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
               target: _pickupLocation,
               zoom: 15,
             ),
+            mapType: MapType.hybrid,
             polylines: {
               Polyline(
                 polylineId: PolylineId('route'),
@@ -155,7 +159,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
                     ),
                   ),
                   verticalSpacing(8.h),
-                  CustomButton(onTap: (){}, text: 'Message'),
+                  CustomButton(
+                      onTap: (){
+                    Get.toNamed(Routes.MESSAGEINBOX);
+                  }, text: 'Message'),
                 ],
               ),
             ),

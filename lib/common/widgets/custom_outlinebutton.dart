@@ -39,7 +39,7 @@ class CustomOutlineButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           foregroundColor: foregroundColor??AppColors.primaryColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.r),
+            borderRadius: BorderRadius.circular(10.r),
             side: BorderSide(
               color: borderSideColor?? AppColors.primaryColor,
               width: 2.0, // You can adjust the border width

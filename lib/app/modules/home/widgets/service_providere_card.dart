@@ -13,7 +13,7 @@ class ServiceProviderCard extends StatelessWidget {
   final String distance;
   final String time;
   final String imageUrl;
-  final bool? isFavourite;
+  final bool isFavourite;
   final VoidCallback onTap;
 
   const ServiceProviderCard({
@@ -25,7 +25,7 @@ class ServiceProviderCard extends StatelessWidget {
     required this.time,
     required this.imageUrl,
     required this.onTap,
-    this.isFavourite,
+    this.isFavourite = false,
   });
 
   @override
@@ -129,7 +129,7 @@ class ServiceProviderCard extends StatelessWidget {
                 verticalSpacing(6.h),
                 InkWell(
                     onTap: (){},
-                    child: Icon( isFavourite==true? Icons.favorite_outline_rounded: Icons.favorite_rounded , color: AppColors.primaryColor,size: 28.h,)),
+                    child: Icon( isFavourite? Icons.favorite_rounded: Icons.favorite_outline_rounded , color: AppColors.primaryColor,size: 28.h,)),
                 verticalSpacing(15.h),
                 CustomButton(
                   onTap: onTap,

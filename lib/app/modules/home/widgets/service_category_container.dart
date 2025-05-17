@@ -34,11 +34,11 @@ class ServiceCategoryContainer extends StatelessWidget {
             textAlign: TextAlign.center,
             style: GoogleFontStyles.h5(),
           ),
+          Text(price??'',style: GoogleFontStyles.h4(),),
           if (isActiveBooking == true)
             Column(
               children: [
                 verticalSpacing(8.h),
-                Text(price??'',style: GoogleFontStyles.h4(),),
                 CustomButton(
                   height: 40.h,
                   width: 100.w,

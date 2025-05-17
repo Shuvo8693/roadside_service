@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_icons/app_icons.dart';
+import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
 class BottomMenu extends StatefulWidget {
   final int menuIndex;
@@ -19,13 +20,21 @@ class BottomMenu extends StatefulWidget {
 
 class _BottomMenuState extends State<BottomMenu> {
   late int _selectedIndex;
-
+  String? userRole;
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.menuIndex; // Set initial index
+    WidgetsBinding.instance.addPostFrameCallback((__)async{
+      await getRole();
+    });
   }
-
+ getRole()async{
+   String? roleUser = await PrefsHelper.getString('role');
+   setState(() {
+     userRole = roleUser;
+   });
+ }
   void _onItemTapped(int index) {
     if (_selectedIndex == index) {
       // Prevent unnecessary re-navigation to the same screen
@@ -37,12 +46,24 @@ class _BottomMenuState extends State<BottomMenu> {
     });
 
     // Navigate to corresponding pages
-    switch (index) {
-      case 0:
-        Get.offAllNamed(Routes.HOME);
+    switch (index)  {
+      case 0 :
+        if(userRole =='User'){
+          Get.offAllNamed(Routes.HOME);
+        } else if(userRole =='Mechanic'){
+          Get.offAllNamed(Routes.MECHANIC_HOME);
+        }else{
+          Get.snackbar('Failed route', ' Select your role before route home');
+        }
         break;
       case 1:
-        Get.offAllNamed(Routes.SERVICE);
+        if(userRole =='User'){
+          Get.offAllNamed(Routes.SERVICE);
+        } else if(userRole =='Mechanic'){
+          Get.offAllNamed(Routes.MECHANIC_ORDER);
+        }else{
+          Get.snackbar('Failed route', ' Select your role before route home');
+        }
         break;
       case 2:
         Get.offAllNamed(Routes.MECHANIC);
@@ -72,8 +93,8 @@ class _BottomMenuState extends State<BottomMenu> {
           unselectedFontSize: 12.0,
           items: [
             _buildBottomNavItem(AppIcons.homesIcon, 'Home'),
-            _buildBottomNavItem(AppIcons.bookingIcon, 'My Booking'),
-            _buildBottomNavItem(AppIcons.mechanicIcon, 'Mechanic'),
+            _buildBottomNavItem(userRole =='Mechanic'? AppIcons.orderIcon : AppIcons.bookingIcon, userRole =='Mechanic'? 'Order': 'My Booking'),
+            _buildBottomNavItem(userRole =='Mechanic'? AppIcons.paymentIcon : AppIcons.mechanicIcon, userRole =='Mechanic'? 'Payment': 'Mechanic'),
             _buildBottomNavItem(AppIcons.profile1Icon, 'Account'),
           ],
         ),

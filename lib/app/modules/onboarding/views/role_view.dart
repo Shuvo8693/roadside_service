@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_text_style/google_app_style.dart';
+import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 
 class RoleView extends StatefulWidget {
@@ -102,8 +103,9 @@ class _RoleViewState extends State<RoleView> {
             //SizedBox(height: 32.h),
             Spacer(),
             CustomButton(
-              onTap: (){
+              onTap: ()async{
                print(selectedRole);
+                await PrefsHelper.setString('role', selectedRole);
                Get.toNamed(Routes.SIGNUP);
               },
               text: 'Next',

@@ -130,7 +130,14 @@ class _SignInViewState extends State<SignInView> {
                       return CustomButton(
                           loading: _loginController.verifyLoading.value,
                           onTap: () async {
+                           String? userRole =await PrefsHelper.getString('role');
+                           if(userRole =='User'){
                              Get.toNamed(Routes.HOME);
+                           } else if(userRole =='Mechanic'){
+                             Get.toNamed(Routes.MECHANIC_HOME);
+                           }else{
+                             Get.snackbar('Failed route', ' Select your role before route home');
+                           }
                             /* if (_formKey.currentState!.validate()) {
                                   await _loginController.login();
                                 }*/

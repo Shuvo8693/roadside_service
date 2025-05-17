@@ -1,33 +1,39 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
-import 'package:roadside_assistance/app/modules/account/views/about_screen.dart';
-import 'package:roadside_assistance/app/modules/account/views/add_vehicle_view.dart';
-import 'package:roadside_assistance/app/modules/account/views/faq_view.dart';
-import 'package:roadside_assistance/app/modules/account/views/favourite_view.dart';
-import 'package:roadside_assistance/app/modules/account/views/my_info_view.dart';
-import 'package:roadside_assistance/app/modules/account/views/my_vehicale_view.dart';
-import 'package:roadside_assistance/app/modules/check_out/views/checkout_signup_view.dart';
-import 'package:roadside_assistance/app/modules/my_booking/views/previous_booking.dart';
 
 import '../modules/account/bindings/account_binding.dart';
+import '../modules/account/views/about_screen.dart';
 import '../modules/account/views/account_view.dart';
+import '../modules/account/views/add_vehicle_view.dart';
+import '../modules/account/views/faq_view.dart';
+import '../modules/account/views/favourite_view.dart';
+import '../modules/account/views/my_info_view.dart';
+import '../modules/account/views/my_vehicale_view.dart';
 import '../modules/change_password/bindings/change_password_binding.dart';
 import '../modules/change_password/views/change_password_view.dart';
 import '../modules/check_out/bindings/check_out_binding.dart';
 import '../modules/check_out/views/check_out_view.dart';
+import '../modules/check_out/views/checkout_signup_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/forgot_password/views/forgot_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
-import '../modules/mechanic/bindings/mechanic_binding.dart';
-import '../modules/mechanic/controllers/mechanic_controller.dart';
-import '../modules/mechanic/views/mechanic_details_view.dart';
-import '../modules/mechanic/views/mechanic_view.dart';
-import '../modules/mechanic/views/rating_and_review_view.dart';
+import '../modules/mechanic_home/bindings/mechanic_home_binding.dart';
+import '../modules/mechanic_home/views/map_service_area_view.dart';
+import '../modules/mechanic_home/views/mechanic_home_view.dart';
+import '../modules/mechanic_order/bindings/mechanic_order_binding.dart';
+import '../modules/mechanic_order/views/mechanic_order_view.dart';
+import '../modules/mechanic_user_side/bindings/mechanic_binding.dart';
+import '../modules/mechanic_user_side/views/mechanic_details_view.dart';
+import '../modules/mechanic_user_side/views/mechanic_view.dart';
+import '../modules/mechanic_user_side/views/rating_and_review_view.dart';
+import '../modules/message_inbox/bindings/message_inbox_binding.dart';
+import '../modules/message_inbox/views/message_inbox_view.dart';
 import '../modules/my_booking/bindings/my_booking_binding.dart';
 import '../modules/my_booking/views/my_booking_view.dart';
 import '../modules/my_booking/views/order_tracking_view.dart';
+import '../modules/my_booking/views/previous_booking.dart';
 import '../modules/my_location_selection/bindings/my_location_selection_binding.dart';
 import '../modules/my_location_selection/views/map_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
@@ -197,6 +203,26 @@ class AppPages {
       name: _Paths.ADDVEHICLE,
       page: () => AddVehicleView(),
       binding: AccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.MESSAGEINBOX,
+      page: () => MessageInboxView(),
+      binding: MessageInboxBinding(),
+    ),
+    GetPage(
+      name: _Paths.MECHANIC_HOME,
+      page: () => const MechanicHomeView(),
+      binding: MechanicHomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.MAP_SERVICE_AREA,
+      page: () => const MapServiceAreaView(),
+      binding: MechanicHomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.MECHANIC_ORDER,
+      page: () => const MechanicOrderView(),
+      binding: MechanicOrderBinding(),
     ),
   ];
 }

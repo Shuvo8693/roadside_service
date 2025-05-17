@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:roadside_assistance/app/modules/mechanic/widgets/review_card.dart';
+import 'package:roadside_assistance/app/modules/mechanic_user_side/widgets/review_card.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/widgets/custom_appBar_title.dart';
 
