@@ -66,7 +66,14 @@ class _BottomMenuState extends State<BottomMenu> {
         }
         break;
       case 2:
-        Get.offAllNamed(Routes.MECHANIC);
+        if(userRole =='User'){
+          Get.offAllNamed(Routes.MECHANIC);
+        } else if(userRole =='Mechanic'){
+          Get.offAllNamed(Routes.MECHANIC_PAYMENT);
+        }else{
+          Get.snackbar('Failed route', ' Select your role before route home');
+        }
+
         break;
       case 3:
         //widget.scaffoldKey?.currentState!.openDrawer();

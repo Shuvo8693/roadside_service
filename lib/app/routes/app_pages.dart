@@ -23,7 +23,11 @@ import '../modules/mechanic_home/bindings/mechanic_home_binding.dart';
 import '../modules/mechanic_home/views/map_service_area_view.dart';
 import '../modules/mechanic_home/views/mechanic_home_view.dart';
 import '../modules/mechanic_order/bindings/mechanic_order_binding.dart';
+import '../modules/mechanic_order/views/mechanic_map_view.dart';
 import '../modules/mechanic_order/views/mechanic_order_view.dart';
+import '../modules/mechanic_order/views/order_details_view.dart';
+import '../modules/mechanic_payment/bindings/mechanic_payment_binding.dart';
+import '../modules/mechanic_payment/views/mechanic_payment_view.dart';
 import '../modules/mechanic_user_side/bindings/mechanic_binding.dart';
 import '../modules/mechanic_user_side/views/mechanic_details_view.dart';
 import '../modules/mechanic_user_side/views/mechanic_view.dart';
@@ -223,6 +227,21 @@ class AppPages {
       name: _Paths.MECHANIC_ORDER,
       page: () => const MechanicOrderView(),
       binding: MechanicOrderBinding(),
+    ),
+    GetPage(
+      name: _Paths.ORDER_DETAILS,
+      page: () => const OrderDetailsScreen(),
+      binding: MechanicOrderBinding(),
+    ),
+    GetPage(
+      name: _Paths.MECHANIC_MAP,
+      page: () => const MechanicMapView(),
+      binding: MechanicOrderBinding(),
+    ),
+    GetPage(
+      name: _Paths.MECHANIC_PAYMENT,
+      page: () => const MechanicPaymentView(),
+      binding: MechanicPaymentBinding(),
     ),
   ];
 }

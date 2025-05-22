@@ -36,6 +36,9 @@ abstract class Routes {
   static const MECHANIC_HOME = _Paths.MECHANIC_HOME;
   static const MAP_SERVICE_AREA = _Paths.MAP_SERVICE_AREA;
   static const MECHANIC_ORDER = _Paths.MECHANIC_ORDER;
+  static const ORDER_DETAILS = _Paths.ORDER_DETAILS;
+  static const MECHANIC_MAP = _Paths.MECHANIC_MAP;
+  static const MECHANIC_PAYMENT = _Paths.MECHANIC_PAYMENT;
 }
 
 abstract class _Paths {
@@ -73,4 +76,7 @@ abstract class _Paths {
   static const MECHANIC_HOME = '/mechanic-home';
   static const MAP_SERVICE_AREA = '/map-service-area';
   static const MECHANIC_ORDER = '/mechanic-order';
+  static const ORDER_DETAILS = '/order-detail';
+  static const MECHANIC_MAP = '/mechanic-map';
+  static const MECHANIC_PAYMENT = '/mechanic-payment';
 }

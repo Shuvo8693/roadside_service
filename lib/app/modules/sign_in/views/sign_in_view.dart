@@ -150,7 +150,7 @@ class _SignInViewState extends State<SignInView> {
                     SizedBox(height: 50.h),
                     HaveAnAccountTextButton(
                       onTap: () {
-                        Get.toNamed(Routes.SIGNUP );
+                        Get.toNamed(Routes.ROLE );
                       },
                       firstText: "Don’t have an account? ",
                       secondText: AppString.signupText,
