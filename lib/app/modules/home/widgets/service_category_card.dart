@@ -24,7 +24,7 @@ class _ServiceCategoriesState extends State<ServiceCategories> {
     return GridView(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 15,
+        crossAxisSpacing: 20,
         mainAxisSpacing: 15,
       ),
       shrinkWrap: true,

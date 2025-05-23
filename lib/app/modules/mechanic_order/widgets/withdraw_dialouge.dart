@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:roadside_assistance/common/app_color/app_colors.dart';
+import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/custom_text_field.dart';
 
 class WithdrawDialog extends StatefulWidget {
@@ -103,46 +105,13 @@ class _WithdrawDialogState extends State<WithdrawDialog> {
 
             SizedBox(height: 12.h),
             // Amount Input Field
-            Container(
-              height: 56.h,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey[300]!,
-                  width: 1.w,
-                ),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: TextField(
+            CustomTextField(
                 controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                contentPaddingVertical: 10.h,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                  _CurrencyInputFormatter(),
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
                 ],
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[600],
-                ),
-                decoration: InputDecoration(
-                  hintText: '\$0.00',
-                  hintStyle: TextStyle(
-                    fontSize: 16.sp,
-                    color: Colors.grey[400],
-                  ),
-                  prefixText: '\$',
-                  prefixStyle: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 16.h,
-                  ),
-                ),
-              ),
             ),
 
             /// Error message for invalid amount
@@ -160,27 +129,15 @@ class _WithdrawDialogState extends State<WithdrawDialog> {
 
             SizedBox(height: 32.h),
 
-            // Request Button
-            SizedBox(
-              width: double.infinity,
+            /// Request Button
+            CustomButton(
               height: 48.h,
-              child: ElevatedButton(
-                onPressed: _isValidAmount ? _onRequest : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _isValidAmount ? Colors.blue : Colors.grey[300],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  'Request',
-                  style: TextStyle(
-                    color: _isValidAmount ? Colors.white : Colors.grey[600],
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                onTap: _isValidAmount ? _onRequest : (){} , text: 'Request',
+              color: _isValidAmount ? AppColors.primaryColor : Colors.grey[300],
+              textStyle: TextStyle(
+                color: _isValidAmount ? Colors.white : Colors.grey[600],
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],

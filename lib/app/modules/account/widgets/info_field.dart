@@ -8,12 +8,13 @@ class InfoField extends StatelessWidget {
   final String label;
   final String value;
   final String? suffixText;
+  final int? maxLine;
   final VoidCallback? suffixOnTap;
 
   const InfoField({
     super.key,
     required this.label,
-    required this.value, this.suffixText, this.suffixOnTap,
+    required this.value, this.suffixText, this.suffixOnTap, this.maxLine,
   });
 
   @override
@@ -32,6 +33,7 @@ class InfoField extends StatelessWidget {
         CustomTextField(
           controller: TextEditingController(text: value),
           contentPaddingVertical: 15.h,
+          maxLine: maxLine??1,
           readOnly: true,
           suffixIcon: Padding(
             padding:  EdgeInsets.all(15.0.sp),

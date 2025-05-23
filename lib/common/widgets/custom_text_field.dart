@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_constant/app_constant.dart';
@@ -23,6 +24,7 @@ class CustomTextField extends StatefulWidget {
   final bool? isEmail;
   final bool? readOnly;
   final TextStyle? labelTextStyle;
+  final List<TextInputFormatter>? inputFormatters;
   final Function(String?)? onChange;
 
   const CustomTextField(
@@ -44,7 +46,7 @@ class CustomTextField extends StatefulWidget {
       this.filColor,
       this.labelText,
       this.isPassword = false,
-        this.onChange, this.readOnly});
+        this.onChange, this.readOnly, this.inputFormatters});
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -68,6 +70,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       maxLines: widget.maxLine??1,
       onChanged: widget.onChange,
       readOnly: widget.readOnly??false,
+      inputFormatters: widget.inputFormatters,
       // validator: widget.validator,
       validator: widget.validator ??
           (value) {

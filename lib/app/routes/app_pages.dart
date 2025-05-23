@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/views/add_payment_info.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/views/payment_method.dart';
 
 import '../modules/account/bindings/account_binding.dart';
 import '../modules/account/views/about_screen.dart';
@@ -8,6 +10,7 @@ import '../modules/account/views/account_view.dart';
 import '../modules/account/views/add_vehicle_view.dart';
 import '../modules/account/views/faq_view.dart';
 import '../modules/account/views/favourite_view.dart';
+import '../modules/account/views/mechanic/mechanic_profile.dart';
 import '../modules/account/views/my_info_view.dart';
 import '../modules/account/views/my_vehicale_view.dart';
 import '../modules/change_password/bindings/change_password_binding.dart';
@@ -28,6 +31,8 @@ import '../modules/mechanic_order/views/mechanic_order_view.dart';
 import '../modules/mechanic_order/views/order_details_view.dart';
 import '../modules/mechanic_payment/bindings/mechanic_payment_binding.dart';
 import '../modules/mechanic_payment/views/mechanic_payment_view.dart';
+import '../modules/mechanic_service/bindings/mechanic_service_binding.dart';
+import '../modules/mechanic_service/views/mechanic_service_view.dart';
 import '../modules/mechanic_user_side/bindings/mechanic_binding.dart';
 import '../modules/mechanic_user_side/views/mechanic_details_view.dart';
 import '../modules/mechanic_user_side/views/mechanic_view.dart';
@@ -243,5 +248,26 @@ class AppPages {
       page: () => const MechanicPaymentView(),
       binding: MechanicPaymentBinding(),
     ),
+    GetPage(
+      name: _Paths.MECHANIC_PROFILE,
+      page: () => const MechanicProfile(),
+      binding: AccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.MECHANIC_SERVICE,
+      page: () => const MechanicServiceView(),
+      binding: MechanicServiceBinding(),
+    ),
+    GetPage(
+      name: _Paths.MECHANIC_ADD_PAYMENT,
+      page: () => const AddPaymentInfoView(),
+      binding: MechanicPaymentBinding(),
+    ),
+    GetPage(
+      name: _Paths.MECHANIC_PAYMENT_METHOD,
+      page: () => const PaymentMethodsScreen(),
+      binding: MechanicPaymentBinding(),
+    ),
+
   ];
 }

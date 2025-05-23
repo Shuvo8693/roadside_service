@@ -73,7 +73,6 @@ class _BottomMenuState extends State<BottomMenu> {
         }else{
           Get.snackbar('Failed route', ' Select your role before route home');
         }
-
         break;
       case 3:
         //widget.scaffoldKey?.currentState!.openDrawer();

@@ -39,6 +39,11 @@ abstract class Routes {
   static const ORDER_DETAILS = _Paths.ORDER_DETAILS;
   static const MECHANIC_MAP = _Paths.MECHANIC_MAP;
   static const MECHANIC_PAYMENT = _Paths.MECHANIC_PAYMENT;
+  static const MECHANIC_PROFILE = _Paths.MECHANIC_PROFILE;
+  static const MY_SERRVICE = _Paths.MY_SERRVICE;
+  static const MECHANIC_SERVICE = _Paths.MECHANIC_SERVICE;
+  static const MECHANIC_ADD_PAYMENT = _Paths.MECHANIC_ADD_PAYMENT;
+  static const MECHANIC_PAYMENT_METHOD = _Paths.MECHANIC_PAYMENT_METHOD;
 }
 
 abstract class _Paths {
@@ -79,4 +84,9 @@ abstract class _Paths {
   static const ORDER_DETAILS = '/order-detail';
   static const MECHANIC_MAP = '/mechanic-map';
   static const MECHANIC_PAYMENT = '/mechanic-payment';
+  static const MECHANIC_PROFILE = '/mechanic-profile';
+  static const MY_SERRVICE = '/my-serrvice';
+  static const MECHANIC_SERVICE = '/mechanic-service';
+  static const MECHANIC_ADD_PAYMENT = '/mechanic-add-payment-info';
+  static const MECHANIC_PAYMENT_METHOD = '/mechanic-payment-method';
 }
