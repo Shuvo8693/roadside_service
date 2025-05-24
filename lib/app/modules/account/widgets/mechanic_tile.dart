@@ -54,7 +54,7 @@ class MechanicTile extends StatelessWidget {
         CustomDrawerTile(
           icon: Icons.logout,
           title: 'Log Out',
-          routeName: '/login',
+          routeName: Routes.SIGN_IN,
           isLogout: true,
         ),
       ],

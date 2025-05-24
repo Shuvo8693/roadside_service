@@ -43,7 +43,7 @@ class CustomDrawerTile extends StatelessWidget {
       ),
       onTap: () {
         if (isLogout) {
-          Get.offAllNamed('/login'); // Clear navigation stack for logout
+          Get.offAllNamed(routeName); // Clear navigation stack for logout
         } else {
           Get.toNamed(routeName);
         }

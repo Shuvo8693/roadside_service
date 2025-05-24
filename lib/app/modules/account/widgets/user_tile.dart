@@ -49,16 +49,16 @@ class UserTile extends StatelessWidget {
           routeName: Routes.FAQ,
         ),
         // Create a Mechanic Account
-        CustomDrawerTile(
-          icon: Icons.person_add,
-          title: 'Create a Mechanic Account',
-          routeName: '',
-        ),
+        // CustomDrawerTile(
+        //   icon: Icons.person_add,
+        //   title: 'Create a Mechanic Account',
+        //   routeName: '',
+        // ),
         // Log Out
         CustomDrawerTile(
           icon: Icons.logout,
           title: 'Log Out',
-          routeName: '/login',
+          routeName:  Routes.SIGN_IN,
           isLogout: true,
         ),
       ],
