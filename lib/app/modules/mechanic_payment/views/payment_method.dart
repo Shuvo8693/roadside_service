@@ -53,7 +53,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             ),
             SizedBox(height: 16.h),
 
-            // Payment Methods List
+            /// Payment Methods List
             if (paymentMethods.isNotEmpty) ...[
               ...paymentMethods.map((method) => PaymentMethodCard(
                 method: method,
@@ -64,7 +64,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
               SizedBox(height: 16.h),
             ],
 
-            // Add Payment Details Button
+            /// Add Payment Details Button
             GestureDetector(
               onTap: _showAddPaymentBottomSheet,
               child: Container(
