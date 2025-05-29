@@ -84,36 +84,36 @@ class MechanicServiceCard extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child:  Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Total Price',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                Text(
-                  '(20% Commission)',
-                  style: TextStyle(
-                    fontSize: 8.sp,
-                    color: Colors.grey[500],
-                  ),
-                ),
-                verticalSpacing(8.h),
-                Text(
-                  '\$${(service.totalPrice).toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Expanded(
+          //   child:  Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       Text(
+          //         'Total Price',
+          //         style: TextStyle(
+          //           fontSize: 12.sp,
+          //           color: Colors.grey[600],
+          //         ),
+          //       ),
+          //       Text(
+          //         '(20% Commission)',
+          //         style: TextStyle(
+          //           fontSize: 8.sp,
+          //           color: Colors.grey[500],
+          //         ),
+          //       ),
+          //       verticalSpacing(8.h),
+          //       Text(
+          //         '\$${(service.totalPrice).toStringAsFixed(2)}',
+          //         style: TextStyle(
+          //           fontSize: 16.sp,
+          //           fontWeight: FontWeight.w600,
+          //           color: Colors.black,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           SizedBox(width: 16.w),
           isAddedService
               ? CustomButton(
