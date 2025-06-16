@@ -1,70 +1,64 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:roadside_assistance/app/data/api_constants.dart';
+import 'package:roadside_assistance/app/data/network_caller.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
 class OtpController extends GetxController {
+  final NetworkCaller _networkCaller = NetworkCaller.instance;
   TextEditingController otpCtrl = TextEditingController();
   RxString otpErrorMessage=''.obs;
-  var verifyLoading = false.obs;
+  var isLoading = false.obs;
 
   Future<void> sendOtp(bool? isResetPass) async {
-    Map<String,String> headers = {
-      'Content-Type': 'application/json',
+     String token = await PrefsHelper.getString('token');
+     String userMail = Get.arguments['email'] ?? '';
+    final body = {
+      "otp": otpCtrl.text.trim(),
     };
 
+    _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
+    _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
+    _networkCaller.addResponseInterceptor(LoggingInterceptor());
+
     try {
-      verifyLoading.value=true;
-      var body = {
-        // 'email': Get.arguments['email'].toString(),
-        // 'otp':otpCtrl.text,
-        // 'token': Get.arguments['verificationToken'].toString()
-      };
-      var response = await http.post(Uri.parse(ApiConstants.verifyEmailWithOtpUrl), body:  jsonEncode(body),headers: headers);
-      final responseData = jsonDecode( response.body);
-      if (response.statusCode == 200) {
-        Get.snackbar(responseData['message'], '');
-        String accessToken = responseData['data']['attributes']['result']['tokens']['accessToken'];
-        String userRole = responseData['data']['attributes']['result']['user']['role'];
-        await PrefsHelper.setString('userRole', userRole);
-        String role = await PrefsHelper.getString('userRole');
-         await PrefsHelper.setString('token', accessToken);
-        String token = await PrefsHelper.getString('token');
-        print(token);
-        print(role);
+      isLoading.value = true;
+      final response = await _networkCaller.post<Map<String, dynamic>>(
+        endpoint: isResetPass==true? ApiConstants.verifyForgotOtpUrl(userMail) : ApiConstants.verifyOtpUrl,
+        body: body,
+        timeout: Duration(seconds: 10),
+        fromJson: (json) => json as Map<String, dynamic>,
+      );
+      if (response.isSuccess && response.data != null) {
+        String userRole = response.data!['data']['role'];
+          await PrefsHelper.setString('role', userRole);
+       String role = await PrefsHelper.getString('role');
+       String token = await PrefsHelper.getString('token');
+       print('role: $role , token : $token');
         if(isResetPass==true){
-          // Get.toNamed(Routes.CHANGE_PASSWORD,arguments: {'email': Get.arguments['email']});
+          Get.toNamed(Routes.CHANGE_PASSWORD);
         }else{
-         // Get.toNamed(Routes.HOME);
+          if(role =='user'){
+            Get.toNamed(Routes.HOME);
+          } else if(role =='mechanic'){
+            Get.toNamed(Routes.MECHANIC_HOME);
+          }else{
+            Get.snackbar('Failed route', ' Select your role before route home');
+          }
         }
 
       } else {
-        print('Error>>>');
-        print('Error>>>${response.body}');
-        otpErrorMessage.value = responseData['message'];
-        Get.snackbar(otpErrorMessage.value.toString(), '');
+        Get.snackbar('Failed', response.message ?? 'User verify failed ');
       }
-    }  on SocketException catch (_) {
-      Get.snackbar(
-        'Error',
-        'No internet connection. Please check your network and try again.',
-        snackPosition: SnackPosition.TOP,
-      );
-    }catch(e){
-      Get.snackbar(
-        'Error',
-        'Something went wrong. Please try again later.',
-        snackPosition: SnackPosition.TOP,
-      );
+    } catch (e) {
       print(e);
-    }finally{
-      verifyLoading.value=false;
+      throw NetworkException('$e');
+    } finally {
+      isLoading.value = false;
     }
+
   }
   @override
   void onClose() {

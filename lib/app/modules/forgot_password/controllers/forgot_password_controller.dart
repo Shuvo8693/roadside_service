@@ -4,61 +4,57 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:roadside_assistance/app/data/api_constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:roadside_assistance/app/data/network_caller.dart';
+import 'package:roadside_assistance/app/routes/app_pages.dart';
+import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
 class ForgotPasswordController extends GetxController {
+
+  final NetworkCaller _networkCaller = NetworkCaller.instance;
   TextEditingController emailCtrl = TextEditingController();
-  var isLoading = false.obs; // Observable loading state
 
-  Future<void> sendMail(bool? isResetPass) async {
-    if (emailCtrl.text.isEmpty) {
-      print("Email is required");
-      return;
-    }
+  RxBool isLoading = false.obs;
+  RxString errorMessage = ''.obs;
 
-    if (isLoading.value) {
-      return; // Prevent multiple taps
-    }
+  Future<void> sendMail({bool? isResetPass}) async {
 
-    isLoading.value = true; // Start loading
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
+    final body = {
+      "email": emailCtrl.text.trim(),
     };
 
-    Map<String, dynamic> body = {
-      'email': emailCtrl.text.trim(),
-    };
-
-    print('Request URL: ${ApiConstants.emailSendUrl}');
-    print('Request Headers: ${headers.toString()}');
-    print('Request Body: ${jsonEncode(body)}');
+    _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
+    _networkCaller.addResponseInterceptor(LoggingInterceptor());
 
     try {
-      final url = Uri.parse(ApiConstants.emailSendUrl);
-      final request = http.Request('POST', url)
-        ..headers.addAll(headers)
-        ..body = jsonEncode(body);
-
-      // Send the request and get the streamed response
-      final streamedResponse = await request.send();
-
-      // Convert streamed response to a regular response
-      final response = await http.Response.fromStream(streamedResponse);
-
-      if (response.statusCode == 200) {
-        var responseData = jsonDecode(response.body);
-        print('Response Data: $responseData');
-        // Get.toNamed(Routes.otpScreen, arguments: {
-        //   'email': emailCtrl.text,
-        //   'isPassreset': isResetPass ?? false,
-        // });
+      isLoading.value = true;
+      final response = await _networkCaller.post<Map<String, dynamic>>(
+        endpoint: ApiConstants.emailSendUrl,
+        body: body,
+        timeout: Duration(seconds: 10),
+        fromJson: (json) => json as Map<String, dynamic>,
+      );
+      if (response.isSuccess && response.data != null) {
+        String token = response.data!['data']['token'];
+        print(" token : $token");
+        await PrefsHelper.setString('token', token).then((value)async{
+          Get.toNamed(
+            Routes.OTP,
+            arguments: {
+              'email': emailCtrl.text,
+              'isResetPass': isResetPass ?? false,
+            },
+          );
+        });
       } else {
-        print('Error: ${response.statusCode}, Message: ${response.body}');
+        Get.snackbar('Failed', response.message ?? 'User login failed ');
       }
     } catch (e) {
-      print('Error during API call: $e');
+      print(e);
+      throw NetworkException('$e');
     } finally {
-      isLoading.value = false; // Stop loading
+      isLoading.value = false;
     }
+
   }
 
   @override
@@ -67,3 +63,5 @@ class ForgotPasswordController extends GetxController {
     super.onClose();
   }
 }
+
+

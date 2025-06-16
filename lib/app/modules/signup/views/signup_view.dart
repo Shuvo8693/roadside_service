@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:roadside_assistance/app/modules/signup/controllers/signup_controller.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_icons/app_icons.dart';
@@ -19,17 +20,13 @@ class SignupView extends StatefulWidget {
 }
 
 class _SignupViewState extends State<SignupView> {
+  final SignupController _signupController = Get.put(SignupController());
   final _formKey = GlobalKey<FormState>();
    bool _hasMinLength = false;
    bool _hasLowerCase = false;
    bool _hasSpecialChar = false;
    bool isAgreeWithTerms = false;
 
-  // Controllers for form fields
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +49,10 @@ class _SignupViewState extends State<SignupView> {
                   'It only takes a minute!',
                   style: GoogleFontStyles.h3(color: AppColors.primaryColor),
                 ),
+                /// Full name
                 SizedBox(height: 25.h),
                 CustomTextField(
-                  controller: _fullNameController,
+                  controller: _signupController.fullNameController,
                   hintText: 'Full Name',
                   prefixIcon:  Padding(
                     padding:  EdgeInsets.symmetric(horizontal: 8.w),
@@ -75,9 +73,10 @@ class _SignupViewState extends State<SignupView> {
                     return null;
                   },
                 ),
+                /// Mail
                 verticalSpacing(15.h),
                 CustomTextField(
-                  controller: _emailController,
+                  controller: _signupController.emailController,
                   prefixIcon:  Padding(
                     padding:  EdgeInsets.symmetric(horizontal: 8.w),
                     child: const Icon(
@@ -102,9 +101,10 @@ class _SignupViewState extends State<SignupView> {
                     return null;
                   },
                 ),
+                /// Phone number
                 verticalSpacing(15.h),
                 CustomTextField(
-                  controller: _phoneNumberController,
+                  controller: _signupController.phoneNumberController,
                   hintText: 'Phone Number',
                   prefixIcon:  Padding(
                     padding:  EdgeInsets.symmetric(horizontal: 8.w),
@@ -126,6 +126,7 @@ class _SignupViewState extends State<SignupView> {
                     return null;
                   },
                 ),
+                /// Password
                 verticalSpacing(15.h),
                 CustomTextField(
                   filColor: AppColors.textFieldFillColor,
@@ -141,7 +142,7 @@ class _SignupViewState extends State<SignupView> {
                   isObscureText: true,
                   obscure: '*',
                   isPassword: true,
-                  controller: _passwordController,
+                  controller: _signupController.passwordController,
                   onChange: validatePassword ,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -185,14 +186,19 @@ class _SignupViewState extends State<SignupView> {
                   ],
                 ),
                 SizedBox(height: 20.h),
-                CustomButton(
-                  onTap: () {
-                    Get.toNamed(Routes.OTP);
-                    if (_formKey.currentState!.validate()) {
-                      // Handle sign-up logic
-                    }
-                  }, text: 'SignUp',
-
+                isAgreeWithTerms?
+                Obx(()=>
+                   CustomButton(
+                    loading: _signupController.isLoading.value,
+                    onTap: ()async {
+                      if (_formKey.currentState!.validate()) {
+                        await  _signupController.createUser();
+                      }
+                    }, text: 'SignUp',
+                  ),
+                ): CustomButton(
+                  color: Colors.grey,
+                  onTap: (){}, text: 'SignUp',
                 ),
                 SizedBox(height: 20.h),
                 Row(

@@ -38,125 +38,116 @@ class _SignInViewState extends State<SignInView> {
             child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Welcome Back',style: GoogleFontStyles.h1(fontWeight: FontWeight.w500),),
-                    verticalSpacing(8),
-                    Text('Where connecting begins',style: GoogleFontStyles.h5(color: AppColors.primaryColor),),
-                    verticalSpacing(25.h),
-                    Text(AppString.emailText,
-                      style: AppStyles.h4(family: "Schuyler"),
-                    ),
-                    verticalSpacing(10.h),
-                    CustomTextField(
-                      prefixIcon:  Padding(
-                        padding:  EdgeInsets.symmetric(horizontal: 8.w),
-                        child: const Icon(
-                          Icons.mail,
-                          color: AppColors.appGreyColor,
-                          size: 20,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Welcome Back',style: GoogleFontStyles.h1(fontWeight: FontWeight.w500),),
+                      verticalSpacing(8),
+                      Text('Where connecting begins',style: GoogleFontStyles.h5(color: AppColors.primaryColor),),
+                      verticalSpacing(25.h),
+                      Text(AppString.emailText,
+                        style: AppStyles.h4(family: "Schuyler"),
+                      ),
+                      verticalSpacing(10.h),
+                      CustomTextField(
+                        prefixIcon:  Padding(
+                          padding:  EdgeInsets.symmetric(horizontal: 8.w),
+                          child: const Icon(
+                            Icons.mail,
+                            color: AppColors.appGreyColor,
+                            size: 20,
+                          ),
                         ),
-                      ),
-                      filColor: AppColors.textFieldFillColor,
-                      isEmail: true,
-                      contentPaddingVertical: 20.h,
-                      hintText: "Type your email",
-                      labelTextStyle:
-                      const TextStyle(color: AppColors.primaryColor),
-                      controller: _loginController.emailCtrl,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter your email';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    verticalSpacing(20.h),
-                    Text(AppString.passawordText,
-                      style: AppStyles.h4(family: "Schuyler"),
-                    ),
-                    verticalSpacing(10.h),
-                    CustomTextField(
-                      filColor: AppColors.textFieldFillColor,
-                      suffixIconColor: AppColors.appGreyColor,
-                      prefixIcon: Padding(
-                        padding:  EdgeInsets.symmetric(horizontal: 8.w),
-                        child: SvgPicture.asset(AppIcons.lockIcon),
-                      ),
-                      contentPaddingVertical: 20.h,
-                      hintText: "Type your password",
-                      labelTextStyle:
-                      const TextStyle(color: AppColors.primaryColor),
-                      isObscureText: true,
-                      obscure: '*',
-                      isPassword: true,
-                      controller: _loginController.passCtrl,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter password';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20.h),
-
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: InkWell(
-                        onTap: () async {
-                          Get.toNamed(Routes.FORGOT_PASSWORD);
-                          String token = await PrefsHelper.getString('token');
-                          if (token.isNotEmpty) {
-                            //Get.toNamed(AppRoutes.emailveryfaiScreen);
+                        filColor: AppColors.textFieldFillColor,
+                        isEmail: true,
+                        contentPaddingVertical: 20.h,
+                        hintText: "Type your email",
+                        labelTextStyle:
+                        const TextStyle(color: AppColors.primaryColor),
+                        controller: _loginController.emailCtrl,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter your email';
                           }
+                          return null;
                         },
-                        child: Text(
-                          "Forgot Password?",
-                          style: AppStyles.customSize(
-                              size: 14,
-                              family: "Schuyler",
-                              fontWeight: FontWeight.w500,
-                              color: Colors.blueAccent),
+                      ),
+
+                      verticalSpacing(20.h),
+                      Text(AppString.passawordText,
+                        style: AppStyles.h4(family: "Schuyler"),
+                      ),
+                      verticalSpacing(10.h),
+                      CustomTextField(
+                        filColor: AppColors.textFieldFillColor,
+                        suffixIconColor: AppColors.appGreyColor,
+                        prefixIcon: Padding(
+                          padding:  EdgeInsets.symmetric(horizontal: 8.w),
+                          child: SvgPicture.asset(AppIcons.lockIcon),
+                        ),
+                        contentPaddingVertical: 20.h,
+                        hintText: "Type your password",
+                        labelTextStyle:
+                        const TextStyle(color: AppColors.primaryColor),
+                        isObscureText: true,
+                        obscure: '*',
+                        isPassword: true,
+                        controller: _loginController.passCtrl,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter password';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 20.h),
+
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: InkWell(
+                          onTap: () {
+                            Get.toNamed(Routes.FORGOT_PASSWORD);
+                          },
+                          child: Text(
+                            "Forgot Password?",
+                            style: AppStyles.customSize(
+                                size: 14,
+                                family: "Schuyler",
+                                fontWeight: FontWeight.w500,
+                                color: Colors.blueAccent),
+                          ),
                         ),
                       ),
-                    ),
 
-                    /// Login Button
+                      /// Login Button
 
-                    SizedBox(height: 20.h),
-                    Obx(() {
-                      return CustomButton(
-                          loading: _loginController.verifyLoading.value,
-                          onTap: () async {
-                           String? userRole =await PrefsHelper.getString('role');
-                           if(userRole =='User'){
-                             Get.toNamed(Routes.HOME);
-                           } else if(userRole =='Mechanic'){
-                             Get.toNamed(Routes.MECHANIC_HOME);
-                           }else{
-                             Get.snackbar('Failed route', ' Select your role before route home');
-                           }
-                            /* if (_formKey.currentState!.validate()) {
-                                  await _loginController.login();
-                                }*/
-                          },
-                          textStyle: AppStyles.h2(color: AppColors.white),
-                          text: AppString.loginText);
-                    }),
+                      SizedBox(height: 20.h),
+                      Obx(() {
+                        return CustomButton(
+                            loading: _loginController.isLoading.value,
+                            onTap: () async {
+                              if (_formKey.currentState!.validate()) {
+                                await _loginController.signIn();
+                              }
+                            },
+                            textStyle: AppStyles.h2(color: AppColors.white),
+                            text: AppString.loginText);
+                      }),
 
-                    /// Route SignUpScreen
-                    SizedBox(height: 50.h),
-                    HaveAnAccountTextButton(
-                      onTap: () {
-                        Get.toNamed(Routes.ROLE );
-                      },
-                      firstText: "Don’t have an account? ",
-                      secondText: AppString.signupText,
-                    ),
-                    SizedBox(height: 10.h),
-                  ],
+                      /// Route SignUpScreen
+                      SizedBox(height: 50.h),
+                      HaveAnAccountTextButton(
+                        onTap: () {
+                          Get.toNamed(Routes.ROLE );
+                        },
+                        firstText: "Don’t have an account? ",
+                        secondText: AppString.signupText,
+                      ),
+                      SizedBox(height: 10.h),
+                    ],
+                  ),
                 ),
               ),
             ),

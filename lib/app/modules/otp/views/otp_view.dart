@@ -132,22 +132,15 @@ class _OtpViewState extends State<OtpView> {
                     ),
                     SizedBox(height: 20.h),
 
-                    Text(timerText,
-                        style: AppStyles.h4(color: AppColors.primaryColor)),
+                    Text(timerText, style: AppStyles.h4(color: AppColors.primaryColor)),
 
                     SizedBox(height: 30.h),
 
                     ///======Action Button======
                     Obx(() {
                       return CustomButton(
-                          loading: otpController.verifyLoading.value,
+                          loading: otpController.isLoading.value,
                           onTap: () async {
-                            Get.toNamed(Routes.CHANGE_PASSWORD,/*arguments: {'email': Get.arguments['email']}*/);
-                            // if(isResetPassword){
-                            //   Get.toNamed(Routes.CHANGE_PASSWORD,/*arguments: {'email': Get.arguments['email']}*/);
-                            // }else{
-                            //   Get.toNamed(Routes.SIGN_IN);
-                            // }
                             if (_formKey.currentState!.validate()) {
                               await otpController.sendOtp(isResetPassword);
                             }

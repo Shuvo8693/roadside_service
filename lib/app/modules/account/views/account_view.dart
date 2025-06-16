@@ -40,9 +40,9 @@ class _AccountViewState extends State<AccountView> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: userRole == 'User'
+      body: userRole == 'user'
               ? UserTile()
-              : userRole == 'Mechanic'
+              : userRole == 'mechanic'
               ? MechanicTile()
               : SizedBox.shrink(),
     );

@@ -106,7 +106,7 @@ class _RoleViewState extends State<RoleView> {
               onTap: ()async{
                print(selectedRole);
                 await PrefsHelper.setString('role', selectedRole);
-               Get.toNamed(Routes.SIGNUP);
+               Get.toNamed(Routes.SIGNUP,arguments: {'role': selectedRole?.toLowerCase()});
               },
               text: 'Next',
               textStyle: GoogleFontStyles.h4(color: Colors.white),

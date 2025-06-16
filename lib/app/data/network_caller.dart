@@ -1,8 +1,8 @@
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:roadside_assistance/app/data/api_constants.dart';
 
 /// Custom exception for network-related errors
 class NetworkException implements Exception {
@@ -114,7 +114,9 @@ class AuthInterceptor implements RequestInterceptor {
   AuthInterceptor({required this.token, this.tokenType = 'Bearer'});
 
   @override
-  Future<Map<String, String>> interceptHeaders(Map<String, String> headers) async {
+  Future<Map<String, String>> interceptHeaders(
+    Map<String, String> headers,
+  ) async {
     headers['Authorization'] = '$tokenType $token';
     return headers;
   }
@@ -127,7 +129,9 @@ class ContentTypeInterceptor implements RequestInterceptor {
   ContentTypeInterceptor({this.contentType = 'application/json'});
 
   @override
-  Future<Map<String, String>> interceptHeaders(Map<String, String> headers) async {
+  Future<Map<String, String>> interceptHeaders(
+    Map<String, String> headers,
+  ) async {
     headers['Content-Type'] = contentType;
     return headers;
   }
@@ -140,7 +144,9 @@ class LoggingInterceptor implements RequestInterceptor, ResponseInterceptor {
   LoggingInterceptor({this.enabled = true});
 
   @override
-  Future<Map<String, String>> interceptHeaders(Map<String, String> headers) async {
+  Future<Map<String, String>> interceptHeaders(
+    Map<String, String> headers,
+  ) async {
     if (enabled) {
       print('📤 Request Headers: $headers');
     }
@@ -159,11 +165,12 @@ class LoggingInterceptor implements RequestInterceptor, ResponseInterceptor {
 /// Main NetworkCaller class
 class NetworkCaller {
   static NetworkCaller? _instance;
+
   static NetworkCaller get instance => _instance ??= NetworkCaller._internal();
 
   NetworkCaller._internal() {
     // Initialize base URL internally - configure your API base URL here
-    _baseUrl = 'https://api.example.com'; // Set your API base URL here
+    _baseUrl = ApiConstants.baseUrl; // Set your API base URL here
     _baseUri = Uri.parse(_baseUrl!);
   }
 
@@ -222,32 +229,39 @@ class NetworkCaller {
 
       switch (method) {
         case HttpMethod.get:
-          response = await _client.get(uri, headers: requestHeaders)
+          response = await _client
+              .get(uri, headers: requestHeaders)
               .timeout(timeoutDuration);
           break;
         case HttpMethod.post:
-          response = await _client.post(
-            uri,
-            headers: requestHeaders,
-            body: body != null ? jsonEncode(body) : null,
-          ).timeout(timeoutDuration);
+          response = await _client
+              .post(
+                uri,
+                headers: requestHeaders,
+                body: body != null ? jsonEncode(body) : null,
+              ).timeout(timeoutDuration);
           break;
         case HttpMethod.put:
-          response = await _client.put(
-            uri,
-            headers: requestHeaders,
-            body: body != null ? jsonEncode(body) : null,
-          ).timeout(timeoutDuration);
+          response = await _client
+              .put(
+                uri,
+                headers: requestHeaders,
+                body: body != null ? jsonEncode(body) : null,
+              )
+              .timeout(timeoutDuration);
           break;
         case HttpMethod.patch:
-          response = await _client.patch(
-            uri,
-            headers: requestHeaders,
-            body: body != null ? jsonEncode(body) : null,
-          ).timeout(timeoutDuration);
+          response = await _client
+              .patch(
+                uri,
+                headers: requestHeaders,
+                body: body != null ? jsonEncode(body) : null,
+              )
+              .timeout(timeoutDuration);
           break;
         case HttpMethod.delete:
-          response = await _client.delete(uri, headers: requestHeaders)
+          response = await _client
+              .delete(uri, headers: requestHeaders)
               .timeout(timeoutDuration);
           break;
         case HttpMethod.multipart:
@@ -267,7 +281,6 @@ class NetworkCaller {
       }
 
       return _handleResponse<T>(response, fromJson);
-
     } on SocketException {
       throw NetworkException('No internet connection');
     } on HttpException catch (e) {
@@ -454,9 +467,10 @@ class NetworkCaller {
             file.field,
             file.bytes,
             filename: file.filename,
-            contentType: file.contentType != null
-                ? _parseMediaType(file.contentType!)
-                : null,
+            contentType:
+                file.contentType != null
+                    ? _parseMediaType(file.contentType!)
+                    : null,
           ),
         );
       }
@@ -469,7 +483,7 @@ class NetworkCaller {
   /// Parse media type for multipart files
   _parseMediaType(String contentType) {
     try {
-      final parts = contentType.split('/');
+      final parts = contentType.split('/'); //=== need lookup mimetype
       if (parts.length == 2) {
         return MediaType(parts[0], parts[1]);
       }
@@ -479,6 +493,7 @@ class NetworkCaller {
     return null;
   }
 
+  //Need to clear
   /// Build URI with query parameters
   Uri _buildUri(String endpoint, Map<String, dynamic>? queryParameters) {
     late Uri uri;
@@ -493,17 +508,23 @@ class NetworkCaller {
     }
 
     if (queryParameters != null && queryParameters.isNotEmpty) {
-      return uri.replace(queryParameters: {
-        ...uri.queryParameters,
-        ...queryParameters.map((key, value) => MapEntry(key, value.toString())),
-      });
+      return uri.replace(
+        queryParameters: {
+          ...uri.queryParameters,
+          ...queryParameters.map(
+            (key, value) => MapEntry(key, value.toString()),
+          ),
+        },
+      );
     }
 
     return uri;
   }
 
   /// Prepare headers with interceptors
-  Future<Map<String, String>> _prepareHeaders(Map<String, String> headers) async {
+  Future<Map<String, String>> _prepareHeaders(
+    Map<String, String> headers,
+  ) async {
     Map<String, String> processedHeaders = Map.from(headers);
 
     for (final interceptor in _requestInterceptors) {
@@ -515,13 +536,15 @@ class NetworkCaller {
 
   /// Handle response and parse data
   NetworkResponse<T> _handleResponse<T>(
-      http.Response response,
-      T Function(dynamic)? fromJson,
-      ) {
-    final bool isSuccess = response.statusCode >= 200 && response.statusCode < 300;
+    http.Response response,
+    T Function(dynamic)? fromJson,
+  ) {
+    final bool isSuccess =
+        response.statusCode >= 200 && response.statusCode < 300;
 
     try {
-      final responseBody = response.body.isEmpty ? null : jsonDecode(response.body);
+      final responseBody =
+          response.body.isEmpty ? null : jsonDecode(response.body);
 
       if (isSuccess) {
         T? data;
@@ -586,7 +609,7 @@ class NetworkCaller {
   }
 }
 
-// Usage Example:
+///  ====== Usage Example: ================
 
 class User {
   final int id;
@@ -596,19 +619,11 @@ class User {
   User({required this.id, required this.name, required this.email});
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-    );
+    return User(id: json['id'], name: json['name'], email: json['email']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-    };
+    return {'id': id, 'name': name, 'email': email};
   }
 }
 
@@ -619,7 +634,7 @@ class ApiService {
     // No need to initialize base URL - it's set internally
     // Just add interceptors
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
-    _networkCaller.addRequestInterceptor(LoggingInterceptor());
+    _networkCaller.addRequestInterceptor(LoggingInterceptor()); // Print response
 
     // Add auth token if available
     // _networkCaller.addRequestInterceptor(AuthInterceptor(token: 'your-token'));
@@ -633,9 +648,7 @@ class ApiService {
       );
 
       if (response.isSuccess && response.data != null) {
-        return response.data!
-            .map((json) => User.fromJson(json as Map<String, dynamic>))
-            .toList();
+        return response.data!.map((json) => User.fromJson(json as Map<String, dynamic>)).toList();
       } else {
         throw NetworkException(response.message ?? 'Failed to fetch users');
       }
@@ -682,9 +695,7 @@ class ApiService {
 
   Future<void> deleteUser(int id) async {
     try {
-      final response = await _networkCaller.delete(
-        endpoint: '/users/$id',
-      );
+      final response = await _networkCaller.delete(endpoint: '/users/$id');
 
       if (!response.isSuccess) {
         throw NetworkException(response.message ?? 'Failed to delete user');

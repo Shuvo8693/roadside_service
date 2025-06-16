@@ -13,7 +13,7 @@ import 'common/prefs_helper/prefs_helpers.dart';
 import 'common/themes/light_theme.dart';
 import 'common/widgets/message.dart';
 
-String token = '';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +27,7 @@ void main() async {
       languages: _languages,
     ));
   });
-  token = await PrefsHelper.getString('token');
+
 }
 
 class MyApp extends StatelessWidget {

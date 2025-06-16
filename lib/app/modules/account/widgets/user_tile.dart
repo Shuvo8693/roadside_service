@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_drawer/custom_drawer_tile.dart';
+import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
+import 'package:roadside_assistance/common/widgets/custom_button.dart';
+import 'package:roadside_assistance/common/widgets/custom_outlinebutton.dart';
+
+import '../../../../common/app_text_style/style.dart';
 class UserTile extends StatelessWidget {
   const UserTile({
     super.key,
@@ -64,4 +71,5 @@ class UserTile extends StatelessWidget {
       ],
     );
   }
+
 }

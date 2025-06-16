@@ -4,19 +4,21 @@ class ApiConstants{
   static String googleBaseUrl="https://maps.googleapis.com/maps/api/place/autocomplete/json";
   static String estimatedTimeUrl="https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&";
    /// App Url
-    static String baseUrl="http://10.0.80.205:9090/v1";
+    static String baseUrl="https://radwan5000.sobhoy.com";
     static String  imageBaseUrl="http://10.0.80.205:9090";
     static String socketUrl="ws://10.0.80.205:9000";
 
 
 ///>>>>>>>>>>>>>>>>>>>>>>>>>>> User Auth>>>>>>>>>>>>>>>>>>>
 
-static String registerUrl= '$baseUrl/auth/register';
+static String registerUrl= '/api/v1/user/register';
+static String verifyOtpUrl= '/api/v1/user/verify-otp';
+static String verifyForgotOtpUrl(String userMail) =>  '/api/v1/user/verify-forget-otp?email=$userMail';
 
-static String emailSendUrl= '$baseUrl/auth/forgot-password';
+static String emailSendUrl= '/api/v1/user/forget-password';
 static String verifyEmailWithOtpUrl= '$baseUrl/auth/verify-email';
 static String resendOtpUrl= '$baseUrl/auth/re-send-otp';
-static String logInUrl= '$baseUrl/auth/login';
+static String logInUrl= '/api/v1/user/login';
 static String resetPasswordUrl= '$baseUrl/auth/reset-password';
 static String createTournamentUrl= '$baseUrl/tournament/create';
 static String createSponsorTournamentUrl= '$baseUrl/sponser-tournament';

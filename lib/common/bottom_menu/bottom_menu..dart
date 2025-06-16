@@ -48,27 +48,27 @@ class _BottomMenuState extends State<BottomMenu> {
     // Navigate to corresponding pages
     switch (index)  {
       case 0 :
-        if(userRole =='User'){
+        if(userRole =='user'){
           Get.offAllNamed(Routes.HOME);
-        } else if(userRole =='Mechanic'){
+        } else if(userRole =='mechanic'){
           Get.offAllNamed(Routes.MECHANIC_HOME);
         }else{
           Get.snackbar('Failed route', ' Select your role before route home');
         }
         break;
       case 1:
-        if(userRole =='User'){
+        if(userRole =='user'){
           Get.offAllNamed(Routes.SERVICE);
-        } else if(userRole =='Mechanic'){
+        } else if(userRole =='mechanic'){
           Get.offAllNamed(Routes.MECHANIC_ORDER);
         }else{
           Get.snackbar('Failed route', ' Select your role before route home');
         }
         break;
       case 2:
-        if(userRole =='User'){
+        if(userRole =='user'){
           Get.offAllNamed(Routes.MECHANIC);
-        } else if(userRole =='Mechanic'){
+        } else if(userRole =='mechanic'){
           Get.offAllNamed(Routes.MECHANIC_PAYMENT);
         }else{
           Get.snackbar('Failed route', ' Select your role before route home');
@@ -99,8 +99,8 @@ class _BottomMenuState extends State<BottomMenu> {
           unselectedFontSize: 12.0,
           items: [
             _buildBottomNavItem(AppIcons.homesIcon, 'Home'),
-            _buildBottomNavItem(userRole =='Mechanic'? AppIcons.orderIcon : AppIcons.bookingIcon, userRole =='Mechanic'? 'Order': 'My Booking'),
-            _buildBottomNavItem(userRole =='Mechanic'? AppIcons.paymentIcon : AppIcons.mechanicIcon, userRole =='Mechanic'? 'Payment': 'Mechanic'),
+            _buildBottomNavItem(userRole =='mechanic'? AppIcons.orderIcon : AppIcons.bookingIcon, userRole =='mechanic'? 'Order': 'My Booking'),
+            _buildBottomNavItem(userRole =='mechanic'? AppIcons.paymentIcon : AppIcons.mechanicIcon, userRole =='mechanic'? 'Payment': 'Mechanic'),
             _buildBottomNavItem(AppIcons.profile1Icon, 'Account'),
           ],
         ),
