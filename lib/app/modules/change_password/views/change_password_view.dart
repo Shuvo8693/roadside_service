@@ -33,6 +33,22 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   bool _hasMinLength = false;
   bool _hasLowerCase = false;
   bool _hasSpecialChar = false;
+   bool? _isPassReset;
+
+  isPassReset(){
+   bool? isReset = Get.arguments['isResetPass'] ?? false;
+   setState(() {
+     _isPassReset =  isReset;
+   });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if(Get.arguments !=null){
+      isPassReset();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +66,42 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                 Text('Reset Your Password',style: GoogleFontStyles.h1(fontWeight: FontWeight.w500),),
                 verticalSpacing(8.h),
                 Text("It only take a minute!",style: GoogleFontStyles.h5(color: AppColors.primaryColor),),
+               if(_isPassReset!=true)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ///Old Password
+                    verticalSpacing(30.h),
+                    TextRequired(text: 'Old Password',
+                      textStyle: AppStyles.h4(family: "Schuyler"),
+                    ),
+                    verticalSpacing(10.h),
+                    CustomTextField(
+                      filColor: AppColors.textFieldFillColor,
+                      suffixIconColor: AppColors.appGreyColor,
+                      prefixIcon: Padding(
+                        padding:  EdgeInsets.symmetric(horizontal: 8.w),
+                        child: SvgPicture.asset(AppIcons.lockIcon),
+                      ),
+                      contentPaddingVertical: 20.h,
+                      hintText: "Type old password",
+                      labelTextStyle:
+                      const TextStyle(color: AppColors.primaryColor),
+                      isObscureText: true,
+                      obscure: '*',
+                      isPassword: true,
+                      onChange: validatePassword,
+                      controller: _changePasswordController.oldPassCtrl,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Enter password';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    ],
+                ),
                 ///Password
                 verticalSpacing(30.h),
                 TextRequired(text:AppString.passawordText,
@@ -122,14 +174,20 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                 ),
                 /// Action button
                 verticalSpacing(40.h),
-                CustomButton(
-                    onTap: () async {
-                      if (_formKey.currentState!.validate()) {
-                        //await otpController.sendOtp(isResetPassword);
-                        showStatusOnChangePasswordResponse(context);
-                      }
-                    },
-                    text: AppString.confirmText),
+                Obx(() =>
+                    CustomButton(
+                        loading: _changePasswordController.isLoading.value,
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            await _changePasswordController.resetPassword(
+                                isResetPass: _isPassReset ?? false,
+                                responseMessage: (message) {
+                                  showStatusOnChangePasswordResponse(context);
+                                });
+                          }
+                        },
+                        text: AppString.confirmText),
+                ),
                // const Spacer(flex: 2,),
               ],
             ),
@@ -150,7 +208,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       builder: (context) {
         return ShowStatusOnChangePassItem(
           onTap: () {
-            Get.offAllNamed(Routes.SIGN_IN);
+            Get.back();
             },
         );
       },

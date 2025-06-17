@@ -17,9 +17,10 @@ static String verifyForgotOtpUrl(String userMail) =>  '/api/v1/user/verify-forge
 
 static String emailSendUrl= '/api/v1/user/forget-password';
 static String verifyEmailWithOtpUrl= '$baseUrl/auth/verify-email';
-static String resendOtpUrl= '$baseUrl/auth/re-send-otp';
+static String resendOtpUrl= '/api/v1/user/resend';
 static String logInUrl= '/api/v1/user/login';
-static String resetPasswordUrl= '$baseUrl/auth/reset-password';
+static String resetPasswordUrl= '/api/v1/user/reset-password';
+static String changePasswordUrl= '/api/v1/user/change-password';
 static String createTournamentUrl= '$baseUrl/tournament/create';
 static String createSponsorTournamentUrl= '$baseUrl/sponser-tournament';
 static String lookingToPlayCreationUrl= '$baseUrl/looking-toplay';

@@ -50,7 +50,7 @@ class ShowStatusOnChangePassItem extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 20.h),
             child: CustomButton(
                 onTap: onTap,
-                text: 'Back To Login'),
+                text: 'Ok'),
           )
         ],
       ),

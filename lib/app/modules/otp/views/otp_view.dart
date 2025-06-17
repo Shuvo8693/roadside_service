@@ -153,8 +153,8 @@ class _OtpViewState extends State<OtpView> {
                     /// Resent Button
                     timerText == "00:00"
                         ? InkWell(
-                            onTap: () {
-                              resendOtpController.reSendMail(false);
+                            onTap: () async {
+                             await resendOtpController.reSendOtp(false);
                               _start = 150;
                               startTimer();
                               setState(() {});

@@ -26,19 +26,17 @@ class OtpController extends GetxController {
     try {
       isLoading.value = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
-        endpoint: isResetPass==true? ApiConstants.verifyForgotOtpUrl(userMail) : ApiConstants.verifyOtpUrl,
+        endpoint: isResetPass==true ? ApiConstants.verifyForgotOtpUrl(userMail) : ApiConstants.verifyOtpUrl,
         body: body,
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
-        String userRole = response.data!['data']['role'];
-          await PrefsHelper.setString('role', userRole);
        String role = await PrefsHelper.getString('role');
        String token = await PrefsHelper.getString('token');
        print('role: $role , token : $token');
         if(isResetPass==true){
-          Get.toNamed(Routes.CHANGE_PASSWORD);
+          Get.toNamed(Routes.CHANGE_PASSWORD,arguments: {'isResetPass': true});
         }else{
           if(role =='user'){
             Get.toNamed(Routes.HOME);

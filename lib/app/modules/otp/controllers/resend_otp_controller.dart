@@ -1,65 +1,42 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:roadside_assistance/app/data/api_constants.dart';
+import 'package:roadside_assistance/app/data/network_caller.dart';
+import 'package:roadside_assistance/app/routes/app_pages.dart';
+import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
 class ResendOtpController extends GetxController {
 
+  final NetworkCaller _networkCaller = NetworkCaller.instance;
   var isLoading = false.obs;
 
-  Future<void> reSendMail(bool? isResetPass) async {
+  Future<void> reSendOtp(bool? isResetPass) async {
+    String token = await PrefsHelper.getString('token');
 
-
-    if (isLoading.value) {
-      return; // Prevent multiple taps
-    }
-
-    isLoading.value = true;
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-    };
-
-    Map<String, dynamic> body = {
-     // 'email': Get.arguments['email'].toString(),
-    };
+    _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
+    _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
+    _networkCaller.addResponseInterceptor(LoggingInterceptor());
 
     try {
-
-      final url = Uri.parse(ApiConstants.resendOtpUrl);
-      final request = http.Request('POST', url)
-        ..headers.addAll(headers)
-        ..body = jsonEncode(body);
-
-      final streamedResponse = await request.send();
-
-      final response = await http.Response.fromStream(streamedResponse);
-      var responseData = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        print('Response Data: $responseData');
-        Get.snackbar('Otp Resend', responseData['message']);
+      isLoading.value = true;
+      final response = await _networkCaller.post<Map<String, dynamic>>(
+        endpoint: ApiConstants.resendOtpUrl,
+        timeout: Duration(seconds: 10),
+        fromJson: (json) => json as Map<String, dynamic>,
+      );
+      if (response.isSuccess && response.data != null){
+        String  message = response.data!['message'];
+        Get.snackbar('Success', message);
       } else {
-        print('Error: ${response.statusCode}, Message: ${response.body}');
+        Get.snackbar('Failed', response.message ?? 'Resend otp failed');
       }
-    } on SocketException catch (_) {
-      Get.snackbar(
-        'Error',
-        'No internet connection. Please check your network and try again.',
-        snackPosition: SnackPosition.TOP,
-      );
-    }catch(e){
-      Get.snackbar(
-        'Error',
-        'Something went wrong. Please try again later.',
-        snackPosition: SnackPosition.TOP,
-      );
+    } catch (e) {
       print(e);
+      throw NetworkException('$e');
     } finally {
       isLoading.value = false;
     }
-  }
 
+  }
 
 }

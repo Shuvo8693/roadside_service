@@ -35,7 +35,9 @@ class ForgotPasswordController extends GetxController {
       );
       if (response.isSuccess && response.data != null) {
         String token = response.data!['data']['token'];
-        print(" token : $token");
+        String role = response.data!['data']['role'];
+        print(" token : $token , role : $role");
+        await PrefsHelper.setString('role', role);
         await PrefsHelper.setString('token', token).then((value)async{
           Get.toNamed(
             Routes.OTP,
