@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/home/controllers/home_controller.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_card.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_providere_card.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
@@ -19,7 +20,13 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  TextEditingController searchCtrl = TextEditingController();
+final HomeController _homeController = Get.put(HomeController());
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +61,11 @@ class _HomeViewState extends State<HomeView> {
               ),
               SizedBox(height: 10.h),
               CustomSearchField(
-                searchCtrl: searchCtrl,
+                searchCtrl: _homeController.searchCtrl,
                 iconOnTap: () {},
-                onChanged: (value) {},
+                onChanged: (value) async{
+                 await _homeController.fetchMechanic(queryService: value);
+                },
               ),
               SizedBox(height: 20.h),
               ServiceCategories(),
