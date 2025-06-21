@@ -11,7 +11,7 @@ class ServiceProviderCard extends StatelessWidget {
   final String title;
   final double rating;
   final String distance;
-  final String time;
+  final String duration;
   final String imageUrl;
   final bool isFavourite;
   final VoidCallback onTap;
@@ -22,7 +22,7 @@ class ServiceProviderCard extends StatelessWidget {
     required this.title,
     required this.rating,
     required this.distance,
-    required this.time,
+    required this.duration,
     required this.imageUrl,
     required this.onTap,
     this.isFavourite = false,
@@ -32,9 +32,7 @@ class ServiceProviderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10.h),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       child: Padding(
         padding: EdgeInsets.all(8.sp),
         child: Row(
@@ -50,6 +48,7 @@ class ServiceProviderCard extends StatelessWidget {
               boxFit: BoxFit.cover,
             ),
             SizedBox(width: 10.w),
+
             /// Mechanic info
             Expanded(
               child: Column(
@@ -66,11 +65,10 @@ class ServiceProviderCard extends StatelessWidget {
                   Text(
                     name,
                     maxLines: 1,
-                    style: GoogleFontStyles.h4(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: GoogleFontStyles.h4(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 4.h),
+
                   /// Rating
                   Row(
                     children: [
@@ -80,7 +78,8 @@ class ServiceProviderCard extends StatelessWidget {
                         size: 18.sp,
                       ),
                       SizedBox(width: 4.w),
-                      Text('$rating/5',
+                      Text(
+                        '$rating/5',
                         style: GoogleFontStyles.h5(
                           color: AppColors.primaryColor,
                           fontSize: 14.sp,
@@ -89,14 +88,11 @@ class ServiceProviderCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 8.h),
+
                   /// Distance and time
                   Row(
                     children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Colors.grey,
-                        size: 16.sp,
-                      ),
+                      Icon(Icons.location_on, color: Colors.grey, size: 16.sp),
                       SizedBox(width: 4.w),
                       Text(
                         distance,
@@ -106,16 +102,16 @@ class ServiceProviderCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 10.w),
-                      Icon(
-                        Icons.access_time,
-                        color: Colors.grey,
-                        size: 16.sp,
-                      ),
+                      Icon(Icons.access_time, color: Colors.grey, size: 16.sp),
                       SizedBox(width: 4.w),
-                      Text(time,
-                        style: GoogleFontStyles.h5(
-                          color: Colors.grey,
-                          fontSize: 14.sp,
+                      Expanded(
+                        child: Text(
+                          duration,
+                          maxLines: 1,
+                          style: GoogleFontStyles.h5(
+                            color: Colors.grey,
+                            fontSize: 14.sp,
+                          ),
                         ),
                       ),
                     ],
@@ -128,18 +124,25 @@ class ServiceProviderCard extends StatelessWidget {
               children: [
                 verticalSpacing(6.h),
                 InkWell(
-                    onTap: (){},
-                    child: Icon( isFavourite? Icons.favorite_rounded: Icons.favorite_outline_rounded , color: AppColors.primaryColor,size: 28.h,)),
+                  onTap: () {},
+                  child: Icon(
+                    isFavourite
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_outline_rounded,
+                    color: AppColors.primaryColor,
+                    size: 28.h,
+                  ),
+                ),
                 verticalSpacing(15.h),
-                CustomButton(
+                InkWell(
                   onTap: onTap,
-                  text: 'View',
-                  width: 80.w,
-                  height: 45.h,
-                  paddingInner: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                  child: Text(
+                    'Details',
+                    style: GoogleFontStyles.h3(color: AppColors.primaryColor),
+                  ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

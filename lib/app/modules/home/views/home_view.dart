@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:roadside_assistance/app/modules/home/controllers/home_controller.dart';
+import 'package:roadside_assistance/app/modules/home/model/mechanic_service_model.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_card.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_providere_card.dart';
+import 'package:roadside_assistance/app/modules/mechanic_user_side/controllers/mechanic_controller.dart';
+import 'package:roadside_assistance/app/modules/mechanic_user_side/model/mechanic_model.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_constant/app_constant.dart';
 import 'package:roadside_assistance/common/app_text_style/google_app_style.dart';
 import 'package:roadside_assistance/common/bottom_menu/bottom_menu..dart';
 import 'package:roadside_assistance/common/widgets/custom_appBar_title.dart';
+import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
 import 'package:roadside_assistance/common/widgets/custom_search_field.dart';
 import 'package:roadside_assistance/common/widgets/custom_textbutton_with_icon.dart';
 
@@ -21,11 +25,15 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
 final HomeController _homeController = Get.put(HomeController());
+final MechanicController _mechanicController =Get.put(MechanicController());
 
 @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((__)async{
+      await _homeController.fetchMechanicService();
+      await _mechanicController.fetchMechanic();
+    });
   }
 
   @override
@@ -46,6 +54,7 @@ final HomeController _homeController = Get.put(HomeController());
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// My location
               CustomTextButtonWithIcon(
                 onTap: () {
                   Get.toNamed(Routes.MAP);
@@ -59,37 +68,60 @@ final HomeController _homeController = Get.put(HomeController());
                   fontWeight: FontWeight.w500,
                 ),
               ),
+              /// Mechanic search
               SizedBox(height: 10.h),
               CustomSearchField(
                 searchCtrl: _homeController.searchCtrl,
                 iconOnTap: () {},
                 onChanged: (value) async{
-                 await _homeController.fetchMechanic(queryService: value);
+                 await _homeController.fetchMechanicQuery(queryService: value);
                 },
               ),
+              /// Service
               SizedBox(height: 20.h),
-              ServiceCategories(),
+              Obx(() {
+                 List<MechanicServiceData>? mechanicServiceData = _homeController.mechanicServiceModel.value.data;
+                 if(_homeController.isLoading2.value){
+                   return  CustomPageLoading();
+
+                 } else if(mechanicServiceData!.isEmpty){
+                   return Text('Mechanic service is now unavailable');
+                 }
+                return ServiceCategories(mechanicServiceData: mechanicServiceData,);
+              }),
+              /// Nearest service provider
               SizedBox(height: 20.h),
               Text(
                 'Nearest Service Provider',
                 style: GoogleFontStyles.h3(fontWeight: FontWeight.w500),
               ),
               SizedBox(height: 10.h),
-              ListView.builder(
-                itemCount: 3,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return ServiceProviderCard(
-                    name: 'Shuvo',
-                    title: 'Mechanic',
-                    distance: '1000 km',
-                    rating: 4.5,
-                    time: '30 min',
-                    imageUrl: AppConstants.mechanicImage,
-                    onTap: () {},
-                  );
-                },
-              ),
+              Obx(() {
+                List<MechanicAttributes> mechanicAttributes = _mechanicController.mechanicModel.value.data?.data??[];
+                if(_mechanicController.isLoading.value){
+                  return CustomPageLoading();
+                } else if(mechanicAttributes.isEmpty){
+                  return Text('Mechanics unavailable near your location');
+                }
+                return ListView.builder(
+                  itemCount: (mechanicAttributes.length > 10 ? 10 : mechanicAttributes.length),
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    final mechanicAttributesIndex = mechanicAttributes[index];
+                    return ServiceProviderCard(
+                      name: mechanicAttributesIndex.mechanicName??'',
+                      title: 'Mechanic',
+                      distance: mechanicAttributesIndex.distance??'',
+                      rating: mechanicAttributesIndex.rating??0,
+                      duration: mechanicAttributesIndex.eta??'',
+                      imageUrl: AppConstants.mechanicImage,
+                      onTap: () {
+                        Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': mechanicAttributesIndex.mechanicId });
+                      },
+                    );
+                  },
+                );
+              }),
             ],
           ),
         ),

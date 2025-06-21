@@ -27,7 +27,7 @@ class ServiceCategoryContainer extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset(icon),
+          SvgPicture.network(icon),
           SizedBox(height: 10.h),
           Text(
             category,

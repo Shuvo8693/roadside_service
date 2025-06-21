@@ -43,7 +43,7 @@ class MechanicView extends StatelessWidget {
                   title: 'Mechanic',
                   distance: '1000 km',
                   rating: 4.5,
-                  time: '30 min',
+                  duration: '30 min',
                   imageUrl: AppConstants.mechanicImage,
                   onTap: () {
                     Get.toNamed(Routes.MECHANICDETAILS);

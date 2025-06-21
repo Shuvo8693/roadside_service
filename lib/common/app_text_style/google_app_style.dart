@@ -11,12 +11,14 @@ class GoogleFontStyles {
     String? family,
     double? letterSpacing,
     double? fontSize,
+    TextStyle? textStyle
   }) {
     return GoogleFonts.poppins(
       fontWeight: fontWeight ?? FontWeight.w400,
       fontSize: fontSize ?? 24.sp,
       color: color,
       letterSpacing: letterSpacing,
+        textStyle: textStyle
     );
   }
 
@@ -26,6 +28,7 @@ class GoogleFontStyles {
     String? family,
     double? letterSpacing,
     double? height,
+    TextStyle? textStyle
   }) {
     return GoogleFonts.poppins(
       fontWeight: fontWeight ?? FontWeight.w400,
@@ -33,6 +36,7 @@ class GoogleFontStyles {
       color: color,
       letterSpacing: letterSpacing,
       height: height,
+        textStyle: textStyle
     );
   }
 
@@ -41,12 +45,14 @@ class GoogleFontStyles {
     String? family,
     FontWeight? fontWeight,
     double? letterSpacing,
+    TextStyle? textStyle
   }) {
     return GoogleFonts.poppins(
       fontWeight: fontWeight ?? FontWeight.w400,
       fontSize: 18.sp,
       color: color,
       letterSpacing: letterSpacing,
+        textStyle: textStyle
     );
   }
 
@@ -56,6 +62,7 @@ class GoogleFontStyles {
     double? letterSpacing,
     String? family,
     double? height,
+    TextStyle? textStyle
   }) {
     return GoogleFonts.poppins(
       fontWeight: fontWeight ?? FontWeight.w500,
@@ -63,6 +70,7 @@ class GoogleFontStyles {
       color: color,
       height: height,
       letterSpacing: letterSpacing,
+        textStyle: textStyle
     );
   }
 
@@ -73,6 +81,7 @@ class GoogleFontStyles {
     String? family,
     double? fontSize,
     double? height,
+    TextStyle? textStyle,
   }) {
     return GoogleFonts.poppins(
       fontWeight: fontWeight ?? FontWeight.w400,
@@ -80,6 +89,7 @@ class GoogleFontStyles {
       color: color,
       height: height,
       letterSpacing: letterSpacing,
+      textStyle: textStyle
     );
   }
 
@@ -89,6 +99,7 @@ class GoogleFontStyles {
     double? letterSpacing,
     String? family,
     double? height,
+    TextStyle? textStyle
   }) {
     return GoogleFonts.poppins(
       fontWeight: fontWeight ?? FontWeight.w400,
@@ -96,6 +107,7 @@ class GoogleFontStyles {
       color: color,
       height: height,
       letterSpacing: letterSpacing,
+        textStyle: textStyle
     );
   }
 
@@ -108,6 +120,7 @@ class GoogleFontStyles {
     Color? underlineColor,
     TextDecoration? underline,
     FontWeight? fontWeight,
+    TextStyle? textStyle
   }) {
     return GoogleFonts.poppins(
       fontWeight: fontWeight ?? FontWeight.w400,
@@ -117,6 +130,7 @@ class GoogleFontStyles {
       decorationColor: underlineColor ?? Colors.transparent,
       height: height,
       letterSpacing: letterSpacing,
+        textStyle: textStyle
     );
   }
 

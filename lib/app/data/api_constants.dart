@@ -15,6 +15,8 @@ static String registerUrl= '/api/v1/user/register';
 static String verifyOtpUrl= '/api/v1/user/verify-otp';
 static String verifyForgotOtpUrl(String userMail) =>  '/api/v1/user/verify-forget-otp?email=$userMail';
 static String searchMechanicUrl(String service) =>  '/api/v1/mechanic/sorted?serviceName=$service';
+static String mechanicDetailsUrl(String mechanicId) =>  '/api/v1/mechanic/$mechanicId';
+static String allMechanicUrl({int? currentPage, int? limit}) =>  '/api/v1/mechanic/all?currentPage=$currentPage&limit=$limit';
 
 static String emailSendUrl= '/api/v1/user/forget-password';
 static String verifyEmailWithOtpUrl= '$baseUrl/auth/verify-email';
@@ -22,15 +24,7 @@ static String resendOtpUrl= '/api/v1/user/resend';
 static String logInUrl= '/api/v1/user/login';
 static String resetPasswordUrl= '/api/v1/user/reset-password';
 static String changePasswordUrl= '/api/v1/user/change-password';
-static String createTournamentUrl= '$baseUrl/tournament/create';
-static String createSponsorTournamentUrl= '$baseUrl/sponser-tournament';
-static String lookingToPlayCreationUrl= '$baseUrl/looking-toplay';
-static String requestToPlaylistUrl(String type,int page,int limit) => '$baseUrl/request-to-play?typename=big&page=$page&limit=$limit';
-static String tournamentDetailsUrl(String type,String tournamentId) => '$baseUrl/entered/details?id=$tournamentId&type=$type';
-static String tournamentPlayerUrl(String type,String tournamentId) => '$baseUrl/teeSheet/showTournamentById?id=$tournamentId&typeName=$type';
-static String showAllPlayerUrl(String type,String tournamentId) => '$baseUrl/chaleng/showAllplayer?type=$type&id=$tournamentId';
-static String showAllMatchesUrl(String type,String tournamentId) => '$baseUrl/chaleng?id=$tournamentId&type=$type';
-static String tournamentCompletionStatusUrl(String type,String tournamentId) => '$baseUrl/small-tournament/make-tournament-complete?id=$tournamentId&type=$type';
+static String mechanicServiceUrl= '/api/v1/service/all';
 
 
 

@@ -1,23 +1,13 @@
 import 'package:flutter/widgets.dart';
+import 'package:roadside_assistance/app/modules/home/model/mechanic_service_model.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_container.dart';
 import 'package:roadside_assistance/common/app_icons/app_icons.dart';
 
-class ServiceCategories extends StatefulWidget {
-  const ServiceCategories({super.key});
+class ServiceCategories extends StatelessWidget {
+   const ServiceCategories({super.key, required this.mechanicServiceData});
 
-  @override
-  State<ServiceCategories> createState() => _ServiceCategoriesState();
-}
+ final List<MechanicServiceData> mechanicServiceData;
 
-class _ServiceCategoriesState extends State<ServiceCategories> {
-
-  List<Map<String, dynamic>> serviceCategories = [
-    {'category': 'Towing', 'icon': AppIcons.towingIcon},
-    {'category': 'Lockout', 'icon': AppIcons.lockoutIcon},
-    {'category': 'Jump Start', 'icon': AppIcons.jumpStartServiceIcon},
-    {'category': 'Flat Tire Repair', 'icon': AppIcons.flatTireIcon},
-    {'category': 'Gasoline Delivery', 'icon': AppIcons.gasolineIcon},
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +20,15 @@ class _ServiceCategoriesState extends State<ServiceCategories> {
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       children:[
-        ...serviceCategories.asMap().map((index, category) {
+        ...mechanicServiceData.asMap().map((index, category) {
           return MapEntry(index,
             GestureDetector(
               onTap: (){
-                print(category['category']);
+                print(category);
               },
               child: ServiceCategoryContainer(
-                category: category['category'],
-                icon: category['icon'],
+                category: category.name??'',
+                icon: category.image??'',
               ),
             ),
           );
