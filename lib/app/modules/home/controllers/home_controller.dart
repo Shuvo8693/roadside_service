@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:roadside_assistance/app/data/api_constants.dart';
 import 'package:roadside_assistance/app/data/network_caller.dart';
 import 'package:roadside_assistance/app/modules/home/model/mechanic_service_model.dart';
+import 'package:roadside_assistance/app/modules/mechanic_user_side/model/mechanic_model.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
@@ -12,6 +13,7 @@ class HomeController extends GetxController {
 
   TextEditingController searchCtrl = TextEditingController();
   final NetworkCaller _networkCaller = NetworkCaller.instance;
+  Rx<MechanicModel> mechanicModel = MechanicModel().obs;
   var isLoading = false.obs;
 
   Future<void> fetchMechanicQuery({String? queryService}) async {
@@ -29,10 +31,10 @@ class HomeController extends GetxController {
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
-
-        String message = response.data!['message'];
-        final responseData = response.data!['data'] as List<dynamic>;
+        final responseData = response.data;
         print(responseData);
+        mechanicModel.value = MechanicModel.fromJson(responseData??{});
+        print(mechanicModel.value);
 
       } else {
         Get.snackbar('Failed', response.message ?? 'Resend otp failed');

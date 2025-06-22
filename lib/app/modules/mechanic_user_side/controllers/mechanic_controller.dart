@@ -30,6 +30,7 @@ class MechanicController extends GetxController {
         Map<String,dynamic>? responseData = response.data;
         print(responseData);
         mechanicModel.value =  MechanicModel.fromJson(responseData??{});
+        print(mechanicModel.value);
 
       } else {
         if (kDebugMode) {
@@ -71,6 +72,7 @@ class MechanicController extends GetxController {
         Map<String,dynamic>? responseData = response.data;
         print(responseData);
         mechanicDetailsModel.value =  MechanicDetailsModel.fromJson(responseData??{});
+        print(mechanicDetailsModel.value);
 
       } else {
         if (kDebugMode) {

@@ -14,8 +14,9 @@ class ApiConstants{
 static String registerUrl= '/api/v1/user/register';
 static String verifyOtpUrl= '/api/v1/user/verify-otp';
 static String verifyForgotOtpUrl(String userMail) =>  '/api/v1/user/verify-forget-otp?email=$userMail';
-static String searchMechanicUrl(String service) =>  '/api/v1/mechanic/sorted?serviceName=$service';
+static String searchMechanicUrl(String service) =>  '/api/v1/mechanic/all?serviceName=$service';
 static String mechanicDetailsUrl(String mechanicId) =>  '/api/v1/mechanic/$mechanicId';
+static String mechanicServiceWithPriceUrl(String mechanicId) =>  '/api/v1/mechanic/services/$mechanicId';
 static String allMechanicUrl({int? currentPage, int? limit}) =>  '/api/v1/mechanic/all?currentPage=$currentPage&limit=$limit';
 
 static String emailSendUrl= '/api/v1/user/forget-password';
@@ -25,6 +26,8 @@ static String logInUrl= '/api/v1/user/login';
 static String resetPasswordUrl= '/api/v1/user/reset-password';
 static String changePasswordUrl= '/api/v1/user/change-password';
 static String mechanicServiceUrl= '/api/v1/service/all';
+static String userProfileUrl= '/api/v1/user/profile';
+
 
 
 

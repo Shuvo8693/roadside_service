@@ -64,6 +64,7 @@ class MechanicAttributes {
   String? eta;
   double? rating;
   double? experience;
+  bool? isFavourite;
 
   MechanicAttributes(
       {this.mechanicId,
@@ -79,6 +80,7 @@ class MechanicAttributes {
     mechanicName = json['mechanicName'];
     mechanicImage = json['mechanicImage'];
     distance = json['distance'];
+    isFavourite = json['isFavourite'];
     eta = json['eta'];
     if(json['rating'] is int){
       rating = (json['rating'] as int).toDouble();

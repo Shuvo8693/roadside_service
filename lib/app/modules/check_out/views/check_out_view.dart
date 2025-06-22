@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:roadside_assistance/app/modules/check_out/controllers/check_out_controller.dart';
 import 'package:roadside_assistance/app/modules/check_out/widgets/checkout_service_card.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
@@ -20,8 +21,16 @@ class CheckOutView extends StatefulWidget {
 }
 
 class _CheckOutViewState extends State<CheckOutView> {
-
+ final CheckOutController _checkOutController = Get.put(CheckOutController());
   bool isAddMoreService = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((__)async{
+      await _checkOutController.fetchMechanicServiceWithPrice();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

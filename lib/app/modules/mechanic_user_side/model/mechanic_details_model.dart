@@ -4,8 +4,7 @@ class MechanicDetailsModel {
   String? message;
   MechanicData? data;
 
-  MechanicDetailsModel(
-      {this.success, this.statusCode, this.message, this.data});
+  MechanicDetailsModel({this.success, this.statusCode, this.message, this.data});
 
   MechanicDetailsModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -33,93 +32,49 @@ class MechanicData {
 
 class MechanicAttributes {
   String? sId;
-  UserAttributes? user;
-  double? rating;
-  double? experience;
-  String? description;
-  bool? isAvailable;
-  int? iV;
-
-  MechanicAttributes(
-      {this.sId,
-        this.user,
-        this.rating,
-        this.experience,
-        this.description,
-        this.isAvailable,
-        this.iV});
-
-  MechanicAttributes.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    user = json['user'] != null ? UserAttributes.fromJson(json['user']) : null;
-    if(json['rating'] is int){
-      rating = (json['rating'] as int).toDouble();
-    }else{
-      rating = json['rating'];
-    }
-
-    if(json['experience'] is int){
-      experience = (json['experience'] as int).toDouble();
-    }else{
-      experience = json['experience'];
-    }
-    description = json['description'];
-    isAvailable = json['isAvailable'];
-    iV = json['__v'];
-  }
-}
-
-class UserAttributes {
-  Location? location;
-  String? sId;
   String? name;
   String? email;
   String? image;
   String? role;
-  String? createdAt;
-  String? updatedAt;
-  int? iV;
-  bool? isActive;
+  double? rating;
+  double? experience;
+  String? description;
+  bool? isAvailable;
 
-  UserAttributes(
-      {this.location,
-        this.sId,
-        this.name,
-        this.email,
-        this.image,
-        this.role,
-        this.createdAt,
-        this.updatedAt,
-        this.iV,
-        this.isActive,
+  MechanicAttributes({
+    this.sId,
+    this.name,
+    this.email,
+    this.image,
+    this.role,
+    this.rating,
+    this.experience,
+    this.description,
+    this.isAvailable,
+  });
 
-      });
-
-  UserAttributes.fromJson(Map<String, dynamic> json) {
-    location = json['location'] != null
-        ? Location.fromJson(json['location'])
-        : null;
+  MechanicAttributes.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
     email = json['email'];
     image = json['image'];
     role = json['role'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    iV = json['__v'];
-    isActive = json['isActive'];
-  }
-}
 
-class Location {
-  String? type;
-  List<double>? coordinates;
+    // Handle double or int
+    if (json['rating'] is int) {
+      rating = (json['rating'] as int).toDouble();
+    } else {
+      rating = json['rating']?.toDouble();
+    }
 
-  Location({this.type, this.coordinates});
+    if (json['experience'] is int) {
+      experience = (json['experience'] as int).toDouble();
+    } else {
+      experience = json['experience']?.toDouble();
+    }
 
-  Location.fromJson(Map<String, dynamic> json) {
-    type = json['type'];
-    coordinates = json['coordinates'].cast<double>();
+    description = json['description'];
+    isAvailable = json['isAvailable'];
   }
 }
 
@@ -152,12 +107,11 @@ class Services {
   Services({this.service, this.price, this.sId});
 
   Services.fromJson(Map<String, dynamic> json) {
-    service =
-    json['service'] != null ? Service.fromJson(json['service']) : null;
-    if(json['price'] is int){
+    service = json['service'] != null ? Service.fromJson(json['service']) : null;
+    if (json['price'] is int) {
       price = (json['price'] as int).toDouble();
-    }else{
-      price = json['price'];
+    } else {
+      price = json['price']?.toDouble();
     }
     sId = json['_id'];
   }
@@ -177,5 +131,4 @@ class Service {
     name = json['name'];
     iV = json['__v'];
   }
-
 }

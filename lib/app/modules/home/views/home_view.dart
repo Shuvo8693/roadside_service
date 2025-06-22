@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/account/controllers/account_controller.dart';
 import 'package:roadside_assistance/app/modules/home/controllers/home_controller.dart';
 import 'package:roadside_assistance/app/modules/home/model/mechanic_service_model.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_card.dart';
@@ -26,12 +27,14 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 final HomeController _homeController = Get.put(HomeController());
 final MechanicController _mechanicController =Get.put(MechanicController());
+final AccountController _accountController= Get.put(AccountController());
 
 @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((__)async{
       await _homeController.fetchMechanicService();
+      await _accountController.fetchProfile();
       await _mechanicController.fetchMechanic();
     });
   }
@@ -47,6 +50,7 @@ final MechanicController _mechanicController =Get.put(MechanicController());
         },
         notificationCount: 5,
         imageUrl: AppConstants.demoPersonImage,
+        accountController: _accountController,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -77,6 +81,35 @@ final MechanicController _mechanicController =Get.put(MechanicController());
                  await _homeController.fetchMechanicQuery(queryService: value);
                 },
               ),
+             /// Mechanic Search result
+              mechanicDataCard(_homeController),
+              // Obx(() {
+              //   List<MechanicAttributes> mechanicAttributes = _homeController.mechanicModel.value.data?.data??[];
+              //   if(_mechanicController.isLoading.value){
+              //     return CustomPageLoading();
+              //   } else if(mechanicAttributes.isEmpty){
+              //     return Text('');
+              //   }
+              //   return ListView.builder(
+              //     itemCount: (mechanicAttributes.length > 10 ? 10 : mechanicAttributes.length),
+              //     shrinkWrap: true,
+              //     itemBuilder: (BuildContext context, int index) {
+              //       final mechanicAttributesIndex = mechanicAttributes[index];
+              //       return ServiceProviderCard(
+              //         name: mechanicAttributesIndex.mechanicName??'',
+              //         title: 'Mechanic',
+              //         distance: mechanicAttributesIndex.distance??'',
+              //         rating: mechanicAttributesIndex.rating??0,
+              //         duration: mechanicAttributesIndex.eta??'',
+              //         imageUrl: mechanicAttributesIndex.mechanicImage??'',
+              //         onTap: () {
+              //           Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': mechanicAttributesIndex.mechanicId });
+              //         },
+              //       );
+              //     },
+              //   );
+              // }),
+
               /// Service
               SizedBox(height: 20.h),
               Obx(() {
@@ -96,36 +129,78 @@ final MechanicController _mechanicController =Get.put(MechanicController());
                 style: GoogleFontStyles.h3(fontWeight: FontWeight.w500),
               ),
               SizedBox(height: 10.h),
-              Obx(() {
-                List<MechanicAttributes> mechanicAttributes = _mechanicController.mechanicModel.value.data?.data??[];
-                if(_mechanicController.isLoading.value){
-                  return CustomPageLoading();
-                } else if(mechanicAttributes.isEmpty){
-                  return Text('Mechanics unavailable near your location');
-                }
-                return ListView.builder(
-                  itemCount: (mechanicAttributes.length > 10 ? 10 : mechanicAttributes.length),
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    final mechanicAttributesIndex = mechanicAttributes[index];
-                    return ServiceProviderCard(
-                      name: mechanicAttributesIndex.mechanicName??'',
-                      title: 'Mechanic',
-                      distance: mechanicAttributesIndex.distance??'',
-                      rating: mechanicAttributesIndex.rating??0,
-                      duration: mechanicAttributesIndex.eta??'',
-                      imageUrl: AppConstants.mechanicImage,
-                      onTap: () {
-                        Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': mechanicAttributesIndex.mechanicId });
-                      },
-                    );
-                  },
-                );
-              }),
+              mechanicDataCard(_mechanicController),
+              // Obx(() {
+              //   List<MechanicAttributes> mechanicAttributes = _mechanicController.mechanicModel.value.data?.data??[];
+              //   if(_mechanicController.isLoading.value){
+              //     return CustomPageLoading();
+              //   } else if(mechanicAttributes.isEmpty){
+              //     return Text('Mechanics unavailable near your location');
+              //   }
+              //   return ListView.builder(
+              //     itemCount: (mechanicAttributes.length > 10 ? 10 : mechanicAttributes.length),
+              //     shrinkWrap: true,
+              //     itemBuilder: (BuildContext context, int index) {
+              //       final mechanicAttributesIndex = mechanicAttributes[index];
+              //       return ServiceProviderCard(
+              //         name: mechanicAttributesIndex.mechanicName??'',
+              //         title: 'Mechanic',
+              //         distance: mechanicAttributesIndex.distance??'',
+              //         rating: mechanicAttributesIndex.rating??0,
+              //         duration: mechanicAttributesIndex.eta??'',
+              //         imageUrl: mechanicAttributesIndex.mechanicImage??'',
+              //         onTap: () {
+              //           Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': mechanicAttributesIndex.mechanicId });
+              //         },
+              //       );
+              //     },
+              //   );
+              // }),
             ],
           ),
         ),
       ),
     );
+  }
+
+ Widget mechanicDataCard<T>(T controller){
+    return Obx(() {
+      // List<MechanicAttributes> mechanicAttributes = _mechanicController.mechanicModel.value.data?.data??[];
+      List<MechanicAttributes> mechanicAttributes =[];
+      bool isLoading= false;
+      if(T == MechanicController){
+        final mechanicController = controller as MechanicController;
+       mechanicAttributes  = mechanicController.mechanicModel.value.data?.data??[];
+        isLoading = mechanicController.isLoading.value;
+      } else if (T == HomeController){
+        final mechanicController = controller as HomeController;
+        mechanicAttributes  = mechanicController.mechanicModel.value.data?.data??[];
+        isLoading = mechanicController.isLoading.value;
+      }
+
+      if(isLoading){
+        return CustomPageLoading();
+      } else if(mechanicAttributes.isEmpty){
+        return Text(T == HomeController? '':'Mechanics unavailable near your location');
+      }
+      return ListView.builder(
+        itemCount: (mechanicAttributes.length > 10 ? 10 : mechanicAttributes.length),
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) {
+          final mechanicAttributesIndex = mechanicAttributes[index];
+          return ServiceProviderCard(
+            name: mechanicAttributesIndex.mechanicName??'',
+            title: 'Mechanic',
+            distance: mechanicAttributesIndex.distance??'',
+            rating: mechanicAttributesIndex.rating??0,
+            duration: mechanicAttributesIndex.eta??'',
+            imageUrl: mechanicAttributesIndex.mechanicImage??'',
+            onTap: () {
+              Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': mechanicAttributesIndex.mechanicId });
+            },
+          );
+        },
+      );
+    });
   }
 }

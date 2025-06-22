@@ -11,6 +11,7 @@ import 'package:roadside_assistance/common/app_icons/app_icons.dart';
 import 'package:roadside_assistance/common/app_text_style/google_app_style.dart';
 import 'package:roadside_assistance/common/widgets/casess_network_image.dart';
 import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
+import 'package:roadside_assistance/common/widgets/see_more_text.dart';
 
 
 class MechanicDetailsView extends StatefulWidget {
@@ -62,7 +63,7 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8.0.r),
                     child: CustomNetworkImage(
-                      imageUrl: AppConstants.mechanicImage,
+                      imageUrl:  mechanicData.mechanic?.image??'',
                       // Replace with your image path
                       width: 110.h,
                       height: 110.h,
@@ -76,7 +77,7 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                       children: [
                         //Mechanic name ------>
                         Text(
-                          mechanicData.mechanic?.user?.image??'',
+                          mechanicData.mechanic?.name??'',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -123,12 +124,11 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               // Mechanic Description -------------<<<
-              Text(mechanicData.mechanic?.description??'',
-                style: TextStyle(fontSize: 13, color: Colors.grey),
-              ),
+              SeeMoreText(text: mechanicData.mechanic?.description??'',characterLimit: 150,style: TextStyle(fontSize: 13, color: Colors.grey) ,),
+
               SizedBox(height: 20.h),
 
               // Service Section Title -----------<<
@@ -150,7 +150,7 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                       return MapEntry(index,
                         GestureDetector(
                           onTap: () {
-                            print(category);
+                            print(category.sId);
                           },
                           child: ServiceCategoryContainer(
                             category: category.service?.name??'',
@@ -158,7 +158,7 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                             isActiveBooking: true,
                             price: '\$${category.price}',
                             bookNowOnTap: () {
-                              Get.toNamed(Routes.CHECK_OUT);
+                              Get.toNamed(Routes.CHECK_OUT,arguments: {'mechanicId':mechanicData.mechanic?.sId});
                             },
                           ),
                         ),
