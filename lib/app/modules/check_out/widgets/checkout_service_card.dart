@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart'; // Ensure this pack
 class CheckOutServiceCard extends StatelessWidget {
   final String serviceName;
   final String price;
-  final String? svgAssetPath;
+  final String? svgPath;
   final VoidCallback iconButton;
   final IconData? icon;
   final Color? iconColor;
@@ -14,7 +14,7 @@ class CheckOutServiceCard extends StatelessWidget {
     super.key,
     required this.serviceName,
     required this.price,
-    this.svgAssetPath,
+    this.svgPath,
     required this.iconButton,
     this.icon,
     this.iconColor,
@@ -27,9 +27,9 @@ class CheckOutServiceCard extends StatelessWidget {
       child: Card(
         elevation: 1,
         child: ListTile(
-          leading: svgAssetPath != null
-              ? SvgPicture.asset(
-            svgAssetPath!,
+          leading: svgPath != null
+              ? SvgPicture.network(
+            svgPath!,
             height: 24.h, // Adjust size as needed
             width: 24.w,
           )
@@ -48,7 +48,8 @@ class CheckOutServiceCard extends StatelessWidget {
               SizedBox(width: 8.w),
               InkWell(
                 onTap: iconButton,
-                  child: Icon(icon??Icons.close, color:iconColor??Colors.red)),
+                  child: Icon(icon??Icons.close, color:iconColor??Colors.red),
+              ),
             ],
           ),
         ),

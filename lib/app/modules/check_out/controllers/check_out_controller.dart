@@ -11,6 +11,8 @@ class CheckOutController extends GetxController {
   final NetworkCaller _networkCaller = NetworkCaller.instance;
   Rx<MechanicServicePriceModel> mechanicServicePriceModel = MechanicServicePriceModel().obs;
   var isLoading = false.obs;
+  RxList<ServiceRate> serviceRateList = <ServiceRate>[].obs;
+  RxBool? isSelected=false.obs;
 
   Future<void> fetchMechanicServiceWithPrice() async {
     String token = await PrefsHelper.getString('token');
@@ -46,5 +48,14 @@ class CheckOutController extends GetxController {
     }
 
   }
+
+}
+
+class ServiceRate{
+  String? serviceName;
+  double? price;
+  String? serviceImage;
+
+  ServiceRate({this.serviceName, this.price, this.serviceImage});
 
 }

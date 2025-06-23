@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/check_out/controllers/check_out_controller.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_container.dart';
 import 'package:roadside_assistance/app/modules/mechanic_user_side/controllers/mechanic_controller.dart';
 import 'package:roadside_assistance/app/modules/mechanic_user_side/model/mechanic_details_model.dart';
@@ -23,13 +24,7 @@ class MechanicDetailsView extends StatefulWidget {
 
 class _MechanicDetailsViewState extends State<MechanicDetailsView> {
   final MechanicController _mechanicController = Get.put(MechanicController());
-  List<Map<String, dynamic>> serviceCategories = [
-    {'category': 'Towing', 'icon': AppIcons.towingIcon},
-    {'category': 'Lockout', 'icon': AppIcons.lockoutIcon},
-    {'category': 'Jump Start', 'icon': AppIcons.jumpStartServiceIcon},
-    {'category': 'Flat Tire Repair', 'icon': AppIcons.flatTireIcon},
-    {'category': 'Gasoline Delivery', 'icon': AppIcons.gasolineIcon},
-  ];
+  final CheckOutController _checkOutController = Get.put(CheckOutController());
 
   @override
   void initState() {
@@ -147,6 +142,7 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                   mainAxisSpacing: 12,
                   children: [
                     ...mechanicData.serviceWithRate!.services!.asMap().map((index, category) {
+                     bool isSelected = _checkOutController.serviceRateList.any((service)=>service.serviceName== category.service?.name);
                       return MapEntry(index,
                         GestureDetector(
                           onTap: () {
@@ -158,6 +154,17 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                             isActiveBooking: true,
                             price: '\$${category.price}',
                             bookNowOnTap: () {
+                              if(!isSelected){
+                                _checkOutController.serviceRateList.add(
+                                  ServiceRate(
+                                    serviceImage: category.service?.image??'',
+                                    price: category.price,
+                                    serviceName: category.service?.name??'',
+                                  ),
+                                );
+                              }else{
+
+                              }
                               Get.toNamed(Routes.CHECK_OUT,arguments: {'mechanicId':mechanicData.mechanic?.sId});
                             },
                           ),
