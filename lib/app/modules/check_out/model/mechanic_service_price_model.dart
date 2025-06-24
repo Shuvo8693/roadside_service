@@ -21,16 +21,16 @@ class MechanicServicePriceModel {
 
 class MechanicServiceData {
   String? id;
-  List<ServiceWithPrice>? services;
+  List<ServiceWithPrice>? servicesWithPrice;
 
-  MechanicServiceData({this.id, this.services});
+  MechanicServiceData({this.id, this.servicesWithPrice});
 
   MechanicServiceData.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
     if (json['services'] != null) {
-      services = <ServiceWithPrice>[];
+      servicesWithPrice = <ServiceWithPrice>[];
       json['services'].forEach((v) {
-        services!.add(ServiceWithPrice.fromJson(v));
+        servicesWithPrice!.add(ServiceWithPrice.fromJson(v));
       });
     }
   }

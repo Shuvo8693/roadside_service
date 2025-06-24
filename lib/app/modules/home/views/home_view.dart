@@ -198,6 +198,34 @@ final AccountController _accountController= Get.put(AccountController());
             onTap: () {
               Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': mechanicAttributesIndex.mechanicId });
             },
+            favouriteTap: () async {
+              String? mechanicId= mechanicAttributesIndex.mechanicId;
+              if(mechanicId != null && mechanicId.isNotEmpty){
+              await _mechanicController.toggleFavourite( mechanicId,favCallBack: (){
+                if(T == MechanicController){
+                  int? dataIndex  = _mechanicController.mechanicModel.value.data?.data?.indexWhere((value)=>value.mechanicId==mechanicId);
+                  if(dataIndex != -1){
+                    final attributes = _mechanicController.mechanicModel.value.data?.data![dataIndex!];
+                    attributes?.isFavourite =! (attributes.isFavourite??false);
+                    print(attributes?.isFavourite);
+                    _mechanicController.mechanicModel.refresh();
+                    setState(() {});
+                  }
+
+                }else if(T == HomeController){
+                  int? dataIndex  = _homeController.mechanicModel.value.data?.data?.indexWhere((value)=>value.mechanicId==mechanicId);
+                  if(dataIndex != -1){
+                    final attributes = _homeController.mechanicModel.value.data?.data![dataIndex!];
+                    attributes?.isFavourite =! (attributes.isFavourite??false);
+                    print(attributes?.isFavourite);
+                    _homeController.mechanicModel.refresh();
+                    setState(() {});
+                  }
+                }
+              });
+              }
+          },
+            isFavourite: mechanicAttributesIndex.isFavourite??false,
           );
         },
       );

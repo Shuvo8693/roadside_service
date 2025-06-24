@@ -15,6 +15,7 @@ class ServiceProviderCard extends StatelessWidget {
   final String imageUrl;
   final bool isFavourite;
   final VoidCallback onTap;
+  final VoidCallback favouriteTap;
 
   const ServiceProviderCard({
     super.key,
@@ -26,6 +27,7 @@ class ServiceProviderCard extends StatelessWidget {
     required this.imageUrl,
     required this.onTap,
     this.isFavourite = false,
+    required this.favouriteTap,
   });
 
   @override
@@ -124,7 +126,7 @@ class ServiceProviderCard extends StatelessWidget {
               children: [
                 verticalSpacing(6.h),
                 InkWell(
-                  onTap: () {},
+                  onTap: favouriteTap,
                   child: Icon(
                     isFavourite
                         ? Icons.favorite_rounded

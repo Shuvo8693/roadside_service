@@ -47,7 +47,7 @@ class MechanicView extends StatelessWidget {
                   imageUrl: AppConstants.mechanicImage,
                   onTap: () {
                     Get.toNamed(Routes.MECHANICDETAILS);
-                  },
+                  }, favouriteTap: () {  },
                 );
               },
             ),

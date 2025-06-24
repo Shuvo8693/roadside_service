@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:roadside_assistance/app/modules/check_out/controllers/check_out_controller.dart';
 import 'package:roadside_assistance/app/modules/check_out/model/mechanic_service_price_model.dart';
 import 'package:roadside_assistance/app/modules/check_out/widgets/checkout_service_card.dart';
@@ -94,7 +93,7 @@ class _CheckOutViewState extends State<CheckOutView> {
                     Text('Choose service :'),
                     Obx(() {
                       List<ServiceWithPrice>? serviceWithPriceData =
-                          _checkOutController.mechanicServicePriceModel.value.data?.services;
+                          _checkOutController.mechanicServicePriceModel.value.data?.servicesWithPrice;
 
                       if (_checkOutController.isLoading.value) {
                         return Center(child: CustomPageLoading());
@@ -107,7 +106,7 @@ class _CheckOutViewState extends State<CheckOutView> {
                         child: ListView.builder(
                           itemBuilder: (context, index) {
                             final serviceCategoryItem = serviceWithPriceData[index];
-                          String  serviceName = serviceCategoryItem.service?.name ?? '';
+                           String serviceName = serviceCategoryItem.service?.name ?? '';
                             return Obx((){
                               bool isSelected = _checkOutController.serviceRateList.any((serviceDetails) => serviceDetails.serviceName == serviceName);
                               return  CheckOutServiceCard(
@@ -121,6 +120,7 @@ class _CheckOutViewState extends State<CheckOutView> {
                                         serviceImage: serviceCategoryItem.service?.image,
                                         price: serviceCategoryItem.price,
                                         serviceName: serviceName,
+                                        serviceId: serviceCategoryItem.id
                                       ),
                                     );
                                   }else{
@@ -147,11 +147,15 @@ class _CheckOutViewState extends State<CheckOutView> {
                 padding: EdgeInsets.symmetric(vertical: 8.h),
                 child: Obx((){
                 final serviceRateList = _checkOutController.serviceRateList;
+                double servicePrice = 0.0;
+                double serviceCharge = 0.0;
+                for(final service in serviceRateList){
+                  servicePrice += service.price ?? 0.0;
+                }
+                  serviceCharge = servicePrice * 0.1;
                   return Column(
                     children: [
-                      ...List.generate(serviceRateList.length, (
-                          index,
-                          ) {
+                      ...List.generate(serviceRateList.length, (index) {
                         final serviceCategoryItem = serviceRateList[index];
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 5.h),
@@ -170,18 +174,14 @@ class _CheckOutViewState extends State<CheckOutView> {
                       SizedBox(height: 8.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text('App Service'), Text('\$10')],
+                        children: [Text('App Service (10%)'), Text('\$$serviceCharge')],
                       ),
                       Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'TOTAL',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text('\$110',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          Text('TOTAL', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Text('\$${servicePrice + serviceCharge}', style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),

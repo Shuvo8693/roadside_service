@@ -31,7 +31,7 @@ class FavouriteView extends StatelessWidget {
               isFavourite: true,
               onTap: () {
                 Get.toNamed(Routes.MECHANICDETAILS);
-              },
+              }, favouriteTap: () {  },
             );
           },
         ),
