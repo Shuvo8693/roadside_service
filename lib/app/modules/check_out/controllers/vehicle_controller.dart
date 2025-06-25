@@ -6,19 +6,18 @@ import 'package:roadside_assistance/app/data/api_constants.dart';
 import 'package:roadside_assistance/app/data/network_caller.dart';
 import 'package:roadside_assistance/app/modules/check_out/model/mechanic_service_price_model.dart';
 import 'package:roadside_assistance/app/modules/check_out/model/service_rate_model.dart';
+import 'package:roadside_assistance/app/modules/check_out/model/vehiclelist_model.dar.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
-class CheckOutController extends GetxController {
+class VehicleController extends GetxController {
 
   final NetworkCaller _networkCaller = NetworkCaller.instance;
-  Rx<MechanicServicePriceModel> mechanicServicePriceModel = MechanicServicePriceModel().obs;
+  Rx<VehicleListModel> vehicleListModel = VehicleListModel().obs;
   var isLoading = false.obs;
-  RxList<ServiceRate> serviceRateList = <ServiceRate>[].obs;
-  RxBool? isSelected=false.obs;
+  RxBool? isCarSelected=false.obs;
 
-  Future<void> fetchMechanicServiceWithPrice() async {
+  Future<void> fetchVehicle() async {
     String token = await PrefsHelper.getString('token');
-   String mechanicId = Get.arguments['mechanicId'] ?? '';
 
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
@@ -27,18 +26,18 @@ class CheckOutController extends GetxController {
     try {
       isLoading.value = true;
       final response = await _networkCaller.get<Map<String, dynamic>>(
-        endpoint:  ApiConstants.mechanicServiceWithPriceUrl(mechanicId),
+        endpoint:  ApiConstants.allVehicleUrl,
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
         final responseData = response.data;
         print(responseData);
-        mechanicServicePriceModel.value = MechanicServicePriceModel.fromJson(responseData??{});
-        print(mechanicServicePriceModel.value);
+        vehicleListModel.value = VehicleListModel.fromJson(responseData??{});
+        print(vehicleListModel.value);
 
       } else {
-        Get.snackbar('Failed', response.message ?? 'Failed to fetch service');
+        Get.snackbar('Failed', response.message ?? 'Failed to fetch Vehicle');
       }
     } catch (e) {
       if (kDebugMode) {
@@ -51,23 +50,19 @@ class CheckOutController extends GetxController {
 
   }
 
-  /// ================== Checkout Book ================================
-  final TextEditingController pickupAddressCtrl = TextEditingController();
-  final TextEditingController streetNoCtrl = TextEditingController();
-  final TextEditingController additionalNoteCtrl = TextEditingController();
+  /// ================== Add Vehicle ================================
 
-  Future<void> book() async {
+  final TextEditingController vehicleModelCtrl = TextEditingController();
+  final TextEditingController vehicleBrandCtrl = TextEditingController();
+  final TextEditingController vehicleNumberCtrl = TextEditingController();
+
+  Future<void> addVehicle() async {
     String token = await PrefsHelper.getString('token');
-   String mechanicId = Get.arguments['mechanicId'] ?? '';
 
     Map<String ,dynamic> body ={
-      "mechanic": mechanicId,
-      "services": [serviceRateList.forEach((service)=>service.serviceId)],
-      "vehicle": "685b83d4ffb04644feb2b744",
-      "streetNo": "100",
-      "address": "Karwan Bazar Avenue, Dhaka",
-      "additionalNotes": "abc",
-      "coordinates": [-20.644970, -50.225208]  // [lng,lat]
+      "model": "Premio",
+      "brand": "Toyota",
+      "number": "DEF-3322"
     };
 
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
@@ -77,8 +72,8 @@ class CheckOutController extends GetxController {
     try {
       isLoading.value = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
-        endpoint:  ApiConstants.bookOrderUrl,
-        body: {},
+        endpoint:  ApiConstants.addVehicleUrl,
+        body: body,
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );

@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:roadside_assistance/app/modules/check_out/controllers/check_out_controller.dart';
+import 'package:roadside_assistance/app/modules/check_out/controllers/vehicle_controller.dart';
 import 'package:roadside_assistance/app/modules/my_location_selection/controllers/my_location_selection_controller.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/Alert_dialouge/thank_you_dialouge.dart';
@@ -23,12 +25,9 @@ class CheckoutSignupView extends StatefulWidget {
 
 class _CheckoutSignupViewState extends State<CheckoutSignupView> {
   final MyLocationSelectionController _locationSelectionCtrl = Get.put(MyLocationSelectionController());
-  final TextEditingController _pickupAddressCtrl = TextEditingController();
-  final TextEditingController _streetNoCtrl = TextEditingController();
-  final TextEditingController _vehicleModelCtrl = TextEditingController();
-  final TextEditingController _vehicleBrandCtrl = TextEditingController();
-  final TextEditingController _vehicleNumberCtrl = TextEditingController();
-  final TextEditingController _additionalNoteCtrl = TextEditingController();
+  final CheckOutController _checkOutController =Get.put(CheckOutController());
+  final VehicleController _vehicleController =Get.put(VehicleController());
+
 
   GoogleMapController? mapController;
 
@@ -99,7 +98,7 @@ class _CheckoutSignupViewState extends State<CheckoutSignupView> {
                     setState(() {
                       currentLocation = result; // Update local state
                       _locationSelectionCtrl.pickedNewLocation = result;
-                      _pickupAddressCtrl.text  = _locationSelectionCtrl.pickupLocationCtrl.text;
+                      _checkOutController.pickupAddressCtrl.text  = _locationSelectionCtrl.pickupLocationCtrl.text;
                     });
                     moveCamera(result); // Move map to new location
                   }
@@ -153,7 +152,7 @@ class _CheckoutSignupViewState extends State<CheckoutSignupView> {
            /// Address Fields
           buildCustomTextField(
             hintText: 'Enter Pickup Address',
-            controller: _pickupAddressCtrl,
+            controller: _checkOutController.pickupAddressCtrl,
           ),
            SizedBox(height: 8.h),
           const Text(
@@ -163,57 +162,96 @@ class _CheckoutSignupViewState extends State<CheckoutSignupView> {
           SizedBox(height: 8.h),
           buildCustomTextField(
             hintText: 'Street No',
-            controller: _streetNoCtrl,
+            controller: _checkOutController.streetNoCtrl,
           ),
            SizedBox(height: 16.h),
+
            /// Vehicle Model
-          const Text(
-            'Vehicle Model',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-           SizedBox(height: 8.h),
-          buildCustomTextField(
-            hintText: 'Enter Vehicle Model',
-            controller: _vehicleModelCtrl,
-          ),
-           SizedBox(height: 16.h),
-           /// Vehicle Brand
-          const Text(
-            'Vehicle Brand',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-           SizedBox(height: 8.h),
-          buildCustomTextField(
-            hintText: 'Enter Vehicle Brand',
-            controller: _vehicleBrandCtrl,
-          ),
-           SizedBox(height: 16.h),
-           /// Vehicle Number
-          const Text(
-            'Vehicle Number',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-           SizedBox(height: 8.h),
-          buildCustomTextField(
-            hintText: 'Enter Vehicle number',
-            controller: _vehicleNumberCtrl,
-          ),
-           SizedBox(height: 16.h),
-           /// Save Vehicle Button
-          CustomButton(
-            width: 150.w,
-              onTap: (){}, text: 'Save vehicle'),
-           SizedBox(height: 16.h),
-           /// Vehicle Selection (Radio Button)
-          ListTile(
-            leading: Radio(
-              value: 1,
-              groupValue: 1,
-              onChanged: (value) {},
+          Card(
+            child: Padding(
+              padding:  EdgeInsets.all(8.0.sp),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Vehicle Model',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                   SizedBox(height: 8.h),
+                  buildCustomTextField(
+                    hintText: 'Enter Vehicle Model',
+                    controller: _vehicleController.vehicleModelCtrl,
+                  ),
+                   SizedBox(height: 16.h),
+                   /// Vehicle Brand
+                  const Text(
+                    'Vehicle Brand',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                   SizedBox(height: 8.h),
+                  buildCustomTextField(
+                    hintText: 'Enter Vehicle Brand',
+                    controller: _vehicleController.vehicleBrandCtrl,
+                  ),
+                   SizedBox(height: 16.h),
+                   /// Vehicle Number
+                  const Text(
+                    'Vehicle Number',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                   SizedBox(height: 8.h),
+                  buildCustomTextField(
+                    hintText: 'Enter Vehicle number',
+                    controller: _vehicleController.vehicleNumberCtrl,
+                  ),
+                  SizedBox(height: 16.h),
+                  /// Save Vehicle Button
+                  CustomButton(
+                      width: 135.w,
+                      onTap: (){}, text: 'Save vehicle'),
+                  SizedBox(height: 16.h),
+                ],
+              ),
             ),
-            title: const Text('Maruti Car (Suzuki)'),
-            subtitle: const Text('2333-332'),
           ),
+
+           /// Vehicle Selection (Radio Button)
+
+          SizedBox(
+            height: 80.h,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return IntrinsicWidth(
+                  child: RadioListTile(
+                    value: 2,
+                    groupValue: 2,
+                    title: Text('Honda Shine'),
+                    subtitle: Text('Model-XBC123'),
+                    onChanged: (value) {},
+                  ),
+                );
+              },
+            ),
+          ),
+          // Row(
+          //   children: [
+          //     ...List.generate(3, (index){
+          //       return  Expanded(
+          //           child: RadioListTile(
+          //               value: 'Honda Shine',
+          //               groupValue: 'asdjalsjdlkasjd',
+          //               title: Text('Honda Shine'),
+          //               subtitle: Text('Model-XBC123'),
+          //               onChanged: (value){
+          //
+          //               }
+          //           )
+          //       );
+          //     })
+          //   ],
+          // ),
            SizedBox(height: 16.h),
            /// Additional Note
           const Text(
@@ -223,7 +261,7 @@ class _CheckoutSignupViewState extends State<CheckoutSignupView> {
            SizedBox(height: 8.h),
           buildCustomTextField(
             hintText: 'Type here...',
-            controller: _additionalNoteCtrl,
+            controller: _checkOutController.additionalNoteCtrl,
             maxLines: 3,
           ),
            SizedBox(height: 16.h),

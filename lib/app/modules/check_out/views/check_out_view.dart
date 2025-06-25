@@ -13,6 +13,8 @@ import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
 import 'package:roadside_assistance/common/widgets/spacing.dart';
 
+import '../model/service_rate_model.dart';
+
 class CheckOutView extends StatefulWidget {
   const CheckOutView({super.key});
 
@@ -200,7 +202,11 @@ class _CheckOutViewState extends State<CheckOutView> {
         padding: EdgeInsets.symmetric(horizontal: 8.w),
         child: CustomButton(
           onTap: () {
-            Get.toNamed(Routes.CHECK_OUT_SIGNUP);
+            String mechanicId = Get.arguments['mechanicId']??'';
+            print(mechanicId);
+            if(mechanicId.isNotEmpty ){
+              Get.toNamed(Routes.CHECK_OUT_SIGNUP,arguments: {'mechanicId': mechanicId });
+            }
           },
           text: 'Next',
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:roadside_assistance/app/modules/check_out/controllers/check_out_controller.dart';
+import 'package:roadside_assistance/app/modules/check_out/model/service_rate_model.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_container.dart';
 import 'package:roadside_assistance/app/modules/mechanic_user_side/controllers/mechanic_controller.dart';
 import 'package:roadside_assistance/app/modules/mechanic_user_side/model/mechanic_details_model.dart';

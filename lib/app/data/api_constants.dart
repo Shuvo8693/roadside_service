@@ -28,6 +28,9 @@ static String resetPasswordUrl= '/api/v1/user/reset-password';
 static String changePasswordUrl= '/api/v1/user/change-password';
 static String mechanicServiceUrl= '/api/v1/service/all';
 static String userProfileUrl= '/api/v1/user/profile';
+static String bookOrderUrl= '/api/v1/order';
+static String addVehicleUrl= '/api/v1/vehicle';
+static String allVehicleUrl= '/api/v1/vehicle/all';
 
 
 

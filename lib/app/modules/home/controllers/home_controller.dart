@@ -37,7 +37,7 @@ class HomeController extends GetxController {
         print(mechanicModel.value);
 
       } else {
-        Get.snackbar('Failed', response.message ?? 'Resend otp failed');
+        Get.snackbar('Failed', response.message ?? 'Failed to fetch mechanic');
       }
     } catch (e) {
       if (kDebugMode) {
