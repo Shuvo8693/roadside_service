@@ -122,7 +122,7 @@ class _CheckOutViewState extends State<CheckOutView> {
                                         serviceImage: serviceCategoryItem.service?.image,
                                         price: serviceCategoryItem.price,
                                         serviceName: serviceName,
-                                        serviceId: serviceCategoryItem.id
+                                        serviceId: serviceCategoryItem.service?.id
                                       ),
                                     );
                                   }else{

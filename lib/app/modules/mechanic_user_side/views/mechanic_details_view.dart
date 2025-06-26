@@ -161,7 +161,7 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
                                     serviceImage: category.service?.image??'',
                                     price: category.price,
                                     serviceName: category.service?.name??'',
-                                    serviceId: category.sId
+                                    serviceId: category.service?.sId
                                   ),
                                 );
                               }else{

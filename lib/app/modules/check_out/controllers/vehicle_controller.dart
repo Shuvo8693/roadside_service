@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 
 import 'package:roadside_assistance/app/data/api_constants.dart';
 import 'package:roadside_assistance/app/data/network_caller.dart';
-import 'package:roadside_assistance/app/modules/check_out/model/mechanic_service_price_model.dart';
-import 'package:roadside_assistance/app/modules/check_out/model/service_rate_model.dart';
 import 'package:roadside_assistance/app/modules/check_out/model/vehiclelist_model.dar.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
@@ -14,7 +12,8 @@ class VehicleController extends GetxController {
   final NetworkCaller _networkCaller = NetworkCaller.instance;
   Rx<VehicleListModel> vehicleListModel = VehicleListModel().obs;
   var isLoading = false.obs;
-  RxBool? isCarSelected=false.obs;
+ // RxMap<int,bool> isCarSelected={};
+  RxString selectedValue =''.obs;
 
   Future<void> fetchVehicle() async {
     String token = await PrefsHelper.getString('token');
@@ -55,14 +54,15 @@ class VehicleController extends GetxController {
   final TextEditingController vehicleModelCtrl = TextEditingController();
   final TextEditingController vehicleBrandCtrl = TextEditingController();
   final TextEditingController vehicleNumberCtrl = TextEditingController();
+  var isLoading2 = false.obs;
 
   Future<void> addVehicle() async {
     String token = await PrefsHelper.getString('token');
 
-    Map<String ,dynamic> body ={
-      "model": "Premio",
-      "brand": "Toyota",
-      "number": "DEF-3322"
+    Map<String ,dynamic> body = {
+      "model": vehicleModelCtrl.text,
+      "brand": vehicleBrandCtrl.text,
+      "number": vehicleNumberCtrl.text
     };
 
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
@@ -70,7 +70,7 @@ class VehicleController extends GetxController {
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
 
     try {
-      isLoading.value = true;
+      isLoading2.value = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
         endpoint:  ApiConstants.addVehicleUrl,
         body: body,
@@ -80,10 +80,10 @@ class VehicleController extends GetxController {
       if (response.isSuccess && response.data != null) {
         final responseData = response.data;
         print(responseData);
-        Get.snackbar('Successfully', response.message ?? 'Book a service');
+        Get.snackbar('Successfully', response.message ?? 'vehicle added');
 
       } else {
-        Get.snackbar('Failed', response.message ?? 'Failed to book a service');
+        Get.snackbar('Failed', response.message ?? 'Failed to added vehicle');
       }
     } catch (e) {
       if (kDebugMode) {
@@ -91,7 +91,7 @@ class VehicleController extends GetxController {
       }
       throw NetworkException('$e');
     } finally {
-      isLoading.value = false;
+      isLoading2.value = false;
     }
 
   }

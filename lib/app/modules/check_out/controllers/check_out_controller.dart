@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:roadside_assistance/app/data/api_constants.dart';
 import 'package:roadside_assistance/app/data/network_caller.dart';
@@ -56,18 +57,18 @@ class CheckOutController extends GetxController {
   final TextEditingController streetNoCtrl = TextEditingController();
   final TextEditingController additionalNoteCtrl = TextEditingController();
 
-  Future<void> book() async {
+  Future<void> book({String? vehicleId,LatLng? coordinates, VoidCallback? callBack}) async {
     String token = await PrefsHelper.getString('token');
    String mechanicId = Get.arguments['mechanicId'] ?? '';
 
     Map<String ,dynamic> body ={
       "mechanic": mechanicId,
-      "services": [serviceRateList.forEach((service)=>service.serviceId)],
-      "vehicle": "685b83d4ffb04644feb2b744",
-      "streetNo": "100",
-      "address": "Karwan Bazar Avenue, Dhaka",
-      "additionalNotes": "abc",
-      "coordinates": [-20.644970, -50.225208]  // [lng,lat]
+      "services": serviceRateList.map((service)=>service.serviceId).toList(),
+      "vehicle": vehicleId,
+      "streetNo": streetNoCtrl.text.trim(),
+      "address": pickupAddressCtrl.text.trim(),
+      "additionalNotes": additionalNoteCtrl.text.trim(),
+      "coordinates": [coordinates?.longitude, coordinates?.latitude]  // [lng,lat]
     };
 
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
@@ -78,14 +79,15 @@ class CheckOutController extends GetxController {
       isLoading.value = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
         endpoint:  ApiConstants.bookOrderUrl,
-        body: {},
+        body: body,
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
         final responseData = response.data;
+        callBack!();
         print(responseData);
-        Get.snackbar('Successfully', response.message ?? 'Book a service');
+        Get.snackbar('Successfully', response.message ?? 'Booked a service');
 
       } else {
         Get.snackbar('Failed', response.message ?? 'Failed to book a service');

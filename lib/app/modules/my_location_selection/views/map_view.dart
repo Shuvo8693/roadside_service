@@ -163,7 +163,8 @@ class _MapViewState extends State<MapLocationView> {
                       icon: customIcon!,
                       position: pickedLocation!,
                       onDragEnd: (newPosition) {
-                        print('New position: $newPosition');
+                        _locationSelectionCtrl.pickedNewLocation = newPosition;
+                        print('New position: ${_locationSelectionCtrl.pickedNewLocation}');
                       },
                     ),
                 },
