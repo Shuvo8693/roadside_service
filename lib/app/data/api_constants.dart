@@ -31,6 +31,7 @@ static String userProfileUrl= '/api/v1/user/profile';
 static String bookOrderUrl= '/api/v1/order';
 static String addVehicleUrl= '/api/v1/vehicle';
 static String allVehicleUrl= '/api/v1/vehicle/all';
+static String bookedOrdersUrl= '/api/v1/order/user';
 
 
 

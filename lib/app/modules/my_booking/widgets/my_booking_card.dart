@@ -96,7 +96,7 @@ class MyBookingCard extends StatelessWidget {
                             height: 16.h,
                             width: 16.h,
                             decoration: BoxDecoration(
-                              color: status=='pending'? Colors.amber : status=='cancelled'? Colors.red :status=='completed'? AppColors.green: Colors.grey,
+                              color: status=='processing'? Colors.amber : status=='cancelled'? Colors.red :status=='completed'? AppColors.green: Colors.grey,
                                borderRadius: BorderRadius.circular(10.r),
                             ),
                           ),

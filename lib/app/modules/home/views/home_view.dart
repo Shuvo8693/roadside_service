@@ -117,10 +117,10 @@ final AccountController _accountController= Get.put(AccountController());
                  if(_homeController.isLoading2.value){
                    return  CustomPageLoading();
 
-                 } else if(mechanicServiceData!.isEmpty){
+                 } else if(mechanicServiceData?.isEmpty==true){
                    return Text('Mechanic service is now unavailable');
                  }
-                return ServiceCategories(mechanicServiceData: mechanicServiceData,);
+                return ServiceCategories(mechanicServiceData: mechanicServiceData??[],);
               }),
               /// Nearest service provider
               SizedBox(height: 20.h),
