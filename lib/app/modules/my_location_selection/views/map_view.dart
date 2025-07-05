@@ -72,7 +72,7 @@ class _MapViewState extends State<MapLocationView> {
     return BitmapDescriptor.bytes(bytes.buffer.asUint8List());
   }
  /// My current location
-  getMyCurrentLocation() async{
+  getMyCurrentLocation() async {
     bool isLocationServiceEnabled = await  Geolocator.isLocationServiceEnabled();
     if(!isLocationServiceEnabled){
       Get.snackbar('Location Service', 'Please enable location service');
@@ -238,7 +238,7 @@ class _MapViewState extends State<MapLocationView> {
             ),
           ),
 
-          /// Location Suggesion List
+          /// Location Suggestion List
           Positioned(
             top: 105.h,
             left: 25.w,

@@ -34,6 +34,7 @@ static String addVehicleUrl= '/api/v1/vehicle';
 static String allVehicleUrl= '/api/v1/vehicle/all';
 static String bookedOrdersUrl= '/api/v1/order/user';
 static String mechanicAvailabilityUrl= '/api/v1/mechanic/availability';
+static String serviceAreaUrl= '/api/v1/mechanic/serviceRadius';
 
 
 
