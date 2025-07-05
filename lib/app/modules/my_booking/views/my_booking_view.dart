@@ -94,7 +94,7 @@ class _MyBookingViewState extends State<MyBookingView> {
                   /// Towing Service Row
                   ...List.generate(bookingStatusIndex.serviceRates!.length, (int index){
                      final  serviceRate = bookingStatusIndex.serviceRates![index];
-                    return PriceRow(title: serviceRate.service??'',amount: '\$${serviceRate.price}');
+                    return PriceRow(title: serviceRate.name??'',amount: '\$${serviceRate.price}');
                   }),
                   /// Divider
                   Divider(),

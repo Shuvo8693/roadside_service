@@ -14,7 +14,7 @@ class OtpController extends GetxController {
 
   Future<void> sendOtp(bool? isResetPass) async {
      String token = await PrefsHelper.getString('token');
-     String userMail = Get.arguments['email'] ?? '';
+     String userMail = (Get.arguments != null && (Get.arguments['email'] as String).isNotEmpty) ? Get.arguments['email'] : '';
     final body = {
       "otp": otpCtrl.text.trim(),
     };

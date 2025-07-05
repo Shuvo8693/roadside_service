@@ -26,11 +26,11 @@ class OrdersResponse {
 class OrderData {
   final String? id;
   final Mechanic? mechanic;
-  final List<String>? services;
+  final List<ServiceInfo>? services;
   final String? status;
   final double? total;
   final List<ServiceRate>? serviceRates;
-  final double? appService;
+  final int? appService;
   final double? rating;
 
   OrderData({
@@ -51,7 +51,7 @@ class OrderData {
           ? Mechanic.fromJson(json['mechanic'])
           : null,
       services: (json['services'] as List<dynamic>?)
-          ?.map((e) => e.toString())
+          ?.map((e) => ServiceInfo.fromJson(e))
           .toList(),
       status: json['status'],
       total: (json['total'] != null)
@@ -60,9 +60,7 @@ class OrderData {
       serviceRates: (json['serviceRates'] as List<dynamic>?)
           ?.map((e) => ServiceRate.fromJson(e))
           .toList(),
-      appService: (json['appService'] != null)
-          ? (json['appService'] as num).toDouble()
-          : null,
+      appService: json['appService'],
       rating: (json['rating'] != null)
           ? (json['rating'] as num).toDouble()
           : null,
@@ -93,24 +91,41 @@ class Mechanic {
   }
 }
 
-class ServiceRate {
-  final String? service;
-  final double? price;
+class ServiceInfo {
   final String? id;
+  final String? name;
+
+  ServiceInfo({
+    this.id,
+    this.name,
+  });
+
+  factory ServiceInfo.fromJson(Map<String, dynamic> json) {
+    return ServiceInfo(
+      id: json['_id'],
+      name: json['name'],
+    );
+  }
+}
+
+class ServiceRate {
+  final String? id;
+  final String? name;
+  final double? price;
 
   ServiceRate({
-    this.service,
-    this.price,
     this.id,
+    this.name,
+    this.price,
   });
 
   factory ServiceRate.fromJson(Map<String, dynamic> json) {
     return ServiceRate(
-      service: json['service'],
+      id: json['_id'],
+      name: json['name'],
       price: (json['price'] != null)
           ? (json['price'] as num).toDouble()
           : null,
-      id: json['_id'],
     );
   }
 }

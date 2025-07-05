@@ -1,27 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/account/controllers/account_controller.dart';
+import 'package:roadside_assistance/app/modules/home/controllers/home_controller.dart' show HomeController;
+import 'package:roadside_assistance/app/modules/home/widgets/service_category_card.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_container.dart';
+import 'package:roadside_assistance/app/modules/mechanic_home/controllers/mechanic_home_controller.dart';
 import 'package:roadside_assistance/app/modules/mechanic_home/widgets/active_orederAndPayment_card.dart';
 import 'package:roadside_assistance/app/modules/mechanic_home/widgets/mechanic_custom_appbar.dart';
 import 'package:roadside_assistance/app/modules/mechanic_home/widgets/metrics_card.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
-import 'package:roadside_assistance/common/app_constant/app_constant.dart';
-import 'package:roadside_assistance/common/app_icons/app_icons.dart';
-import 'package:roadside_assistance/common/app_images/app_images.dart';
 import 'package:roadside_assistance/common/bottom_menu/bottom_menu..dart';
 import 'package:roadside_assistance/common/widgets/custom_outlinebutton.dart';
+import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
+import 'package:roadside_assistance/app/modules/home/model/mechanic_service_model.dart';
 
 
-class MechanicHomeView extends StatelessWidget {
+class MechanicHomeView extends StatefulWidget {
   const MechanicHomeView({super.key});
 
+  @override
+  State<MechanicHomeView> createState() => _MechanicHomeViewState();
+}
+
+class _MechanicHomeViewState extends State<MechanicHomeView> {
+  final HomeController _homeController = Get.put(HomeController());
+  final AccountController accountController = Get.put(AccountController());
+  final MechanicHomeController _mechanicHomeController = Get.put(MechanicHomeController());
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((__)async{
+      await _homeController.fetchMechanicService();
+      await accountController.fetchProfile();
+      await _mechanicHomeController.fetchAvailability();
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomMenu(0),
-      appBar: MechanicAppBar(avatarUrl: AppConstants.demoPersonImage, name: 'Shuvo', title: 'Mechanic',),
+      appBar: MechanicAppBar(accountController: accountController, mechanicHomeController: _mechanicHomeController),
       body: Padding(
         padding: EdgeInsets.all(16.w),
         child: SingleChildScrollView(
@@ -98,9 +120,17 @@ class MechanicHomeView extends StatelessWidget {
                 SizedBox(height: 16.h),
 
                 /// Services grid
-                Expanded(
-                  child: _buildServicesGrid(),
-                ),
+                SizedBox(height: 20.h),
+                Obx(() {
+                  List<MechanicServiceData>? mechanicServiceData = _homeController.mechanicServiceModel.value.data;
+                  if(_homeController.isLoading2.value){
+                    return CustomPageLoading();
+
+                  } else if(mechanicServiceData?.isEmpty==true){
+                    return Text('Mechanic service is now unavailable');
+                  }
+                  return ServiceCategories(mechanicServiceData: mechanicServiceData??[],);
+                }),
               ],
             ),
           ),
@@ -109,34 +139,33 @@ class MechanicHomeView extends StatelessWidget {
     );
   }
 
-
-  Widget _buildServicesGrid() {
-    List<Map<String, dynamic>> serviceCategories = [
-      {'category': 'Towing', 'icon': AppIcons.towingIcon},
-      {'category': 'Lockout', 'icon': AppIcons.lockoutIcon},
-      {'category': 'Jump Start', 'icon': AppIcons.jumpStartServiceIcon},
-      {'category': 'Flat Tire Repair', 'icon': AppIcons.flatTireIcon},
-      {'category': 'Gasoline Delivery', 'icon': AppIcons.gasolineIcon},
-    ];
-
-    return GridView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 10.w,
-        mainAxisSpacing: 10.h,
-        childAspectRatio: 0.8,
-      ),
-      itemCount: serviceCategories.length,
-      itemBuilder: (context, index) {
-        final category = serviceCategories[index];
-        return ServiceCategoryContainer(
-          category: category['category'],
-          icon: category['icon'],
-          price: '\$60',
-        );
-      },
-    );
-  }
+  // Widget _buildServicesGrid() {
+  //   List<Map<String, dynamic>> serviceCategories = [
+  //     {'category': 'Towing', 'icon': AppIcons.towingIcon},
+  //     {'category': 'Lockout', 'icon': AppIcons.lockoutIcon},
+  //     {'category': 'Jump Start', 'icon': AppIcons.jumpStartServiceIcon},
+  //     {'category': 'Flat Tire Repair', 'icon': AppIcons.flatTireIcon},
+  //     {'category': 'Gasoline Delivery', 'icon': AppIcons.gasolineIcon},
+  //   ];
+  //
+  //   return GridView.builder(
+  //     physics: NeverScrollableScrollPhysics(),
+  //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //       crossAxisCount: 3,
+  //       crossAxisSpacing: 10.w,
+  //       mainAxisSpacing: 10.h,
+  //       childAspectRatio: 0.8,
+  //     ),
+  //     itemCount: serviceCategories.length,
+  //     itemBuilder: (context, index) {
+  //       final category = serviceCategories[index];
+  //       return ServiceCategoryContainer(
+  //         category: category['category'],
+  //         icon: category['icon'],
+  //         price: '\$60',
+  //       );
+  //     },
+  //   );
+  // }
 }
 
