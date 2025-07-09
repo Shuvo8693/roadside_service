@@ -185,7 +185,7 @@ class _MapScreenState extends State<MapServiceAreaView> {
             left: 25.w,
             right: 15.w,
             child: Container(
-              height: 70.h,
+              height: 75.h,
               width: 200.w,
               color: Colors.white.withValues(alpha: 0.9),
               child: Column(

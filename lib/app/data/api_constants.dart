@@ -18,6 +18,7 @@ static String searchMechanicUrl(String service) =>  '/api/v1/mechanic/all?servic
 static String mechanicDetailsUrl(String mechanicId) =>  '/api/v1/mechanic/$mechanicId';
 static String mechanicServiceWithPriceUrl(String mechanicId) =>  '/api/v1/mechanic/services/$mechanicId';
 static String favouriteUrl(String mechanicId) =>  '/api/v1/favourite/toggle/$mechanicId';
+static String orderStatusUrl(String status) =>  '/api/v1/order/$status';
 static String toggleAvailabilityUrl(String mechanicId) =>  '/api/v1/mechanic/toggle-availability/$mechanicId';
 static String allMechanicUrl({int? currentPage, int? limit}) =>  '/api/v1/mechanic/all?currentPage=$currentPage&limit=$limit';
 

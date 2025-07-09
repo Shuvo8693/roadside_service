@@ -48,7 +48,7 @@ class StatusCard extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'pending':
         return Colors.amber[value]!;
-      case 'progress':
+      case 'processing':
         return Colors.blue[value]!;
       case 'completed':
         return Colors.green[value]!;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:roadside_assistance/app/modules/mechanic_order/model/order_status_model.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/views/mechanic_order_view.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/custom_outlinebutton.dart';
@@ -7,7 +8,7 @@ import 'package:roadside_assistance/common/widgets/spacing.dart';
 import 'package:roadside_assistance/common/widgets/status_widgets.dart';
 
 class OrderCard extends StatelessWidget {
-  final OrderModel order;
+  final Order order;
   final int tapIndex;
   const OrderCard({super.key, required this.order, required this.tapIndex});
 
@@ -40,8 +41,9 @@ class OrderCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
+                          /// Customer name
                           Text(
-                            order.customerName,
+                            order.user?.name??'',
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
@@ -49,12 +51,12 @@ class OrderCard extends StatelessWidget {
                           ),
                           /// Order Status
                           SizedBox(width: 8.w),
-                          StatusCard(status: order.status,borderRadius: 10,),
+                          StatusCard(status: order.status??'',borderRadius: 10,),
                         ],
                       ),
                       SizedBox(height: 4.h),
-                      Text(
-                        order.distance,
+                      /// Distance
+                      Text("${order.distance} K/m Away",
                         style: TextStyle(
                           fontSize: 14.sp,
                           color: Colors.grey[600],
@@ -63,7 +65,8 @@ class OrderCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text('\$${order.price}',
+                /// Total price
+                Text('\$${order.total}',
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
@@ -75,29 +78,30 @@ class OrderCard extends StatelessWidget {
           ),
 
           // Service details
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Row(
-              children: [
-                Text(
-                  'Service',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey[600],
+          ...List.generate(order.services?.length??0, (int index){
+           final serviceNameIndex = order.services![index];
+            return  Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 4.h),
+              child: Row(
+                children: [
+                  Text(
+                    'Service ${index + 1} : ',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.grey[600],
+                    ),
                   ),
-                ),
-                Spacer(),
-                Text(
-                  order.service,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                  Spacer(),
+                  Text(serviceNameIndex.name??'',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-
+                ],
+              ),
+            );
+          }),
           // Car type details
           Padding(
             padding: EdgeInsets.all(16.w),
@@ -111,8 +115,7 @@ class OrderCard extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
-                Text(
-                  order.carType,
+                Text("${order.vehicle?.brand} ${order.vehicle?.model} ${order.vehicle?.number}",
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,

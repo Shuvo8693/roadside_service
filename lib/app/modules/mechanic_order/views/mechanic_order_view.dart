@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:roadside_assistance/app/modules/mechanic_order/controllers/mechanic_order_controller.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/widgets/orderlist.dart';
 import 'package:roadside_assistance/common/bottom_menu/bottom_menu..dart';
 
@@ -20,7 +23,8 @@ class _OrderScreenState extends State<MechanicOrderView> with SingleTickerProvid
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _tabs = ['New(${8})', 'Progress(${7})', 'Completed(${3})'];
+
+    _tabs = ['New', 'Progress', 'Completed'];
     _tabController.addListener(() {
       setState(() {
         _currentIndex = _tabController.index;
@@ -88,14 +92,14 @@ class _OrderScreenState extends State<MechanicOrderView> with SingleTickerProvid
             child: TabBarView(
               controller: _tabController,
               children: [
-                // New Orders Tab
-                OrdersList(orders: generateDummyOrders(3,'Pending'), tapIndex: 0,),
+                // New / pending Orders Tab
+                OrdersList(status: 'pending', tapIndex: 0,),
 
                 // In Progress Tab
-                OrdersList(orders: generateDummyOrders(2,'Progress'), tapIndex: 1,),
+                OrdersList(status: 'processing', tapIndex: 1,),
 
                 // Completed Tab
-                OrdersList(orders: generateDummyOrders(1,'Completed'), tapIndex: 2,),
+                OrdersList(status: 'completed', tapIndex: 2,),
               ],
             ),
           ),
@@ -103,38 +107,4 @@ class _OrderScreenState extends State<MechanicOrderView> with SingleTickerProvid
       ),
     );
   }
-
-  List<OrderModel> generateDummyOrders(int length,String status) {
-    return List.generate(length, (index) => OrderModel(
-        customerName: 'Sarah Johnson',
-        distance: '2.5 Km Away',
-        status: status,
-        price: 76,
-        service: 'Towing',
-        carType: 'Suzuki. Maruti. 23-323-22',
-      ),
-    );
-  }
-}
-
-
-
-
-
-class OrderModel {
-  final String customerName;
-  final String distance;
-  final String status;
-  final int price;
-  final String service;
-  final String carType;
-
-  OrderModel({
-    required this.customerName,
-    required this.distance,
-    required this.status,
-    required this.price,
-    required this.service,
-    required this.carType,
-  });
 }
