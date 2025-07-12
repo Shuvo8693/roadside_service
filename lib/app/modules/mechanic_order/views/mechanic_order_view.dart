@@ -16,15 +16,14 @@ class MechanicOrderView extends StatefulWidget {
 
 class _OrderScreenState extends State<MechanicOrderView> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-     List<String> _tabs = [];
+  final List<String> _tabs = ['New', 'Progress', 'Completed'];
+  final List<String> _statusList = ['pending', 'processing', 'completed'];
   int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-
-    _tabs = ['New', 'Progress', 'Completed'];
     _tabController.addListener(() {
       setState(() {
         _currentIndex = _tabController.index;
@@ -92,14 +91,17 @@ class _OrderScreenState extends State<MechanicOrderView> with SingleTickerProvid
             child: TabBarView(
               controller: _tabController,
               children: [
-                // New / pending Orders Tab
-                OrdersList(status: 'pending', tapIndex: 0,),
-
-                // In Progress Tab
-                OrdersList(status: 'processing', tapIndex: 1,),
-
-                // Completed Tab
-                OrdersList(status: 'completed', tapIndex: 2,),
+                ...List.generate(_statusList.length, (int index){
+                  return OrdersList(status: _statusList[index], tapIndex: index);
+                })
+                // // New / pending Orders Tab
+                // OrdersList(status: 'pending', tapIndex: 0,),
+                //
+                // // In Progress Tab
+                // OrdersList(status: 'processing', tapIndex: 1,),
+                //
+                // // Completed Tab
+                // OrdersList(status: 'completed', tapIndex: 2,),
               ],
             ),
           ),

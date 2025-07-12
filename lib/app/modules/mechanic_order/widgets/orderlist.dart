@@ -51,7 +51,7 @@ class _OrdersListState extends State<OrdersList> {
             onTap: () {
               Get.toNamed(Routes.ORDER_DETAILS);
             },
-            child: OrderCard(order: orderDataIndex , tapIndex: widget.tapIndex),
+            child: OrderCard(order: orderDataIndex , tapIndex: widget.tapIndex,orderIndex: index,),
           );
         },
       );

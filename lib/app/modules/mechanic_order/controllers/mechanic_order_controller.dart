@@ -25,16 +25,15 @@ class MechanicOrderController extends GetxController {
     try {
       isLoading.value = true;
       final response = await _networkCaller.get<Map<String, dynamic>>(
-        endpoint:  ApiConstants.orderStatusUrl(status),
+        endpoint: ApiConstants.orderStatusUrl(status),
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
-        Map<String,dynamic>? responseData = response.data;
+        Map<String, dynamic>? responseData = response.data;
         print(responseData);
-        orderStatusModel.value =  OrderStatusModel.fromJson(responseData??{});
+        orderStatusModel.value = OrderStatusModel.fromJson(responseData ?? {});
         print(orderStatusModel.value);
-
       } else {
         if (kDebugMode) {
           print(response.message);
@@ -48,35 +47,31 @@ class MechanicOrderController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-
   }
-  ///====================== Mechanic Details =======================
 
-  Rx<MechanicDetailsModel> mechanicDetailsModel = MechanicDetailsModel().obs;
-  var isLoading2 = false.obs;
+  ///====================== Mechanic Accept order =======================
 
-  Future<void> fetchMechanicDetails() async {
+  RxMap<int,bool> isLoading2 = <int,bool>{}.obs;
+
+  Future<void> acceptOrder(String orderId,int index) async {
     String token = await PrefsHelper.getString('token');
 
-    String mechanicId = Get.arguments['mechanicId'] ??'';
 
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
 
     try {
-      isLoading2.value = true;
-      final response = await _networkCaller.get<Map<String, dynamic>>(
-        endpoint:  ApiConstants.mechanicDetailsUrl(mechanicId),
+      isLoading2[index] = true;
+      final response = await _networkCaller.post<Map<String, dynamic>>(
+        endpoint: ApiConstants.mechanicAcceptOrderUrl(orderId),
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );
-      if (response.isSuccess && response.data != null) {
-        Map<String,dynamic>? responseData = response.data;
-        print(responseData);
-        mechanicDetailsModel.value =  MechanicDetailsModel.fromJson(responseData??{});
-        print(mechanicDetailsModel.value);
 
+      if (response.isSuccess && response.data != null) {
+        String responseMessage = response.data!['message'];
+        Get.snackbar('Successfully', responseMessage);
       } else {
         if (kDebugMode) {
           print(response.message);
@@ -88,38 +83,33 @@ class MechanicOrderController extends GetxController {
       }
       throw NetworkException('$e');
     } finally {
-      isLoading2.value = false;
+      isLoading2[index] = false;
     }
-
   }
 
   ///====================== Mechanic Favourite ==============================
 
-  final Rx<FavoriteToggleModel> favouriteToggle = FavoriteToggleModel().obs;
+  RxMap<int,bool> isLoading3 = <int,bool>{}.obs;
 
-  var isLoading3 = false.obs;
-
-  Future<void> toggleFavourite(String mechanicId, {VoidCallback? favCallBack}) async {
+  Future<void> cancelOrder(String orderId, int index) async {
     String token = await PrefsHelper.getString('token');
+
 
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
 
     try {
-      isLoading3.value = true;
+      isLoading3[index] = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
-        endpoint:  ApiConstants.favouriteUrl(mechanicId),
+        endpoint: ApiConstants.mechanicCancelOrderUrl(orderId),
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );
-      if (response.isSuccess && response.data != null) {
-        Map<String,dynamic>? responseData = response.data;
-        print(responseData);
-        favouriteToggle.value = FavoriteToggleModel.fromJson(responseData??{});
-        print(favouriteToggle.value);
-        favCallBack!();
 
+      if (response.isSuccess && response.data != null) {
+        String responseMessage = response.data!['message'];
+        Get.snackbar('Successfully', responseMessage);
       } else {
         if (kDebugMode) {
           print(response.message);
@@ -131,8 +121,48 @@ class MechanicOrderController extends GetxController {
       }
       throw NetworkException('$e');
     } finally {
-      isLoading3.value = false;
+      isLoading3[index] = false;
     }
-
   }
+
+  ///====================== Mark as complete ==============================
+
+
+  RxMap<int,bool> isLoading4 = <int,bool>{}.obs;
+
+  Future<void> markAsComplete(String orderId, int index) async {
+    String token = await PrefsHelper.getString('token');
+
+
+    _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
+    _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
+    _networkCaller.addResponseInterceptor(LoggingInterceptor());
+
+    try {
+      isLoading4[index] = true;
+      final response = await _networkCaller.post<Map<String, dynamic>>(
+        endpoint: ApiConstants.mechanicMarkAsCompleteUrl(orderId),
+        timeout: Duration(seconds: 10),
+        fromJson: (json) => json as Map<String, dynamic>,
+      );
+
+      if (response.isSuccess && response.data != null) {
+        String responseMessage = response.data!['message'];
+        Get.snackbar('Successfully', responseMessage);
+      } else {
+        if (kDebugMode) {
+          print(response.message);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      throw NetworkException('$e');
+    } finally {
+      isLoading4[index] = false;
+    }
+  }
+
+
 }

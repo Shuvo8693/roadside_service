@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:roadside_assistance/app/modules/mechanic_order/controllers/mechanic_order_controller.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/model/order_status_model.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/views/mechanic_order_view.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
@@ -10,7 +13,10 @@ import 'package:roadside_assistance/common/widgets/status_widgets.dart';
 class OrderCard extends StatelessWidget {
   final Order order;
   final int tapIndex;
-  const OrderCard({super.key, required this.order, required this.tapIndex});
+  final int orderIndex;
+   OrderCard({super.key, required this.order, required this.tapIndex, required this.orderIndex});
+
+  final MechanicOrderController mechanicOrderController= Get.put(MechanicOrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -132,15 +138,34 @@ class OrderCard extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: CustomOutlineButton(
-                    height: 48.h,
-                    onTap: (){}, text: 'Decline',foregroundColor: Colors.redAccent,borderSideColor:Colors.redAccent ,),
+                  child: Obx(() {
+                    return CustomOutlineButton(
+                      loading: mechanicOrderController.isLoading3[orderIndex]??false,
+                      height: 48.h,
+                      onTap: () async {
+                        await mechanicOrderController.cancelOrder(order.id ?? '',orderIndex);
+                      },
+                      text: 'Decline',
+                      foregroundColor: Colors.redAccent,
+                      borderSideColor: Colors.redAccent,
+                    );
+                    }
+
+                  ),
                 ),
                 horizontalSpacing(8),
                 Expanded(
-                  child: CustomButton(
-                      height: 48.h,
-                      onTap: (){}, text: 'Accept'),
+                  child: Obx((){
+                    return  CustomButton(
+                        loading: mechanicOrderController.isLoading2[orderIndex]??false,
+                        height: 48.h,
+                        onTap: ()async{
+                          await mechanicOrderController.acceptOrder(order.id??'',orderIndex);
+                         },
+                        text: 'Accept');
+                        }
+
+                  ),
                 ),
               ],
             ),
@@ -149,9 +174,16 @@ class OrderCard extends StatelessWidget {
           if(tapIndex==1)
             Padding(
               padding: EdgeInsets.all(8.0.sp),
-              child: CustomButton(
-                height: 48.h,
-                  onTap: (){}, text: 'Mark as Complete'),
+              child: Obx((){
+                return  CustomButton(
+                  loading: mechanicOrderController.isLoading4[orderIndex]??false,
+                    height: 48.h,
+                    onTap: ()async{
+                      await mechanicOrderController.markAsComplete(order.id??'',orderIndex);
+                    }, text: 'Mark as Complete');
+                   }
+
+              ),
             )
 
         ],
