@@ -4,9 +4,6 @@ import 'package:get/get.dart';
 import 'package:roadside_assistance/app/data/api_constants.dart';
 import 'package:roadside_assistance/app/data/network_caller.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/model/order_status_model.dart';
-import 'package:roadside_assistance/app/modules/mechanic_user_side/model/favourite_model.dart';
-import 'package:roadside_assistance/app/modules/mechanic_user_side/model/mechanic_details_model.dart';
-import 'package:roadside_assistance/app/modules/mechanic_user_side/model/mechanic_model.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
 class MechanicOrderController extends GetxController {

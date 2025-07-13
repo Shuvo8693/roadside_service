@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/widgets/withdraw_dialouge.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/earnings_card.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/payment_method.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/transaction_item.dart';
 import 'package:roadside_assistance/common/bottom_menu/bottom_menu..dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 
@@ -77,7 +80,6 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView>
 
   @override
   Widget build(BuildContext context) {
-    /// todo =========== Need Refactor ============
     return Scaffold(
        bottomNavigationBar: BottomMenu(2),
       backgroundColor: Colors.grey[50],
@@ -102,89 +104,50 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView>
             padding: EdgeInsets.all(16.w),
             child: Row(
               children: [
+                // Total earnings
                 Expanded(
-                  child: _buildEarningsCard(
-                    '\$9909.50',
-                    'Total Earnings',
-                    Colors.blue[100]!,
-                  ),
+                  child:EarningsCard(
+                    amount: '\$2,500',
+                    label: 'Total Earnings',
+                    backgroundColor: Colors.green.shade100,
+                  )
                 ),
+                // Available
                 SizedBox(width: 12.w),
                 Expanded(
-                  child: _buildEarningsCard(
-                    '\$5614',
-                    'Available',
-                    Colors.blue[100]!,
-                  ),
+                  child: EarningsCard(
+                    amount: '\$3,500',
+                    label: 'Available',
+                    backgroundColor: Colors.green.shade100,
+                  )
                 ),
+                // Withdraw
                 SizedBox(width: 12.w),
                 Expanded(
-                  child: _buildEarningsCard(
-                    '\$314',
-                    'Withdraw',
-                    Colors.blue[100]!,
-                  ),
+                  child: EarningsCard(
+                    amount: '\$2,500',
+                    label: 'Withdraw',
+                    backgroundColor: Colors.green.shade100,
+                  )
                 ),
               ],
             ),
           ),
+
 
           /// Payment Method Section
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Payment Method',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                GestureDetector(
-                  onTap: () {
-                    // Handle add payment details
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Add Payment Details',
-                        style: TextStyle(
-                          fontSize: 15.sp,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      Icon(
-                        Icons.add,
-                        color: Colors.black87,
-                        size: 20.sp,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                /// Withdraw Fund Button
-                CustomButton(
-                  height: 45.h,
-                    onTap: (){
-                    showWithdrawDialog(
-                        context,
-                        availableBalance: 13500,
-                        onWithdraw: (amount){
-                         Get.snackbar('Withdrawal request for \$${amount.toStringAsFixed(2)} submitted','');
-                       });
-                    }, text: '\$ Withdraw Fund')
-              ],
-            ),
+          PaymentMethodWidget(
+              onAddPaymentDetails: (){},
+              onWithdrawFund: (){
+                showWithdrawDialog(
+                    context,
+                    availableBalance: 13500,
+                    onWithdraw: (amount){
+                      Get.snackbar('Withdrawal request for \$${amount.toStringAsFixed(2)} submitted','');
+                    });
+              }
           ),
-
           SizedBox(height: 8.h),
-
           // TabBar
           Container(
             color: Colors.white,
@@ -217,37 +180,6 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView>
                 _buildTransactionList(_getTransactionsByStatus(TransactionStatus.completed)),
                 _buildTransactionList(_getTransactionsByStatus(TransactionStatus.withdraw)),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEarningsCard(String amount, String label, Color backgroundColor) {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            amount,
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w700,
-              color: Colors.black87,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: Colors.grey[600],
             ),
           ),
         ],
@@ -290,101 +222,8 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView>
         separatorBuilder: (context, index) => SizedBox(height: 12.h),
         itemBuilder: (context, index) {
           final transaction = transactions[index];
-          return _buildTransactionItem(transaction);
+          return TransactionItemCard( transaction: transaction);
         },
-      ),
-    );
-  }
-
-  Widget _buildTransactionItem(TransactionItem transaction) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  transaction.service,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  transaction.date,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _buildStatusChip(transaction.status),
-              SizedBox(height: 4.h),
-              Text(
-                transaction.amount,
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatusChip(TransactionStatus status) {
-    Color backgroundColor;
-    Color textColor;
-    String text;
-
-    switch (status) {
-      case TransactionStatus.processing:
-        backgroundColor = Colors.blue[100]!;
-        textColor = Colors.blue[700]!;
-        text = 'Processing';
-        break;
-      case TransactionStatus.completed:
-        backgroundColor = Colors.green[100]!;
-        textColor = Colors.green[700]!;
-        text = 'Completed';
-        break;
-      case TransactionStatus.withdraw:
-        backgroundColor = Colors.orange[100]!;
-        textColor = Colors.orange[700]!;
-        text = 'Withdraw';
-        break;
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w500,
-          color: textColor,
-        ),
       ),
     );
   }
