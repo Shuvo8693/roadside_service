@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:roadside_assistance/app/modules/mechanic_home/controllers/wallet_overview_controller.dart';
+import 'package:roadside_assistance/app/modules/mechanic_home/model/wallet_overview_response.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/widgets/withdraw_dialouge.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/controllers/mechanic_payment_controller.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/model/payment_status_model.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/earnings_card.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/payment_method.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/transaction_item.dart';
+import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/bottom_menu/bottom_menu..dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
@@ -22,6 +25,7 @@ class MechanicPaymentView extends StatefulWidget {
 class _MechanicPaymentViewState extends State<MechanicPaymentView> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final MechanicPaymentController _mechanicPaymentController = Get.put(MechanicPaymentController());
+  final WalletOverviewController _walletOverviewController = Get.put(WalletOverviewController());
  final List<Tab>_tapBarList= [
     Tab(text: 'All'),
     Tab(text: 'Processed'),
@@ -35,6 +39,7 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView> with SingleTi
     _tabController = TabController(length: 4, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((__)async{
      await _mechanicPaymentController.fetchPaymentStatus();
+     await _walletOverviewController.fetchWalletOverview();
     });
   }
 
@@ -65,53 +70,68 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView> with SingleTi
       body: Column(
         children: [
           /// Earnings Summary Cards
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.all(16.w),
-            child: Row(
-              children: [
-                // Total earnings
-                Expanded(
-                  child:EarningsCard(
-                    amount: '\$2,500',
-                    label: 'Total Earnings',
-                    backgroundColor: Colors.green.shade100,
-                  )
-                ),
-                // Available
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: EarningsCard(
-                    amount: '\$3,500',
-                    label: 'Available',
-                    backgroundColor: Colors.green.shade100,
-                  )
-                ),
-                // Withdraw
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: EarningsCard(
-                    amount: '\$2,500',
-                    label: 'Withdraw',
-                    backgroundColor: Colors.green.shade100,
-                  )
-                ),
-              ],
-            ),
+          Obx(() {
+            WalletData? walletData = _walletOverviewController.walletOverviewResponse.value.data;
+            return Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(16.w),
+              child: Row(
+                children: [
+                  // Total earnings
+                  Expanded(
+                      child: EarningsCard(
+                        amount: '\$${walletData?.totalEarnings??0}',
+                        label: 'Total Earnings',
+                        backgroundColor: Colors.green.shade100,
+                      )
+                  ),
+                  // Available
+                  SizedBox(width: 12.w),
+                  Expanded(
+                      child: EarningsCard(
+                        amount: '\$${walletData?.availableBalance??0}',
+                        label: 'Available',
+                        backgroundColor: Colors.green.shade100,
+                      )
+                  ),
+                  // Withdraw
+                  SizedBox(width: 12.w),
+                  Expanded(
+                      child: EarningsCard(
+                        amount: '\$${walletData?.withdrawnAmount??0}',
+                        label: 'Withdrawn',
+                        backgroundColor: Colors.green.shade100,
+                      )
+                  ),
+                ],
+              ),
+            );
+          }
+
           ),
 
 
           /// Payment Method Section
-          PaymentMethodWidget(
-              onAddPaymentDetails: (){},
-              onWithdrawFund: (){
-                showWithdrawDialog(
-                    context,
-                    availableBalance: 13500,
-                    onWithdraw: (amount){
-                      Get.snackbar('Withdrawal request for \$${amount.toStringAsFixed(2)} submitted','');
-                    });
-              }
+          Obx(() {
+            WalletData? walletData = _walletOverviewController.walletOverviewResponse.value.data;
+            return PaymentMethodWidget(
+                onAddPaymentDetails: () {
+                  Get.toNamed(Routes.MECHANIC_ADD_PAYMENT);
+                },
+                onWithdrawFund: () {
+                  showWithdrawDialog(
+                      context,
+                      availableBalance: walletData?.availableBalance?.toDouble() ?? 0,
+                      onWithdraw: (amount) async{
+                       await _mechanicPaymentController.withdrawRequest(amount,(){
+                         Get.snackbar('Withdrawal request for \$${amount.toStringAsFixed(2)} submitted', '');
+                       });
+
+                      });
+                }
+            );
+          }
+
           ),
           SizedBox(height: 8.h),
           // TabBar
@@ -162,7 +182,8 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView> with SingleTi
     );
   }
 
- /// Build area ============
+ /// ============ Build area ============
+
   Widget _buildTransactionList(List<PaymentRequest> transactions) {
     if (transactions.isEmpty) {
       return Container(

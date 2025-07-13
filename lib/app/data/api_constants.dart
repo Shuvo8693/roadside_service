@@ -9,7 +9,7 @@ class ApiConstants{
     static String socketUrl="ws://10.0.80.205:9000";
 
 
-///>>>>>>>>>>>>>>>>>>>>>>>>>>> User Auth>>>>>>>>>>>>>>>>>>>
+///>>>>>>>>>>>>>>>>>>>>>>>>>>> Api End point >>>>>>>>>>>>>>>>>>>
 
 static String registerUrl= '/api/v1/user/register';
 static String verifyOtpUrl= '/api/v1/user/verify-otp';
@@ -41,6 +41,7 @@ static String mechanicAvailabilityUrl= '/api/v1/mechanic/availability';
 static String serviceAreaUrl= '/api/v1/mechanic/serviceRadius';
 static String mechanicPaymentStatusUrl= '/api/v1/withdraw/mechanic';
 static String walletOverviewUrl= '/api/v1/wallet';
+static String withdrawRequestUrl= '/api/v1/withdraw/withdraw-request';
 
 
 

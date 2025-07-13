@@ -46,4 +46,45 @@ class MechanicPaymentController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  /// ================== withdraw request ==================
+
+  Future<void> withdrawRequest(double amount,VoidCallback callBack) async {
+    String token = await PrefsHelper.getString('token');
+
+    final body ={
+      "amount" : amount
+    };
+
+    _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
+    _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
+    _networkCaller.addResponseInterceptor(LoggingInterceptor());
+
+    try {
+      isLoading.value = true;
+      final response = await _networkCaller.post<Map<String, dynamic>>(
+        endpoint: ApiConstants.withdrawRequestUrl,
+        body: body,
+        timeout: Duration(seconds: 10),
+        fromJson: (json) => json as Map<String, dynamic>,
+      );
+      if (response.isSuccess && response.data != null) {
+        String responseMessage = response.data!['message'];
+        callBack();
+         //Get.snackbar('Successfully', responseMessage);
+      } else {
+        if (kDebugMode) {
+          print(response.message);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      throw NetworkException('$e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
 }
