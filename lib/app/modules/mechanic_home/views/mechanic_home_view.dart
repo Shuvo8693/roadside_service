@@ -6,6 +6,8 @@ import 'package:roadside_assistance/app/modules/home/controllers/home_controller
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_card.dart';
 import 'package:roadside_assistance/app/modules/home/widgets/service_category_container.dart';
 import 'package:roadside_assistance/app/modules/mechanic_home/controllers/mechanic_home_controller.dart';
+import 'package:roadside_assistance/app/modules/mechanic_home/controllers/wallet_overview_controller.dart';
+import 'package:roadside_assistance/app/modules/mechanic_home/model/wallet_overview_response.dart';
 import 'package:roadside_assistance/app/modules/mechanic_home/widgets/active_orederAndPayment_card.dart';
 import 'package:roadside_assistance/app/modules/mechanic_home/widgets/mechanic_custom_appbar.dart';
 import 'package:roadside_assistance/app/modules/mechanic_home/widgets/metrics_card.dart';
@@ -27,6 +29,7 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
   final HomeController _homeController = Get.put(HomeController());
   final AccountController accountController = Get.put(AccountController());
   final MechanicHomeController _mechanicHomeController = Get.put(MechanicHomeController());
+  final WalletOverviewController _walletOverviewController = Get.put(WalletOverviewController());
 
   @override
   void initState() {
@@ -35,6 +38,7 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
       await _homeController.fetchMechanicService();
       await accountController.fetchProfile();
       await _mechanicHomeController.fetchAvailability();
+      await _walletOverviewController.fetchWalletOverview();
     });
 
   }
@@ -62,49 +66,59 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
 
                 SizedBox(height: 16.h),
                 /// Active Order and Payment row
-                Row(
-                  children: [
-                   // Active Order
-                    Expanded(
-                      child: ActiveOrderAndPaymentCard(text: 'Active Order',
-                        icon: Icons.assignment,
-                        isShowStatus: true,
-                        statusCount: 5,),
-                    ),
-                    // Payment
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: ActiveOrderAndPaymentCard(
-                        text: 'Payment', icon: Icons.payment,),
-                    ),
-                  ],
+                Obx((){
+                  WalletData? walletData = _walletOverviewController.walletOverviewResponse.value.data;
+                  return Row(
+                    children: [
+                      // Active Order
+                      Expanded(
+                        child: ActiveOrderAndPaymentCard(text: 'Active Order',
+                          icon: Icons.assignment,
+                          isShowStatus: true,
+                          statusCount: walletData?.activeOrders??0,),
+                      ),
+                      // Payment
+                      SizedBox(width: 16.w),
+                      Expanded(
+                        child: ActiveOrderAndPaymentCard(
+                          text: 'Payment', icon: Icons.payment,),
+                      ),
+                    ],
+                  );
+                }
+
                 ),
 
                 /// Complete order, earnings, withdraw
                 SizedBox(height: 16.h),
-                Row(
-                  children: [
-                    MetricsCard(
-                      value: '14',
-                      title: 'Complete Order',
-                      backgroundColor: Colors.blue,
-                      textColor: Colors.grey[800]!,
-                    ),
-                    SizedBox(width: 10.w),
-                    MetricsCard(
-                      value: '\$5614',
-                      title: 'Total Earnings',
-                      backgroundColor: Colors.blue,
-                      textColor: Colors.grey[800]!,
-                    ),
-                    SizedBox(width: 10.w),
-                    MetricsCard(
-                      value: '\$314',
-                      title: 'Total Withdraw',
-                      backgroundColor: Colors.blue,
-                      textColor: Colors.grey[800]!,
-                    ),
-                  ],
+                Obx((){
+                  WalletData? walletData = _walletOverviewController.walletOverviewResponse.value.data;
+                  return Row(
+                    children: [
+                      MetricsCard(
+                        value: walletData?.totalCompletedOrder.toString() ??'0',
+                        title: 'Complete Order',
+                        backgroundColor: Colors.blue,
+                        textColor: Colors.grey[800]!,
+                      ),
+                      SizedBox(width: 10.w),
+                      MetricsCard(
+                        value: '\$${walletData?.totalEarnings??0}',
+                        title: 'Total Earnings',
+                        backgroundColor: Colors.blue,
+                        textColor: Colors.grey[800]!,
+                      ),
+                      SizedBox(width: 10.w),
+                      MetricsCard(
+                        value: '\$${walletData?.withdrawnAmount??0}',
+                        title: 'Total Withdraw',
+                        backgroundColor: Colors.blue,
+                        textColor: Colors.grey[800]!,
+                      ),
+                    ],
+                  );
+                }
+
                 ),
 
                 /// Service Offered label
@@ -138,34 +152,5 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
       ),
     );
   }
-
-  // Widget _buildServicesGrid() {
-  //   List<Map<String, dynamic>> serviceCategories = [
-  //     {'category': 'Towing', 'icon': AppIcons.towingIcon},
-  //     {'category': 'Lockout', 'icon': AppIcons.lockoutIcon},
-  //     {'category': 'Jump Start', 'icon': AppIcons.jumpStartServiceIcon},
-  //     {'category': 'Flat Tire Repair', 'icon': AppIcons.flatTireIcon},
-  //     {'category': 'Gasoline Delivery', 'icon': AppIcons.gasolineIcon},
-  //   ];
-  //
-  //   return GridView.builder(
-  //     physics: NeverScrollableScrollPhysics(),
-  //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //       crossAxisCount: 3,
-  //       crossAxisSpacing: 10.w,
-  //       mainAxisSpacing: 10.h,
-  //       childAspectRatio: 0.8,
-  //     ),
-  //     itemCount: serviceCategories.length,
-  //     itemBuilder: (context, index) {
-  //       final category = serviceCategories[index];
-  //       return ServiceCategoryContainer(
-  //         category: category['category'],
-  //         icon: category['icon'],
-  //         price: '\$60',
-  //       );
-  //     },
-  //   );
-  // }
 }
 

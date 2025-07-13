@@ -162,6 +162,7 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView> with SingleTi
     );
   }
 
+ /// Build area ============
   Widget _buildTransactionList(List<PaymentRequest> transactions) {
     if (transactions.isEmpty) {
       return Container(

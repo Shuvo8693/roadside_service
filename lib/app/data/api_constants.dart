@@ -40,6 +40,7 @@ static String bookedOrdersUrl= '/api/v1/order/user';
 static String mechanicAvailabilityUrl= '/api/v1/mechanic/availability';
 static String serviceAreaUrl= '/api/v1/mechanic/serviceRadius';
 static String mechanicPaymentStatusUrl= '/api/v1/withdraw/mechanic';
+static String walletOverviewUrl= '/api/v1/wallet';
 
 
 
