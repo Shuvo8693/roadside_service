@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:roadside_assistance/app/modules/mechanic_payment/views/mechanic_payment_view.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/model/payment_status_model.dart';
 
 class TransactionItemCard extends StatelessWidget {
-  final TransactionItem transaction;
+  final PaymentRequest transaction;
 
   const TransactionItemCard({
     super.key,
@@ -25,17 +25,19 @@ class TransactionItemCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // service
                 Text(
-                  transaction.service,
+                  transaction.id??'',
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
                   ),
                 ),
+                // Date
                 SizedBox(height: 4.h),
                 Text(
-                  transaction.date,
+                  transaction.createdAt.toString(),
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: Colors.grey[600],
@@ -47,10 +49,11 @@ class TransactionItemCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              _buildStatusChip(transaction.status),
+              _buildStatusChip(transaction.status??''),
+              // amount
               SizedBox(height: 4.h),
               Text(
-                transaction.amount,
+                transaction.amount.toString(),
                 style: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
@@ -63,26 +66,26 @@ class TransactionItemCard extends StatelessWidget {
       ),
     );
   }
-  Widget _buildStatusChip(TransactionStatus status) {
-    Color backgroundColor;
-    Color textColor;
-    String text;
+  Widget _buildStatusChip(String status) {
+    Color? backgroundColor;
+    Color? textColor;
+    String? text;
 
     switch (status) {
-      case TransactionStatus.processing:
+      case 'processing':
         backgroundColor = Colors.blue[100]!;
         textColor = Colors.blue[700]!;
         text = 'Processing';
         break;
-      case TransactionStatus.completed:
+      case 'completed':
         backgroundColor = Colors.green[100]!;
         textColor = Colors.green[700]!;
         text = 'Completed';
         break;
-      case TransactionStatus.withdraw:
+      case 'withdrawn':
         backgroundColor = Colors.orange[100]!;
         textColor = Colors.orange[700]!;
-        text = 'Withdraw';
+        text = 'Withdrawn';
         break;
     }
 
@@ -93,7 +96,7 @@ class TransactionItemCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Text(
-        text,
+        text??'',
         style: TextStyle(
           fontSize: 12.sp,
           fontWeight: FontWeight.w500,

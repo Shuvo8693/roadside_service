@@ -1,14 +1,14 @@
 class PaymentStatusResponse {
-  final bool success;
-  final int statusCode;
-  final String message;
-  final List<PaymentRequest> data;
+  final bool? success;
+  final int? statusCode;
+  final String? message;
+  final List<PaymentRequest>? data;
 
   PaymentStatusResponse({
-    required this.success,
-    required this.statusCode,
-    required this.message,
-    required this.data,
+    this.success,
+    this.statusCode,
+    this.message,
+    this.data,
   });
 
   factory PaymentStatusResponse.fromJson(Map<String, dynamic> json) {
@@ -25,20 +25,20 @@ class PaymentStatusResponse {
 }
 
 class PaymentRequest {
-  final String id;
-  final String status;
-  final int amount;
-  final String user;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? id;
+  final String? status;
+  final int? amount;
+  final String? user;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   PaymentRequest({
-    required this.id,
-    required this.status,
-    required this.amount,
-    required this.user,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.status,
+    this.amount,
+    this.user,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory PaymentRequest.fromJson(Map<String, dynamic> json) {
@@ -47,8 +47,8 @@ class PaymentRequest {
       status: json['status'] ?? '',
       amount: json['amount'] ?? 0,
       user: json['user'] ?? '',
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
     );
   }
 }

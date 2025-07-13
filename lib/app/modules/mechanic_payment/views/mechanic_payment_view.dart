@@ -3,11 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/widgets/withdraw_dialouge.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/controllers/mechanic_payment_controller.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/model/payment_status_model.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/earnings_card.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/payment_method.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/transaction_item.dart';
 import 'package:roadside_assistance/common/bottom_menu/bottom_menu..dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
+import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
 
 class MechanicPaymentView extends StatefulWidget {
   const MechanicPaymentView({super.key});
@@ -16,9 +19,9 @@ class MechanicPaymentView extends StatefulWidget {
   State<MechanicPaymentView> createState() => _MechanicPaymentViewState();
 }
 
-class _MechanicPaymentViewState extends State<MechanicPaymentView>
-    with SingleTickerProviderStateMixin {
+class _MechanicPaymentViewState extends State<MechanicPaymentView> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final MechanicPaymentController _mechanicPaymentController = Get.put(MechanicPaymentController());
  final List<Tab>_tapBarList= [
     Tab(text: 'All'),
     Tab(text: 'Processed'),
@@ -26,50 +29,13 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView>
     Tab(text: 'Withdraw'),
   ];
 
-  /// Sample data
-  final List<TransactionItem> _allTransactions = [
-    TransactionItem(
-      service: 'Towing Service',
-      date: 'Oct 15,2025, 2:30 PM',
-      amount: '\$76.00',
-      status: TransactionStatus.processing,
-    ),
-    TransactionItem(
-      service: 'Towing Service',
-      date: 'Oct 15,2025, 2:30 PM',
-      amount: '\$76.00',
-      status: TransactionStatus.processing,
-    ),
-    TransactionItem(
-      service: 'Towing Service',
-      date: 'Oct 15,2025, 2:30 PM',
-      amount: '\$76.00',
-      status: TransactionStatus.completed,
-    ),
-    TransactionItem(
-      service: 'Towing Service',
-      date: 'Oct 15,2025, 2:30 PM',
-      amount: '\$76.00',
-      status: TransactionStatus.completed,
-    ),
-    TransactionItem(
-      service: 'Towing Service',
-      date: 'Oct 14,2025, 1:15 PM',
-      amount: '\$85.00',
-      status: TransactionStatus.withdraw,
-    ),
-    TransactionItem(
-      service: 'Towing Service',
-      date: 'Oct 13,2025, 3:45 PM',
-      amount: '\$92.00',
-      status: TransactionStatus.withdraw,
-    ),
-  ];
-
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((__)async{
+     await _mechanicPaymentController.fetchPaymentStatus();
+    });
   }
 
   @override
@@ -171,23 +137,32 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView>
           ),
 
           // TabBarView
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildTransactionList(_allTransactions),
-                _buildTransactionList(_getTransactionsByStatus(TransactionStatus.processing)),
-                _buildTransactionList(_getTransactionsByStatus(TransactionStatus.completed)),
-                _buildTransactionList(_getTransactionsByStatus(TransactionStatus.withdraw)),
-              ],
-            ),
+          Obx((){
+            List<PaymentRequest>? paymentRequestData =_mechanicPaymentController.paymentStatusModel.value.data??[];
+            if(_mechanicPaymentController.isLoading.value){
+              return Center(child: CustomPageLoading());
+            } else if(paymentRequestData.isEmpty){
+              return Center(child: Text('Data Looks Empty'));
+            }
+            return  Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildTransactionList(paymentRequestData), // All
+                  _buildTransactionList(_getTransactionsByStatus('processing')),
+                  _buildTransactionList(_getTransactionsByStatus('completed')),
+                  _buildTransactionList(_getTransactionsByStatus('withdrawn')),
+                ],
+              ),
+            );
+           }
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTransactionList(List<TransactionItem> transactions) {
+  Widget _buildTransactionList(List<PaymentRequest> transactions) {
     if (transactions.isEmpty) {
       return Container(
         color: Colors.white,
@@ -228,24 +203,7 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView>
     );
   }
 
-  List<TransactionItem> _getTransactionsByStatus(TransactionStatus status) {
-    return _allTransactions.where((transaction) => transaction.status == status).toList();
+  List<PaymentRequest> _getTransactionsByStatus(String status) {
+    return _mechanicPaymentController.paymentStatusModel.value.data!.where((transaction) => transaction.status == status).toList();
   }
-}
-
-// Models
-enum TransactionStatus { processing, completed, withdraw }
-
-class TransactionItem {
-  final String service;
-  final String date;
-  final String amount;
-  final TransactionStatus status;
-
-  TransactionItem({
-    required this.service,
-    required this.date,
-    required this.amount,
-    required this.status,
-  });
 }
