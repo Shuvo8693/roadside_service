@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+
+import 'package:roadside_assistance/app/modules/home/controllers/home_controller.dart';
 import 'package:roadside_assistance/app/modules/mechanic_service/controllers/mechanic_service_controller.dart';
+import 'package:roadside_assistance/app/modules/mechanic_service/widgets/added_service.dart';
+import 'package:roadside_assistance/app/modules/mechanic_service/widgets/all_services.dart';
 import 'package:roadside_assistance/app/modules/mechanic_service/widgets/mechanic_service_card.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
-import 'package:roadside_assistance/common/app_icons/app_icons.dart';
-import 'package:roadside_assistance/common/widgets/custom_text_field.dart';
-import 'package:roadside_assistance/common/widgets/spacing.dart';
+import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
+
+import '../../home/model/mechanic_service_model.dart';
 
 class MechanicServiceView extends StatefulWidget {
   const MechanicServiceView({super.key});
@@ -20,12 +23,14 @@ class MechanicServiceView extends StatefulWidget {
 class _MechanicServiceViewState extends State<MechanicServiceView> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final MechanicServiceController _mechanicServiceController =Get.put(MechanicServiceController());
+  final HomeController _homeController = Get.put(HomeController());
 
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+
   }
   // bool? isAdded;
 
@@ -127,80 +132,13 @@ class _MechanicServiceViewState extends State<MechanicServiceView> with SingleTi
             child: TabBarView(
               controller: _tabController,
               children: [
-                _buildAllServicesTab(),
-                _buildAddedServicesTab(),
+                AllServices(homeController: _homeController, onAddService: (value){}),
+                AddedServicesTab(mechanicServiceController: _mechanicServiceController, onRemoveService: (value){}),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-  /// All Service list
-  Widget _buildAllServicesTab() {
-    return ListView.builder(
-      padding: EdgeInsets.all(16.w),
-      itemCount: _mechanicServiceController.allServices.length,
-      itemBuilder: (context, index) {
-        final service = _mechanicServiceController.allServices[index];
-        final isAdded = _mechanicServiceController.addedServices.contains(service);
-        return MechanicServiceCard(
-          service: service,
-          isAdded: isAdded,
-          addOnTap: (){
-           _addService(service);
-          },
-        );
-      },
-    );
-  }
-  /// Added Service list
-  Widget _buildAddedServicesTab() {
-    if (_mechanicServiceController.addedServices.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.inbox_outlined,
-              size: 64.sp,
-              color: Colors.grey[400],
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              'No services added yet',
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              'Add services from the All Service tab',
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.grey[500],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
- /// Added Service list
-    return ListView.builder(
-      padding: EdgeInsets.all(16.w),
-      itemCount: _mechanicServiceController.addedServices.length,
-      itemBuilder: (context, index) {
-        final service = _mechanicServiceController.addedServices[index];
-        return MechanicServiceCard(
-          service: service,
-          isAddedService: true,
-          removeOnTap:(){
-            _removeService(service);
-          } ,
-        );
-      },
     );
   }
 }
@@ -231,7 +169,7 @@ class ServiceItem {
   }
 
   @override
-  bool operator ==(Object other) =>
+  bool operator == (Object other) =>
       identical(this, other) ||
           other is ServiceItem &&
               runtimeType == other.runtimeType &&

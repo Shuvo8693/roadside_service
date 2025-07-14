@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class MechanicServiceModel {
   bool? success;
   int? statusCode;
@@ -24,14 +26,17 @@ class MechanicServiceData {
   String? sId;
   String? image;
   String? name;
+  int? price;
   int? iV;
+  TextEditingController? priceTEC;
 
-  MechanicServiceData({this.sId, this.image, this.name, this.iV});
+  MechanicServiceData({this.sId, this.image, this.name, this.price, this.iV}) : priceTEC = TextEditingController(text: price.toString()) ;
 
   MechanicServiceData.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     image = json['image'];
     name = json['name'];
+    price = json['price'];
     iV = json['__v'];
   }
 }

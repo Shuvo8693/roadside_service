@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -8,14 +9,16 @@ import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/custom_text_field.dart';
 import 'package:roadside_assistance/common/widgets/spacing.dart';
 
+import '../../home/model/mechanic_service_model.dart';
+
 class MechanicServiceCard extends StatelessWidget {
   const MechanicServiceCard({
     super.key,
     required this.service,
-     this.isAddedService =false, this.removeOnTap, this.addOnTap, this.isAdded,
+     this.isAddedService = false, this.removeOnTap, this.addOnTap, this.isAdded,
   });
 
-  final ServiceItem service;
+  final MechanicServiceData service;
   final bool isAddedService;
   final bool? isAdded;
   final VoidCallback? removeOnTap;
@@ -43,16 +46,18 @@ class MechanicServiceCard extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
+                /// Service name
                 Text(
-                  service.name,
+                  service.name??'',
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
                 ),
+                /// service svg image
                 verticalSpacing(8.h),
-                SvgPicture.asset(service.icon),
+                SvgPicture.network(service.image??''),
               ],
             ),
           ),
@@ -66,7 +71,8 @@ class MechanicServiceCard extends StatelessWidget {
                 verticalSpacing(isAddedService? 15.h:8.h),
                 isAddedService
                     ? Text(
-                      '${service.price}',
+                      /// service price
+                      '100',
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: Colors.black,
@@ -78,7 +84,12 @@ class MechanicServiceCard extends StatelessWidget {
                       child: CustomTextField(
                         contentPaddingHorizontal: 12.w,
                         contentPaddingVertical: 10.h,
-                        controller: service.priceTEC,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          FilteringTextInputFormatter.singleLineFormatter,
+                        ],
+                        keyboardType: TextInputType.number,
+                        controller: service.priceTEC ?? TextEditingController(),
                       ),
                     ),
               ],
@@ -114,6 +125,7 @@ class MechanicServiceCard extends StatelessWidget {
           //     ],
           //   ),
           // ),
+
           SizedBox(width: 16.w),
           isAddedService
               ? CustomButton(
@@ -121,7 +133,7 @@ class MechanicServiceCard extends StatelessWidget {
           height: 40.h,
            color: Colors.red,
            textStyle: TextStyle(fontSize: 11.sp,color: Colors.white),
-           onTap: removeOnTap??(){}, text: 'Remove')
+           onTap: removeOnTap ?? (){}, text: 'Remove')
               : SizedBox(
             width: 75.w,
             child: ElevatedButton(

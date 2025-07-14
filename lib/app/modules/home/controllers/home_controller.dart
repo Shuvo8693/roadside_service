@@ -51,6 +51,7 @@ class HomeController extends GetxController {
   }
 
   ///====================== Mechanic Service ==============================
+
   Rx<MechanicServiceModel> mechanicServiceModel = MechanicServiceModel().obs;
   var isLoading2 = false.obs;
   Future<void> fetchMechanicService() async {
