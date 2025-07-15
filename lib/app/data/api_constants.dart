@@ -22,6 +22,7 @@ static String mechanicMarkAsCompleteUrl(String orderId) =>  '/api/v1/order/markC
 static String mechanicServiceWithPriceUrl(String mechanicId) =>  '/api/v1/mechanic/services/$mechanicId';
 static String favouriteUrl(String mechanicId) =>  '/api/v1/favourite/toggle/$mechanicId';
 static String orderStatusUrl(String status) =>  '/api/v1/order/$status';
+static String deleteServiceUrl(String serviceId) => '/api/v1/service/mechanic/$serviceId';
 static String toggleAvailabilityUrl(String mechanicId) =>  '/api/v1/mechanic/toggle-availability/$mechanicId';
 static String allMechanicUrl({int? currentPage, int? limit}) =>  '/api/v1/mechanic/all?currentPage=$currentPage&limit=$limit';
 
@@ -42,6 +43,8 @@ static String serviceAreaUrl= '/api/v1/mechanic/serviceRadius';
 static String mechanicPaymentStatusUrl= '/api/v1/withdraw/mechanic';
 static String walletOverviewUrl= '/api/v1/wallet';
 static String withdrawRequestUrl= '/api/v1/withdraw/withdraw-request';
+static String mechanicServiceRateUrl= '/api/v1/mechanicServiceRate';
+static String addServiceRateUrl= '/api/v1/service/mechanic/add';
 
 
 

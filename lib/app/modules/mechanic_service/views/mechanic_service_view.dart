@@ -132,7 +132,7 @@ class _MechanicServiceViewState extends State<MechanicServiceView> with SingleTi
             child: TabBarView(
               controller: _tabController,
               children: [
-                AllServices(homeController: _homeController, onAddService: (value){}),
+                AllServices(homeController: _homeController, onAddService: (value){}, mechanicServiceController: _mechanicServiceController,),
                 AddedServicesTab(mechanicServiceController: _mechanicServiceController, onRemoveService: (value){}),
               ],
             ),

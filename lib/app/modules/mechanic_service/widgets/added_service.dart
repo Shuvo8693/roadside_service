@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/home/model/mechanic_service_model.dart';
+import 'package:roadside_assistance/app/modules/mechanic_service/controllers/mechanic_service_controller.dart';
+import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
+
 
 import 'mechanic_service_card.dart';
 
 class AddedServicesTab extends StatefulWidget {
-  final dynamic mechanicServiceController;
+  final MechanicServiceController mechanicServiceController;
   final Function(dynamic) onRemoveService;
 
   const AddedServicesTab({
@@ -22,14 +27,45 @@ class _AddedServicesTabState extends State<AddedServicesTab> {
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addPostFrameCallback((__)async{
+      await widget.mechanicServiceController.fetchServiceRate();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.mechanicServiceController.addedServices.isEmpty) {
-      return Center(
-        child: Column(
+   return Obx((){
+      List<MechanicServiceData> mechanicServiceList = widget.mechanicServiceController.mechanicService.value.data ?? [];
+      if(widget.mechanicServiceController.isLoading.value){
+        return Center(child: CustomPageLoading());
+      }
+      if (mechanicServiceList.isEmpty) {
+        return Center(child: buildEmptyDataContent(),
+        );
+      }
+      return ListView.builder(
+        padding: EdgeInsets.all(16.w),
+        itemCount: mechanicServiceList.length,
+        itemBuilder: (context, index) {
+          final mechanicServiceData = mechanicServiceList[index];
+          return MechanicServiceCard(
+            service: mechanicServiceData,
+            isAddedService: true,
+            removeOnTap: () {
+              //widget.onRemoveService(mechanicServiceData);
+
+
+            },
+          );
+        },
+      );
+    });
+
+
+  }
+
+  Column buildEmptyDataContent() {
+    return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
@@ -55,23 +91,6 @@ class _AddedServicesTabState extends State<AddedServicesTab> {
               ),
             ),
           ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: EdgeInsets.all(16.w),
-      itemCount: widget.mechanicServiceController.addedServices.length,
-      itemBuilder: (context, index) {
-        final service = widget.mechanicServiceController.addedServices[index];
-        return MechanicServiceCard(
-          service: service,
-          isAddedService: true,
-          removeOnTap: () {
-            widget.onRemoveService(service);
-          },
         );
-      },
-    );
   }
 }

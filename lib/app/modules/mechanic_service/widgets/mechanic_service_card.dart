@@ -72,7 +72,7 @@ class MechanicServiceCard extends StatelessWidget {
                 isAddedService
                     ? Text(
                       /// service price
-                      '100',
+                      service.price.toString(),
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: Colors.black,
@@ -137,7 +137,7 @@ class MechanicServiceCard extends StatelessWidget {
               : SizedBox(
             width: 75.w,
             child: ElevatedButton(
-              onPressed: isAdded==true ? null  :addOnTap ?? (){} ,
+              onPressed: isAdded==true ? null  : addOnTap ?? (){} ,
               style: ElevatedButton.styleFrom(
                 backgroundColor: isAdded==true ? Colors.grey[300] : Colors.blue,
                 foregroundColor: isAdded==true ? Colors.grey[600] : Colors.white,

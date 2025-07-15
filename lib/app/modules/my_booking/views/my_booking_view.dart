@@ -41,7 +41,6 @@ class _MyBookingViewState extends State<MyBookingView> {
     WidgetsBinding.instance.addPostFrameCallback((__)async{
       await _myBookingController.fetchBookings();
     });
-
   }
   @override
   Widget build(BuildContext context) {
@@ -53,18 +52,18 @@ class _MyBookingViewState extends State<MyBookingView> {
         centerTitle: true,
       ),
       body: Obx((){
-        List<OrderData>? orderDataList= _myBookingController.orderResponseModel.value.data;
+        List<OrderData> orderDataList= _myBookingController.orderResponseModel.value.data??[];
          if(_myBookingController.isLoading.value){
            return Center(child: CustomPageLoading());
          }
-         if(orderDataList?.isEmpty==true){
+         if(orderDataList.isEmpty==true){
            return Center(child: Text('No bookings are available here'));
          }
         return ListView.builder(
-            itemCount: orderDataList?.length,
+            itemCount: orderDataList.length,
             padding: EdgeInsets.all(10.sp),
             itemBuilder: (context,index){
-              final bookingStatusIndex = orderDataList![index];
+              final bookingStatusIndex = orderDataList[index];
 
               return  ExpansionTile(
                 showTrailingIcon: false,
@@ -114,8 +113,7 @@ class _MyBookingViewState extends State<MyBookingView> {
 
               );
             });
-      }
-
+         }
       ),
     );
   }

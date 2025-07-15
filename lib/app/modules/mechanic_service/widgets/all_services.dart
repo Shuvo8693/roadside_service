@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:roadside_assistance/app/modules/home/controllers/home_controller.dart';
+import 'package:roadside_assistance/app/modules/mechanic_service/controllers/mechanic_service_controller.dart';
 import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
 
 import '../../home/model/mechanic_service_model.dart';
@@ -9,12 +10,14 @@ import 'mechanic_service_card.dart';
 
 class AllServices extends StatefulWidget {
   final HomeController homeController;
+  final MechanicServiceController mechanicServiceController;
   final Function(dynamic) onAddService;
 
   const AllServices({
     super.key,
     required this.homeController,
     required this.onAddService,
+    required this.mechanicServiceController,
   });
 
   @override
@@ -54,8 +57,9 @@ class _AllServicesState extends State<AllServices> {
           return MechanicServiceCard(
             service: service,
             isAdded: isAdded,
-            addOnTap: () {
-              widget.onAddService(service);
+            addOnTap: () async{
+             await widget.mechanicServiceController.addService(serviceId: service.sId,price: service.priceTEC?.text );
+
             },
           );
         },
