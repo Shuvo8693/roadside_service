@@ -38,5 +38,6 @@ class MechanicServiceData {
     name = json['name'];
     price = json['price'];
     iV = json['__v'];
+    priceTEC = TextEditingController(text: price.toString());
   }
 }

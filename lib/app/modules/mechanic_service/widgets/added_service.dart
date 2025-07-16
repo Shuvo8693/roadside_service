@@ -51,10 +51,13 @@ class _AddedServicesTabState extends State<AddedServicesTab> {
           return MechanicServiceCard(
             service: mechanicServiceData,
             isAddedService: true,
-            removeOnTap: () {
+            removeOnTap: () async{
               //widget.onRemoveService(mechanicServiceData);
-
-
+            await widget.mechanicServiceController.deleteService(serviceId: mechanicServiceData.sId,callBack: (){
+              setState(() {
+                widget.mechanicServiceController.mechanicService.value.data?.removeAt(index);
+              });
+            });
             },
           );
         },

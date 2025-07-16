@@ -25,12 +25,14 @@ class AllServices extends StatefulWidget {
 }
 
 class _AllServicesState extends State<AllServices> {
+  bool isAdd=false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((__)async{
       await widget.homeController.fetchMechanicService();
+      await widget.mechanicServiceController.fetchServiceRate();
     });
   }
 
@@ -52,15 +54,34 @@ class _AllServicesState extends State<AllServices> {
         itemCount: mechanicServiceData.length,
         itemBuilder: (context, index) {
           final service = mechanicServiceData[index];
-          final isAdded = widget.homeController.mechanicServiceModel.value.data?.contains(service);
 
-          return MechanicServiceCard(
-            service: service,
-            isAdded: isAdded,
-            addOnTap: () async{
-             await widget.mechanicServiceController.addService(serviceId: service.sId,price: service.priceTEC?.text );
+          return Obx((){
+            final addedServices = widget.mechanicServiceController.mechanicService.value.data ?? [];
 
-            },
+            final isAdded = addedServices.any((addedService) => addedService.sId == service.sId);
+            return MechanicServiceCard(
+              service: service,
+              isAdded: isAdded ,
+              addOnTap: () async{
+                if(service.priceTEC?.text.isNotEmpty==true && service.priceTEC?.text != '0'){
+                  await widget.mechanicServiceController.addService(serviceId: service.sId,price: service.priceTEC?.text, callBack: (){
+                   ///========= update option A ====
+                    widget.mechanicServiceController.mechanicService.update((model){
+                       model?.data?.add(service);
+                    });
+                    /// ===== update option B =================
+
+                  /*  final currentData = widget.mechanicServiceController.mechanicService.value.data ?? [];
+                    currentData.add(service);
+                    widget.mechanicServiceController.mechanicService.refresh();*/
+                  } );
+                }else{
+                  Get.snackbar('Price is not selected', 'Please select the price');
+                }
+              },
+            );
+          }
+
           );
         },
       );

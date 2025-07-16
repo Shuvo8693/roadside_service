@@ -134,29 +134,13 @@ class MechanicServiceCard extends StatelessWidget {
            color: Colors.red,
            textStyle: TextStyle(fontSize: 11.sp,color: Colors.white),
            onTap: removeOnTap ?? (){}, text: 'Remove')
-              : SizedBox(
-            width: 75.w,
-            child: ElevatedButton(
-              onPressed: isAdded==true ? null  : addOnTap ?? (){} ,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isAdded==true ? Colors.grey[300] : Colors.blue,
-                foregroundColor: isAdded==true ? Colors.grey[600] : Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                elevation: 0,
+              : CustomButton(
+                width: 75.w,
+                height: 40.h,
+                onTap: isAdded==true ? (){}  : addOnTap ?? (){} ,
+                color: isAdded==true ? Colors.grey[300] : Colors.blue,
+                text:  isAdded == true ? 'Added' : 'Add',
               ),
-              child: Text(
-                isAdded == true ? 'Added' : 'Add',
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-
         ],
       ),
     );

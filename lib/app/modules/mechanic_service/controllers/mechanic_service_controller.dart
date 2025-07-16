@@ -62,7 +62,6 @@ class MechanicServiceController extends GetxController {
       );
       if (response.isSuccess && response.data != null) {
         final responseData = response.data;
-        print(responseData);
         mechanicService.value = MechanicServiceModel.fromJson(responseData ?? {});
         print(mechanicService.value);
       } else {
@@ -78,7 +77,7 @@ class MechanicServiceController extends GetxController {
     }
   }
   ///======================Add service =================
-
+  var isLoadingAdd = false.obs;
   Future<void> addService({String? serviceId , String? price , VoidCallback? callBack}) async {
     String token = await PrefsHelper.getString('token');
 
@@ -92,7 +91,7 @@ class MechanicServiceController extends GetxController {
     };
 
     try {
-      isLoading.value = true;
+      isLoadingAdd.value = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
         endpoint: ApiConstants.addServiceRateUrl,
         body: body,
@@ -100,13 +99,15 @@ class MechanicServiceController extends GetxController {
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
-        final responseData = response.data;
-        print(responseData);
-        mechanicService.value = MechanicServiceModel.fromJson(responseData ?? {});
-        callBack!();
-        print(mechanicService.value);
+         final responseMessage = response.data?['message']??'';
+         callBack!();
+         if(!Get.isSnackbarOpen){
+           Get.snackbar('Successfully', responseMessage);
+         }
       } else {
-        Get.snackbar('Failed', response.message ?? 'Failed to fetch booking');
+        if(!Get.isSnackbarOpen){
+          Get.snackbar('Failed', response.message ?? 'Failed to fetch booking');
+        }
       }
     } catch (e) {
       if (kDebugMode) {
@@ -114,12 +115,12 @@ class MechanicServiceController extends GetxController {
       }
       throw NetworkException('$e');
     } finally {
-      isLoading.value = false;
+      isLoadingAdd.value = false;
     }
   }
 
   ///======================Delete service =================
-
+  var isLoadingDel = false.obs;
   Future<void> deleteService({String? serviceId  , VoidCallback? callBack}) async {
     String token = await PrefsHelper.getString('token');
 
@@ -128,18 +129,16 @@ class MechanicServiceController extends GetxController {
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
 
     try {
-      isLoading.value = true;
+      isLoadingDel.value = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
         endpoint: ApiConstants.deleteServiceUrl(serviceId??''),
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
-        final responseData = response.data;
-        print(responseData);
-        mechanicService.value = MechanicServiceModel.fromJson(responseData ?? {});
+        final responseMessage = response.data!['message'];
         callBack!();
-        print(mechanicService.value);
+        Get.snackbar('Successfully', responseMessage);
       } else {
         Get.snackbar('Failed', response.message ?? 'Failed to fetch booking');
       }
@@ -149,7 +148,7 @@ class MechanicServiceController extends GetxController {
       }
       throw NetworkException('$e');
     } finally {
-      isLoading.value = false;
+      isLoadingDel.value = false;
     }
   }
 
