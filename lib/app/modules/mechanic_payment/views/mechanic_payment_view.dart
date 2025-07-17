@@ -116,7 +116,7 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView> with SingleTi
             WalletData? walletData = _walletOverviewController.walletOverviewResponse.value.data;
             return PaymentMethodWidget(
                 onAddPaymentDetails: () {
-                  Get.toNamed(Routes.MECHANIC_ADD_PAYMENT);
+                  Get.toNamed(Routes.MECHANIC_PAYMENT_METHOD);
                 },
                 onWithdrawFund: () {
                   showWithdrawDialog(

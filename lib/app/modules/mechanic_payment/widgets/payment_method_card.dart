@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/model/payment_method_model.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/views/payment_method.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 
@@ -45,17 +46,19 @@ class PaymentMethodCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// Bank name
                 Text(
-                  method.bankName,
+                  method.bankName??'',
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                     color: Colors.black87,
                   ),
                 ),
+                /// Account number
                 SizedBox(height: 2.h),
-                Text(
-                  method.cardNumber,
+                //****${_accountNumberController.text.substring(_accountNumberController.text.length - 4)}
+                Text('***${method.accountNumber?.substring( method.accountNumber!.length - 4)}',
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: Colors.grey[600],

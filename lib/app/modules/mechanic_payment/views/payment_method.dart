@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/controllers/payment_method_controller.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/model/payment_method_model.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/payment_bottom_sheet.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/widgets/payment_method_card.dart';
 
@@ -11,7 +15,15 @@ class PaymentMethodsScreen extends StatefulWidget {
 }
 
 class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
-  List<PaymentMethod> paymentMethods = [];
+  final PaymentMethodController _paymentMethodController = Get.put(PaymentMethodController());
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((__)async{
+      await _paymentMethodController.fetchPaymentMethod();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +66,23 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             SizedBox(height: 16.h),
 
             /// Payment Methods List
-            if (paymentMethods.isNotEmpty) ...[
-              ...paymentMethods.map((method) => PaymentMethodCard(
-                method: method,
-                viewButton: ()=> _viewPaymentMethod(method),
-                removeButton: ()=> _removePaymentMethod(method),
-               ),
-              ),
-              SizedBox(height: 16.h),
-            ],
+            Obx((){
+              List<PaymentMethod> paymentMethods = _paymentMethodController.paymentMethodResponse.value.data??[];
+                 if(paymentMethods.isNotEmpty){
+                  return Column(
+                    children: [
+                      ...paymentMethods.map((method) => PaymentMethodCard(
+                        method: method,
+                        viewButton: ()=> _viewPaymentMethod(method),
+                        removeButton: ()=> _removePaymentMethod(method),
+                      ),
+                      ),
+                      SizedBox(height: 16.h),
+                   ],
+                  );
+                 }
+              return SizedBox.shrink();
+            }),
 
             /// Add Payment Details Button
             GestureDetector(
@@ -107,11 +127,9 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => AddPaymentBottomSheet(
-        onAddPayment: (method) {
-          setState(() {
-            paymentMethods.add(method);
-          });
-        },
+        onAddPayment: (method)async {
+        await _paymentMethodController.addPaymentMethod(paymentBody: PaymentBody(method.bankName, method.accountHolderName, method.accountNumber));
+        }, isLoading: _paymentMethodController.isLoading2,
       ),
     );
   }
@@ -129,9 +147,9 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             SizedBox(height: 8.h),
             Text('Bank Name: ${method.bankName}'),
             SizedBox(height: 8.h),
-            Text('Card Number: ${method.cardNumber}'),
+            Text('A/C Number: ${method.accountNumber}'),
             SizedBox(height: 8.h),
-            Text('Holder Name: ${method.holderName}'),
+            Text('Holder Name: ${method.accountHolderName}'),
           ],
         ),
         actions: [
@@ -158,7 +176,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
           TextButton(
             onPressed: () {
               setState(() {
-                paymentMethods.remove(method);
+              //  paymentMethods.remove(method);
               });
               Navigator.pop(context);
             },
@@ -170,16 +188,3 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   }
 }
 
-
-
-class PaymentMethod {
-  final String cardNumber;
-  final String holderName;
-  final String bankName;
-
-  PaymentMethod({
-    required this.cardNumber,
-    required this.holderName,
-    required this.bankName,
-  });
-}

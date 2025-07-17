@@ -45,7 +45,8 @@ static String walletOverviewUrl= '/api/v1/wallet';
 static String withdrawRequestUrl= '/api/v1/withdraw/withdraw-request';
 static String mechanicServiceRateUrl= '/api/v1/mechanicServiceRate';
 static String addServiceRateUrl= '/api/v1/service/mechanic/add';
-
+static String paymentMethodUrl= '/api/v1/payment-method';
+static String paymentMethodCreationUrl= '/api/v1/payment-method/create';
 
 
 

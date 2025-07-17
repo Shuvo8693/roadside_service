@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/mechanic_payment/model/payment_method_model.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/views/payment_method.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
@@ -7,8 +9,9 @@ import 'package:roadside_assistance/common/widgets/custom_text_field.dart';
 
 class AddPaymentBottomSheet extends StatefulWidget {
   final Function(PaymentMethod) onAddPayment;
+    final RxBool isLoading ;
 
-  const AddPaymentBottomSheet({super.key, required this.onAddPayment});
+   const AddPaymentBottomSheet({super.key, required this.onAddPayment, required this.isLoading});
 
   @override
   State<AddPaymentBottomSheet> createState() => _AddPaymentBottomSheetState();
@@ -83,21 +86,26 @@ class _AddPaymentBottomSheetState extends State<AddPaymentBottomSheet> {
             SizedBox(height: 32.h),
 
             // Save Button
-            CustomButton(
-                onTap: (){
-                  if (_accountNumberController.text.isNotEmpty &&
-                      _accountHolderController.text.isNotEmpty && _bankNameController.text.isNotEmpty) {
-                    widget.onAddPayment(
-                      PaymentMethod(
-                        cardNumber: '****${_accountNumberController.text.substring(_accountNumberController.text.length - 4)}',
-                        holderName: _accountHolderController.text,
-                        bankName: _bankNameController.text,
-                      ),
-                    );
-                    Navigator.pop(context);
-                  }
-                  // _handleSave();
-                }, text: 'Save'),
+            Obx((){
+              return  CustomButton(
+                loading: widget.isLoading.value,
+                  onTap: (){
+                    if (_accountNumberController.text.isNotEmpty &&
+                        _accountHolderController.text.isNotEmpty && _bankNameController.text.isNotEmpty) {
+                      widget.onAddPayment(
+                        PaymentMethod(
+                          accountNumber: _accountNumberController.text,
+                          accountHolderName: _accountHolderController.text,
+                          bankName: _bankNameController.text,
+                        ),
+                      );
+                      Navigator.pop(context);
+                    }
+                    // _handleSave();
+                  }, text: 'Save');
+            }
+
+            ),
             Spacer(),
           ],
         ),
