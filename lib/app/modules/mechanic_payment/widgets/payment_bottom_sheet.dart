@@ -103,8 +103,7 @@ class _AddPaymentBottomSheetState extends State<AddPaymentBottomSheet> {
                     }
                     // _handleSave();
                   }, text: 'Save');
-            }
-
+                }
             ),
             Spacer(),
           ],
