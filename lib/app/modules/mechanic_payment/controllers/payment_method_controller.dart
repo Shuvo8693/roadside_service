@@ -89,6 +89,46 @@ class PaymentMethodController extends GetxController {
     }
   }
 
+
+
+  /// ================== Remove payment method ==================
+  var isLoading3 = false.obs;
+
+  Future<void> removePaymentMethod({String? paymentMethodId,VoidCallback? callBack}) async {
+    String token = await PrefsHelper.getString('token');
+
+
+    _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
+    _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
+    _networkCaller.addResponseInterceptor(LoggingInterceptor());
+
+    try {
+      isLoading3.value = true;
+      final response = await _networkCaller.post<Map<String, dynamic>>(
+        endpoint: ApiConstants.paymentMethodDeleteUrl(paymentMethodId??''),
+        timeout: Duration(seconds: 10),
+        fromJson: (json) => json as Map<String, dynamic>,
+      );
+      if (response.isSuccess && response.data != null) {
+        String responseMessage = response.data!['message'];
+        //await fetchPaymentMethod();
+        callBack!();
+        Get.snackbar('Successfully', responseMessage);
+      } else {
+        if (kDebugMode) {
+          print(response.message);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      throw NetworkException('$e');
+    } finally {
+      isLoading3.value = false;
+    }
+  }
+
 }
 
 class PaymentBody{

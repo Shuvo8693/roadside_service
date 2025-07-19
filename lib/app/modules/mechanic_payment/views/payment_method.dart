@@ -174,10 +174,10 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             child: Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
-              setState(() {
-              //  paymentMethods.remove(method);
-              });
+            onPressed: () async {
+            await _paymentMethodController.removePaymentMethod(paymentMethodId: method.id,callBack: (){
+              _paymentMethodController.paymentMethodResponse.update((model)=>model?.data?.removeWhere((data)=>data.id == method.id));
+             });
               Navigator.pop(context);
             },
             child: Text('Remove', style: TextStyle(color: Colors.red)),
