@@ -4,6 +4,10 @@ import 'package:get/get.dart';
 import 'package:roadside_assistance/app/modules/account/widgets/vehicale_card.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
+import 'package:roadside_assistance/app/modules/account/model/vehicle_model.dart';
+import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
+
+import '../controllers/my_vehicle_controller.dart';
 
 class MyVehicleView extends StatefulWidget {
   const MyVehicleView({super.key});
@@ -12,10 +16,15 @@ class MyVehicleView extends StatefulWidget {
   State<MyVehicleView> createState() => MyVehicleViewState();
 }
 class MyVehicleViewState extends State<MyVehicleView> {
-  List<Map<String, String>> vehicles = [
-    {'model': 'Maruti', 'brand': 'Suzuki', 'number': '12-22-11'},
-    {'model': 'Hyabusa', 'brand': 'Suzuki', 'number': '15642-2542-11'}
-  ];
+  final MyVehicleController _myVehicleController = Get.put(MyVehicleController());
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((__)async{
+     await _myVehicleController.fetchVehicle();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +34,8 @@ class MyVehicleViewState extends State<MyVehicleView> {
         //centerTitle: true,
         actions: [
           TextButton(
-            onPressed: () async {
-           final result = await Get.toNamed(Routes.ADDVEHICLE);
-           vehicles.addAll(result);
-           setState(() {});
-           print(vehicles);
+            onPressed: () {
+             Get.toNamed(Routes.ADDVEHICLE);
             },
             child: Text(
               '+ Add Vehicle',
@@ -38,23 +44,38 @@ class MyVehicleViewState extends State<MyVehicleView> {
           ),
         ],
       ),
-      body: ListView.builder(
-        //reverse: true,
-        padding: EdgeInsets.all(10.r),
-        itemCount: vehicles.length,
-        itemBuilder: (context, index) {
-         final vehicleIndex = vehicles[index];
-          return VehicleCard(
-            vehicleModel: vehicleIndex['model']??'',
-            vehicleBrand: vehicleIndex['brand']??'',
-            vehicleNumber: vehicleIndex['number']??'',
-            onDelete: () {
-              setState(() {
-                vehicles.removeAt(index);
-              });
-            },
-          );
-        },
+      body: Obx((){
+        List<Vehicle> vehicleLIst =_myVehicleController.vehicleModel.value.data??[];
+        if(_myVehicleController.isLoading.value){
+          return Center(child: CustomPageLoading());
+        }
+        if(vehicleLIst.isEmpty){
+          return Center(child: Text('Vehicle looks empty'));
+        }
+        return  ListView.builder(
+          //reverse: true,
+          padding: EdgeInsets.all(10.r),
+          itemCount: vehicleLIst.length,
+          itemBuilder: (context, index) {
+            final vehicleIndex = vehicleLIst[index];
+            return VehicleCard(
+              vehicleModel: vehicleIndex.model??'',
+              vehicleBrand: vehicleIndex.brand??'',
+              vehicleNumber: vehicleIndex.number??'',
+              onDelete: () {
+                _myVehicleController.deleteVehicle(vehicleId: vehicleIndex.id,callBack: (){
+                  setState(() {
+                    _myVehicleController.vehicleModel.value.data?.removeAt(index);
+                  });
+                });
+
+
+              },
+            );
+          },
+        );
+      }
+
       ),
     );
   }
