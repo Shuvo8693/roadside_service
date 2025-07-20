@@ -78,38 +78,17 @@ final AccountController _accountController= Get.put(AccountController());
                 searchCtrl: _homeController.searchCtrl,
                 iconOnTap: () {},
                 onChanged: (value) async{
-                 await _homeController.fetchMechanicQuery(queryService: value);
+                  if(value!.isNotEmpty){
+                    await _homeController.fetchMechanicQuery(queryService: value);
+                  }else{
+                    setState(() {
+                      _homeController.mechanicModel.value.mechanicData?.data?.clear();
+                    });
+                  }
                 },
               ),
              /// Mechanic Search result
               mechanicDataCard(_homeController),
-              // Obx(() {
-              //   List<MechanicAttributes> mechanicAttributes = _homeController.mechanicModel.value.data?.data??[];
-              //   if(_mechanicController.isLoading.value){
-              //     return CustomPageLoading();
-              //   } else if(mechanicAttributes.isEmpty){
-              //     return Text('');
-              //   }
-              //   return ListView.builder(
-              //     itemCount: (mechanicAttributes.length > 10 ? 10 : mechanicAttributes.length),
-              //     shrinkWrap: true,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       final mechanicAttributesIndex = mechanicAttributes[index];
-              //       return ServiceProviderCard(
-              //         name: mechanicAttributesIndex.mechanicName??'',
-              //         title: 'Mechanic',
-              //         distance: mechanicAttributesIndex.distance??'',
-              //         rating: mechanicAttributesIndex.rating??0,
-              //         duration: mechanicAttributesIndex.eta??'',
-              //         imageUrl: mechanicAttributesIndex.mechanicImage??'',
-              //         onTap: () {
-              //           Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': mechanicAttributesIndex.mechanicId });
-              //         },
-              //       );
-              //     },
-              //   );
-              // }),
-
               /// Service
               SizedBox(height: 20.h),
               Obx(() {
@@ -130,32 +109,6 @@ final AccountController _accountController= Get.put(AccountController());
               ),
               SizedBox(height: 10.h),
               mechanicDataCard(_mechanicController),
-              // Obx(() {
-              //   List<MechanicAttributes> mechanicAttributes = _mechanicController.mechanicModel.value.data?.data??[];
-              //   if(_mechanicController.isLoading.value){
-              //     return CustomPageLoading();
-              //   } else if(mechanicAttributes.isEmpty){
-              //     return Text('Mechanics unavailable near your location');
-              //   }
-              //   return ListView.builder(
-              //     itemCount: (mechanicAttributes.length > 10 ? 10 : mechanicAttributes.length),
-              //     shrinkWrap: true,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       final mechanicAttributesIndex = mechanicAttributes[index];
-              //       return ServiceProviderCard(
-              //         name: mechanicAttributesIndex.mechanicName??'',
-              //         title: 'Mechanic',
-              //         distance: mechanicAttributesIndex.distance??'',
-              //         rating: mechanicAttributesIndex.rating??0,
-              //         duration: mechanicAttributesIndex.eta??'',
-              //         imageUrl: mechanicAttributesIndex.mechanicImage??'',
-              //         onTap: () {
-              //           Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': mechanicAttributesIndex.mechanicId });
-              //         },
-              //       );
-              //     },
-              //   );
-              // }),
             ],
           ),
         ),
@@ -170,11 +123,11 @@ final AccountController _accountController= Get.put(AccountController());
       bool isLoading= false;
       if(T == MechanicController){
         final mechanicController = controller as MechanicController;
-       mechanicAttributes  = mechanicController.mechanicModel.value.data?.data??[];
+       mechanicAttributes  = mechanicController.mechanicModel.value.mechanicData?.data??[];
         isLoading = mechanicController.isLoading.value;
       } else if (T == HomeController){
         final mechanicController = controller as HomeController;
-        mechanicAttributes  = mechanicController.mechanicModel.value.data?.data??[];
+        mechanicAttributes  = mechanicController.mechanicModel.value.mechanicData?.data??[];
         isLoading = mechanicController.isLoading.value;
       }
 
@@ -198,31 +151,44 @@ final AccountController _accountController= Get.put(AccountController());
             onTap: () {
               Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': mechanicAttributesIndex.mechanicId });
             },
-            favouriteTap: () async {
+            favouriteTap: ()  {
               String? mechanicId= mechanicAttributesIndex.mechanicId;
               if(mechanicId != null && mechanicId.isNotEmpty){
-              await _mechanicController.toggleFavourite( mechanicId,favCallBack: (){
                 if(T == MechanicController){
-                  int? dataIndex  = _mechanicController.mechanicModel.value.data?.data?.indexWhere((value)=>value.mechanicId==mechanicId);
+                  int? dataIndex  = _mechanicController.mechanicModel.value.mechanicData?.data?.indexWhere((value)=>value.mechanicId==mechanicId);
                   if(dataIndex != -1){
-                    final attributes = _mechanicController.mechanicModel.value.data?.data![dataIndex!];
+                    final attributes = _mechanicController.mechanicModel.value.mechanicData?.data![dataIndex!];
                     attributes?.isFavourite =! (attributes.isFavourite??false);
                     print(attributes?.isFavourite);
                     _mechanicController.mechanicModel.refresh();
                     setState(() {});
+                    /// Network call
+                    _mechanicController.toggleFavourite( mechanicId,favCallBack: (){},onError: (){
+                      attributes?.isFavourite =! (attributes.isFavourite??false);
+                      print(attributes?.isFavourite);
+                      _mechanicController.mechanicModel.refresh();
+                      setState(() {});
+                    });
                   }
 
                 }else if(T == HomeController){
-                  int? dataIndex  = _homeController.mechanicModel.value.data?.data?.indexWhere((value)=>value.mechanicId==mechanicId);
+                  int? dataIndex  = _homeController.mechanicModel.value.mechanicData?.data?.indexWhere((value)=>value.mechanicId==mechanicId);
                   if(dataIndex != -1){
-                    final attributes = _homeController.mechanicModel.value.data?.data![dataIndex!];
+                    final attributes = _homeController.mechanicModel.value.mechanicData?.data![dataIndex!];
                     attributes?.isFavourite =! (attributes.isFavourite??false);
                     print(attributes?.isFavourite);
                     _homeController.mechanicModel.refresh();
                     setState(() {});
+                     /// Network call
+                    _mechanicController.toggleFavourite( mechanicId,favCallBack: (){},onError: (){
+                      attributes?.isFavourite =! (attributes.isFavourite??false);
+                      print(attributes?.isFavourite);
+                      _mechanicController.mechanicModel.refresh();
+                      setState(() {});
+                    });
                   }
                 }
-              });
+
               }
           },
             isFavourite: mechanicAttributesIndex.isFavourite??false,

@@ -98,7 +98,7 @@ class MechanicController extends GetxController {
 
   var isLoading3 = false.obs;
 
-  Future<void> toggleFavourite(String mechanicId, {VoidCallback? favCallBack}) async {
+  Future<void> toggleFavourite(String mechanicId, {VoidCallback? favCallBack,VoidCallback? onError}) async {
     String token = await PrefsHelper.getString('token');
 
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
@@ -117,14 +117,16 @@ class MechanicController extends GetxController {
         print(responseData);
         favouriteToggle.value = FavoriteToggleModel.fromJson(responseData??{});
         print(favouriteToggle.value);
-        favCallBack!();
+        favCallBack!.call();
 
       } else {
+        onError?.call();
         if (kDebugMode) {
           print(response.message);
         }
       }
     } catch (e) {
+      onError?.call();
       if (kDebugMode) {
         print(e);
       }

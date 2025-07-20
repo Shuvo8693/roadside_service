@@ -2,15 +2,15 @@ class MechanicModel {
   bool? success;
   int? statusCode;
   String? message;
-  MechanicData? data;
+  MechanicData? mechanicData;
 
-  MechanicModel({this.success, this.statusCode, this.message, this.data});
+  MechanicModel({this.success, this.statusCode, this.message, this.mechanicData});
 
   MechanicModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     statusCode = json['statusCode'];
     message = json['message'];
-    data = json['data'] != null ? MechanicData.fromJson(json['data']) : null;
+    mechanicData = json['data'] != null ? MechanicData.fromJson(json['data']) : null;
   }
 }
 
