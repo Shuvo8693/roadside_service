@@ -51,6 +51,7 @@ static String paymentMethodUrl= '/api/v1/payment-method';
 static String paymentMethodCreationUrl= '/api/v1/payment-method/create';
 static String myVehicleUrl = '/api/v1/vehicle/all';
 static String vehicleCreateUrl = '/api/v1/vehicle';
+static String favouriteAllUrl = '/api/v1/favourite/all';
 
 
 

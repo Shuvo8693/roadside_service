@@ -129,8 +129,6 @@ class MyVehicleController extends GetxController {
       }
       throw NetworkException('$e');
     }
-
   }
-
 
 }
