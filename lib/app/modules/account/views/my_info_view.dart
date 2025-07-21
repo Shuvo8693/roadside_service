@@ -30,7 +30,7 @@ class _MyInfoState extends State<MyInfo> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((__)async{
-      await _accountController.fetchProfile();
+      await _accountController.fetchProfile(isUser: true);
     });
   }
 
@@ -87,12 +87,6 @@ class _MyInfoState extends State<MyInfo> {
                         boxShape: BoxShape.circle,
                         border: Border.all(color: AppColors.white, width: 3.w),
                       ),
-                      // CustomNetworkImage(
-                      //   imageUrl: AppConstants.demoPersonImage,
-                      //   height: 150.h,
-                      //   width: 150.h,
-                      //   boxShape: BoxShape.circle,
-                      // ),
                       Positioned(
                         bottom: 4.h,
                         right: 4.w,

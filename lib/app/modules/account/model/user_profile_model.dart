@@ -46,6 +46,9 @@ class User {
   final String? phone;
   final String? image;
   final Location? location;
+  final double? serviceRadius;
+  final String? bio;
+  final int? experience;
 
   User({
     this.id,
@@ -55,6 +58,9 @@ class User {
     this.phone,
     this.image,
     this.location,
+    this.serviceRadius,
+    this.bio,
+    this.experience,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -66,6 +72,9 @@ class User {
       phone: json['phone'],
       image: json['image'],
       location: json['location'] != null ? Location.fromJson(json['location']) : null,
+      serviceRadius: json['serviceRadius']?.toDouble(),
+      bio: json['bio'],
+      experience: json['experience'],
     );
   }
 }
