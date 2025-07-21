@@ -74,32 +74,32 @@ class MechanicProfile extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 20.h),
-              /// Full Name field
-              const InfoField(
-                label: 'Full Name',
-                value: 'Jhon Mc',
-              ),
-              SizedBox(height: 20.h),
-              /// experiance
-              const InfoField(
-                label: 'Experience',
-                value: '7 years',
-              ),
-              SizedBox(height: 20.h),
-              /// Phone Number field
-              const InfoField(
-                label: 'Profession',
-                value: 'Mechanic',
-              ),
-              SizedBox(height: 20.h),
-              /// Bio
-              const InfoField(
-                label: 'Bio',
-                value: 'alksdjlaksjdlkasjdlkjasdlkj',
-                maxLine: 4,
-              ),
-              SizedBox(height: 20.h),
+              // SizedBox(height: 20.h),
+              // /// Full Name field
+              // const InfoField(
+              //   label: 'Full Name',
+              //   value: 'Jhon Mc',
+              // ),
+              // SizedBox(height: 20.h),
+              // /// experiance
+              // const InfoField(
+              //   label: 'Experience',
+              //   value: '7 years',
+              // ),
+              // SizedBox(height: 20.h),
+              // /// Phone Number field
+              // const InfoField(
+              //   label: 'Profession',
+              //   value: 'Mechanic',
+              // ),
+              // SizedBox(height: 20.h),
+              // /// Bio
+              // const InfoField(
+              //   label: 'Bio',
+              //   value: 'alksdjlaksjdlkasjdlkjasdlkj',
+              //   maxLine: 4,
+              // ),
+              // SizedBox(height: 20.h),
             ],
           ),
         ),

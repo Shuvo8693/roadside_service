@@ -539,12 +539,10 @@ class NetworkCaller {
     http.Response response,
     T Function(dynamic)? fromJson,
   ) {
-    final bool isSuccess =
-        response.statusCode >= 200 && response.statusCode < 300;
+    final bool isSuccess = response.statusCode >= 200 && response.statusCode < 300;
 
     try {
-      final responseBody =
-          response.body.isEmpty ? null : jsonDecode(response.body);
+      final responseBody = response.body.isEmpty ? null : jsonDecode(response.body);
 
       if (isSuccess) {
         T? data;
@@ -708,6 +706,7 @@ class ApiService {
   // Multipart request examples
   Future<String> uploadProfilePicture(int userId, File imageFile) async {
     try {
+
       final multipartFile = await MultipartFile.fromFile(
         field: 'profile_picture',
         file: imageFile,

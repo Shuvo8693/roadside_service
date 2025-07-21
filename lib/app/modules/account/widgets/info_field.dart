@@ -6,15 +6,20 @@ import 'package:roadside_assistance/common/widgets/custom_text_field.dart';
 
 class InfoField extends StatelessWidget {
   final String label;
-  final String value;
+  final TextEditingController textEditingController;
   final String? suffixText;
   final int? maxLine;
   final VoidCallback? suffixOnTap;
+  final bool readOnly;
 
   const InfoField({
     super.key,
     required this.label,
-    required this.value, this.suffixText, this.suffixOnTap, this.maxLine,
+    this.suffixText,
+    this.suffixOnTap,
+    this.maxLine,
+    required this.textEditingController,
+    required this.readOnly,
   });
 
   @override
@@ -31,10 +36,10 @@ class InfoField extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         CustomTextField(
-          controller: TextEditingController(text: value),
+          controller: textEditingController,
           contentPaddingVertical: 15.h,
           maxLine: maxLine??1,
-          readOnly: true,
+          readOnly: readOnly,
           suffixIcon: Padding(
             padding:  EdgeInsets.all(15.0.sp),
             child: InkWell(
