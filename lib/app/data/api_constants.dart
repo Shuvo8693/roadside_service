@@ -26,6 +26,7 @@ static String deleteServiceUrl(String serviceId) => '/api/v1/service/mechanic/$s
 static String toggleAvailabilityUrl(String mechanicId) =>  '/api/v1/mechanic/toggle-availability/$mechanicId';
 static String paymentMethodDeleteUrl(String methodId) =>  '/api/v1/payment-method/$methodId';
 static String vehicleDeleteUrl(String vehicleId) =>  '/api/v1/vehicle/$vehicleId';
+static String orderTrackingInitializeUrl(String mechanicId) =>  '/api/v1/locationTracking/initialize/$mechanicId';
 static String allMechanicUrl({int? currentPage, int? limit}) =>  '/api/v1/mechanic/all?currentPage=$currentPage&limit=$limit';
 
 static String emailSendUrl= '/api/v1/user/forget-password';

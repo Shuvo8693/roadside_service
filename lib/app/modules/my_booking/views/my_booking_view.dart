@@ -78,7 +78,7 @@ class _MyBookingViewState extends State<MyBookingView> {
                   onTap: (){
                     switch(bookingStatusIndex.status) {
                       case 'processing':
-                        Get.toNamed(Routes.ORDERTRACKING);
+                        Get.toNamed(Routes.ORDERTRACKING,arguments: {'mechanicId': bookingStatusIndex.mechanic?.id,'orderId': bookingStatusIndex.id});
                         break;
                       case 'completed' || 'cancelled':
                         Get.toNamed(Routes.PREVIOUSBOOKING);

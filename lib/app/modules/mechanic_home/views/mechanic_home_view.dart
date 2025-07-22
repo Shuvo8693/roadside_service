@@ -31,6 +31,8 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
   final MechanicHomeController _mechanicHomeController = Get.put(MechanicHomeController());
   final WalletOverviewController _walletOverviewController = Get.put(WalletOverviewController());
 
+
+
   @override
   void initState() {
     super.initState();
@@ -80,8 +82,13 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                       // Payment
                       SizedBox(width: 16.w),
                       Expanded(
-                        child: ActiveOrderAndPaymentCard(
-                          text: 'Payment', icon: Icons.payment,),
+                        child: InkWell(
+                          onTap: (){
+                            Get.toNamed(Routes.MECHANIC_PAYMENT);
+                          },
+                          child: ActiveOrderAndPaymentCard(
+                            text: 'Payment', icon: Icons.payment,),
+                        ),
                       ),
                     ],
                   );

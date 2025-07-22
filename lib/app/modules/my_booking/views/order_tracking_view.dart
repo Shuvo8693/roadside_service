@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:roadside_assistance/app/modules/my_booking/controllers/order_tracking_controller.dart';
 import 'package:roadside_assistance/app/modules/my_booking/widgets/bottom_sheet_order_details.dart';
 import 'package:roadside_assistance/app/modules/my_booking/widgets/order_progress_bar.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
@@ -16,6 +17,8 @@ import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/spacing.dart';
 import 'package:roadside_assistance/sk_key.dart';
 
+import '../model/order_tracking_model.dart';
+
 class OrderTrackingView extends StatefulWidget {
   const OrderTrackingView({super.key});
 
@@ -24,28 +27,41 @@ class OrderTrackingView extends StatefulWidget {
 }
 
 class _OrderTrackingScreenState extends State<OrderTrackingView> {
-  late GoogleMapController _mapController;
+   GoogleMapController? _mapController;
+  final OrderTrackingController _orderTrackingController = Get.put(OrderTrackingController());
 
-  late LatLng _pickupLocation = LatLng(51.5200, -0.1045);
-  final LatLng _driverLocation = LatLng(51.5220, -0.0980);
+   Rx<LatLng> pickupLocation = LatLng(51.5200, -0.1045).obs;
+  Rx<LatLng> driverLocation = LatLng(51.5220, -0.0980).obs;
 
-  final List<LatLng> _polylineCoordinates = [];
+  final RxList<LatLng> _polylineCoordinates = <LatLng>[].obs;
   late PolylinePoints _polylinePoints;
 
   @override
   void initState() {
     super.initState();
     _polylinePoints = PolylinePoints();
-    _fetchRoutePolyline();
+    WidgetsBinding.instance.addPostFrameCallback((__)async{
+      await _orderTrackingController.initializeTracking();
+     await _fetchRoutePolyline();
+    });
   }
 
   Future<void> _fetchRoutePolyline() async {
+      LocationData? userLocationData = _orderTrackingController.orderTrackingModel.value.userLocation;
+      LocationData? mechLocationData = _orderTrackingController.orderTrackingModel.value.mechanicLocation;
+      pickupLocation.value = LatLng(userLocationData?.coordinates?.last??0.0, userLocationData?.coordinates?.first??0.0);
+      driverLocation.value = LatLng(mechLocationData?.coordinates?.last??0.0, mechLocationData?.coordinates?.first??0.0);
+      if(_mapController != null){
+        await _mapController?.animateCamera(CameraUpdate.newLatLng(pickupLocation.value));
+      }
+    ///=============polyline==============
     final result = await _polylinePoints.getRouteBetweenCoordinates(
       googleApiKey: SKey.googleApiKey,
       request: PolylineRequest(
-          origin: PointLatLng(_driverLocation.latitude, _driverLocation.longitude),
-          destination:  PointLatLng(_pickupLocation.latitude, _pickupLocation.longitude),
-          mode: TravelMode.driving),
+          origin: PointLatLng(driverLocation.value.latitude, driverLocation.value.longitude),
+          destination:  PointLatLng(pickupLocation.value.latitude, pickupLocation.value.longitude),
+          mode: TravelMode.driving
+      ),
     );
 
     if (result.points.isNotEmpty) {
@@ -73,43 +89,49 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
       body: Stack(
         children: [
           // Map layer
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: _pickupLocation,
-              zoom: 15,
-            ),
-            mapType: MapType.hybrid,
-            polylines: {
-              Polyline(
-                polylineId: PolylineId('route'),
-                points: _polylineCoordinates,
-                color: AppColors.primaryColor,
-                width: 4,
-              )
-            },
-            markers: {
-              Marker(
-                markerId: MarkerId('pickup'),
-                draggable: true,
-                position: _pickupLocation,
-                onDragEnd: (positionValue)async{
-                  _pickupLocation = positionValue;
-                await _fetchRoutePolyline();
-                  setState(() {});
-                }
+          Obx((){
+           var  userLocation = pickupLocation.value;
+           return GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: userLocation,
+                zoom: 12,
               ),
-              Marker(
-                markerId: MarkerId('driver'),
-                position: _driverLocation,
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueAzure,
+              mapType: MapType.hybrid,
+              polylines: _polylineCoordinates.isNotEmpty? {
+                Polyline(
+                  polylineId: PolylineId('route'),
+                  points: _polylineCoordinates,
+                  color: AppColors.primaryColor,
+                  width: 4,
+                )
+              }: {},
+              markers: {
+                Marker(
+                    markerId: MarkerId('pickup'),
+                    draggable: true,
+                    position: userLocation,
+                    onDragEnd: (positionValue)async{
+                      pickupLocation.value = positionValue;
+                      setState(() {});
+                      await _fetchRoutePolyline();
+                    }
                 ),
-              ),
-            },
-            onMapCreated: (GoogleMapController controller) {
-              _mapController = controller;
-            },
-            padding: EdgeInsets.only(bottom: 150.h),
+                Marker(
+                  markerId: MarkerId('driver'),
+                  position: driverLocation.value,
+                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueAzure,
+                  ),
+                ),
+              },
+              onMapCreated: (GoogleMapController controller) {
+                _mapController = controller;
+              },
+              padding: EdgeInsets.only(bottom: 150.h),
+            );
+          }
+
+
           ),
           /// Draggable bottom sheet with order details
           BottomSheetOrderDetails(),
