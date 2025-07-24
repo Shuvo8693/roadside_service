@@ -91,11 +91,6 @@ class OrderTrackingController extends GetxController {
       setupSocketListeners(); // Setup listeners before connecting
       socket?.connect();
 
-      // Start location tracking after connection
-      socket?.on('connect', (_) {
-        startLocationTracking();
-      });
-
     } catch (e) {
       print('Socket connection error: $e');
       connectionStatus.value = 'Connection Failed';
@@ -103,17 +98,28 @@ class OrderTrackingController extends GetxController {
   }
 
   void setupSocketListeners() {
+    // Clear existing listeners to prevent duplicates
+    socket?.clearListeners();
+    socket?.off('connect');
+    socket?.off('disconnect');
+    socket?.off('connect_error');
+    socket?.off('updateLocation');
+
     // Connection events
     socket?.on('connect', (_) {
       print('Connected to socket server');
       isConnected.value = true;
       connectionStatus.value = 'Connected';
+
+      startLocationTracking(); // Emit Location < ================
     });
 
     socket?.on('disconnect', (_) {
       print('Disconnected from socket server');
       isConnected.value = false;
       connectionStatus.value = 'Disconnected';
+      // Stop location tracking when disconnected
+      locationTimer?.cancel();
     });
 
     socket?.on('connect_error', (error) {
@@ -140,9 +146,7 @@ class OrderTrackingController extends GetxController {
       try {
         // Get current location
         Position position = await LocationService.getCurrentLocation();
-
         print('Current position: ${position.latitude}, ${position.longitude}');
-
         // Send location update
         sendLocationUpdate(
           orderId: orderId,
@@ -173,7 +177,6 @@ class OrderTrackingController extends GetxController {
 
         // Update the map and polyline when new location data is received
         fetchRoutePolyline();
-
         update();
       }
     } catch (e) {
