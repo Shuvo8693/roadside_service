@@ -25,13 +25,12 @@ class _MechanicMapViewState extends State<MechanicMapView> {
   @override
   void initState() {
     super.initState();
-    _polylinePoints = PolylinePoints();
+    _polylinePoints = PolylinePoints(apiKey: SKey.googleApiKey);
     _fetchRoutePolyline();
   }
 
   Future<void> _fetchRoutePolyline() async {
     final result = await _polylinePoints.getRouteBetweenCoordinates(
-      googleApiKey: SKey.googleApiKey,
       request: PolylineRequest(
           origin: PointLatLng(_driverLocation.latitude, _driverLocation.longitude),
           destination:  PointLatLng(_pickupLocation.latitude, _pickupLocation.longitude),

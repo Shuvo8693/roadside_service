@@ -49,7 +49,7 @@ dependencies:
   image_picker:
   cached_network_image:
   flutter_chat_bubble:
-  socket_io_client:
+  socket_io_client: ^3.1.2
   file_picker:
   http:
   mime_type:
@@ -69,7 +69,7 @@ dependencies:
   pdf: ^3.10.4
   printing: ^5.11.0
   share_plus:
-  flutter_polyline_points: ^2.1.0
+  flutter_polyline_points: ^3.0.0
   dart_jsonwebtoken: ^3.2.0
   fvm: ^3.2.1
 
