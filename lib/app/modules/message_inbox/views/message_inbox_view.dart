@@ -15,6 +15,8 @@ import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_icons/app_icons.dart';
 import 'package:roadside_assistance/common/app_text_style/style.dart';
 import 'package:roadside_assistance/common/date_time_formation/data_age_formation.dart';
+import 'package:roadside_assistance/common/jwt_decoder/jwt_decoder.dart';
+import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 import 'package:roadside_assistance/common/widgets/casess_network_image.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/custom_text_field.dart';
@@ -36,7 +38,22 @@ class _MessageInboxViewState extends State<MessageInboxView> {
   String? messageType;
   String? tournamentCreatorId;
   String? roomChatId;
+  String? userId;
 
+ @override
+  void initState() {
+    super.initState();
+   getUserId();
+  }
+
+  getUserId()async{
+    String token = await PrefsHelper.getString('token');
+  final payload = decodeJWT(token);
+  print(payload['id']);
+   setState(() {
+     userId = payload['id'];
+   });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

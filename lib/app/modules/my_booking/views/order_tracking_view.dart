@@ -141,7 +141,6 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
             ),
            ):SizedBox.shrink(),
           ),
-
           /// Draggable bottom sheet with order details
           BottomSheetOrderDetails(),
 
@@ -199,11 +198,18 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
                   Row(
                     children: [
                       Expanded(
-                        child: CustomButton(
-                          onTap: () {
-                            Get.toNamed(Routes.MESSAGEINBOX);
-                          },
-                          text: 'Message',
+                        child: Obx((){
+                        String? mechanicId = _orderTrackingController.trackingModel.value.mechanicId;
+                          return  CustomButton(
+                            onTap: () {
+                              if(mechanicId !=null){
+                                Get.toNamed(Routes.MESSAGEINBOX,arguments: {"mechanicId": mechanicId});
+                              }
+                            },
+                            text: 'Message',
+                          );
+                        }
+
                         ),
                       ),
                       SizedBox(width: 8.w),

@@ -33,8 +33,10 @@ class SignInController extends GetxController {
       if (response.isSuccess && response.data != null) {
         String token = response.data!['data']['token'];
         String role = response.data!['data']['user']['role'];
-        print('role: $role , token : $token');
+        String userId = response.data!['data']['user']['id'];
+        print('role: $role , token : $token , userId : $userId');
         await PrefsHelper.setString('role', role);
+        await PrefsHelper.setString('userId', userId);
         await PrefsHelper.setString('token', token).then((value)async{
           String? userRole =await PrefsHelper.getString('role');
           if(userRole =='user'){
