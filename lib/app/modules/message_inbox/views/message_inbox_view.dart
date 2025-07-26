@@ -10,7 +10,7 @@ import 'package:roadside_assistance/app/data/api_constants.dart';
 
 import 'package:roadside_assistance/app/modules/message_inbox/controllers/message_inbox_controller.dart';
 import 'package:roadside_assistance/app/modules/message_inbox/model/chat_model.dart'
-    show ChatAttributes;
+    show ChatAttributes, ChatModel;
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_icons/app_icons.dart';
 import 'package:roadside_assistance/common/app_text_style/style.dart';
@@ -19,6 +19,7 @@ import 'package:roadside_assistance/common/jwt_decoder/jwt_decoder.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 import 'package:roadside_assistance/common/widgets/casess_network_image.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
+import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
 import 'package:roadside_assistance/common/widgets/custom_text_field.dart';
 
 import '../controllers/send_message_controller.dart';
@@ -38,12 +39,12 @@ class _MessageInboxViewState extends State<MessageInboxView> {
   String? messageType;
   String? tournamentCreatorId;
   String? roomChatId;
-  String? userId;
 
  @override
   void initState() {
     super.initState();
    getUserId();
+    _messageInboxController.initSocket();
   }
 
   getUserId()async{
@@ -51,7 +52,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
   final payload = decodeJWT(token);
   print(payload['id']);
    setState(() {
-     userId = payload['id'];
+     _messageInboxController.myID = payload['id'];
    });
   }
   @override
@@ -64,30 +65,13 @@ class _MessageInboxViewState extends State<MessageInboxView> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: Column(
           children: [
-            if (messageType == 'group')
-            Container(
-              height: 40.h,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 5,
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                child: Text('Any one can text each other but only tournament creator can post image',textAlign: TextAlign.center,style: AppStyles.h6(color: AppColors.primaryColor),),
-              ),
-            ),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Obx(() {
-                 List<ChatAttributes> chatAttributesList = _messageInboxController.chatAttributesList??[];
+                 List<ChatModel> chatAttributesList = _messageInboxController.chatItemList;
                   if (_messageInboxController.isLoading.value) {
-                    return Center(child: CircularProgressIndicator());
+                    return Center(child: CustomPageLoading());
                   } else if (chatAttributesList.isEmpty) {
                     return Center(child: Text('No Message'));
                   }
@@ -98,7 +82,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                     itemCount: chatAttributesList.length,
                     itemBuilder: (context, index) {
                       final chatAttributesIndex = chatAttributesList[index];
-                      if (chatAttributesIndex.sender?.id == _messageInboxController.myID) {
+                      if (chatAttributesIndex.sender == _messageInboxController.myID) {
                         return senderBubble(context, chatAttributesIndex);
                       } else {
                         return receiverBubble(context, chatAttributesIndex);
@@ -136,10 +120,8 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                       suffixIcon: InkWell(
                         onTap: tournamentCreatorId.toString() == _messageInboxController.myID && messageType == 'group' ? () async {
                           await _sendMessageController.pickImageFromGallery();
-                          print(_sendMessageController.filePath.value);
                         }:messageType == 'single'?()async{
                           await _sendMessageController.pickImageFromGallery();
-                          print(_sendMessageController.filePath.value);
                         }: null ,
                         child: Padding(
                           padding: EdgeInsets.all(12.w),
@@ -173,6 +155,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                   /// =========== Send message ==========
                   SizedBox(width: 8.w),
                   Obx((){
+                   String receiverId = _messageInboxController.receiverId.value;
                     return CustomButton(
                       loading:_sendMessageController.isLoading.value,
                       height: 55.h,
@@ -182,8 +165,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                           try {
                             await _messageInboxController.sendEmitMessage(
                               message: _msgCtrl.text,
-                              media: '',
-                              messageType: 'text',
+                              receiverId: receiverId, ///==================== receiver id
                             );
                             _msgCtrl.clear();
                             _messageInboxController.scrollToBottom();
@@ -216,7 +198,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
   }
 
   /// Sent Message bubble
-  Widget senderBubble(BuildContext context, ChatAttributes chatAttributes) {
+  Widget senderBubble(BuildContext context, ChatModel chatAttributes) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -224,7 +206,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
           child: ChatBubble(
             clipper: ChatBubbleClipper3(type: BubbleType.sendBubble),
             alignment: Alignment.topRight,
-            margin: const EdgeInsets.only(top: 20, bottom: 20),
+            margin:  EdgeInsets.only(top: 20.h, bottom: 20.w),
             backGroundColor: AppColors.primaryColor,
             child: Container(
               constraints: BoxConstraints(
@@ -234,7 +216,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                 children: [
                   showMessage(chatAttributes),
                   Text(
-                    DataAgeFormation().formatAge(chatAttributes.createdAt!),
+                    DataAgeFormation().formatAge(chatAttributes.timestamp!),
                     style: TextStyle(color: Colors.white, fontSize: 12.sp),
                   ),
                 ],
@@ -245,7 +227,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
         SizedBox(width: 4.w),
         CustomNetworkImage(
           imageUrl:
-              "${ApiConstants.imageBaseUrl}${chatAttributes.sender?.image?.url}",
+              "${chatAttributes.senderImage}",
           height: 40.h,
           width: 40.w,
           boxShape: BoxShape.circle,
@@ -255,13 +237,13 @@ class _MessageInboxViewState extends State<MessageInboxView> {
   }
 
   /// Receive Message bubble
-  Widget receiverBubble(BuildContext context, ChatAttributes chatAttributes) {
+  Widget receiverBubble(BuildContext context, ChatModel chatAttributes) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         CustomNetworkImage(
-          imageUrl: "${ApiConstants.imageBaseUrl}${chatAttributes.sender?.image?.url}",
+          imageUrl: "${chatAttributes.receiverImage}",
           height: 40.h,
           width: 40.w,
           boxShape: BoxShape.circle,
@@ -270,7 +252,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
         Expanded(
           child: ChatBubble(
             clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
-            margin: const EdgeInsets.only(top: 20, bottom: 20),
+            margin:  EdgeInsets.only(top: 20.h, bottom: 20.h),
             backGroundColor: const Color(0xff1E66CA).withOpacity(0.10),
             child: Container(
               constraints: BoxConstraints(
@@ -280,7 +262,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                 children: [
                   showMessage(chatAttributes),
                   Text(
-                    DataAgeFormation().formatAge(chatAttributes.createdAt!),
+                    DataAgeFormation().formatAge(chatAttributes.timestamp!),
                     style: TextStyle(
                         color: Colors.black.withOpacity(0.6), fontSize: 12.sp),
                   ),
@@ -294,25 +276,14 @@ class _MessageInboxViewState extends State<MessageInboxView> {
   }
 
   /// Show message based on type
-  Widget showMessage(ChatAttributes chatAttributes) {
-    if (chatAttributes.messageType == 'image') {
-      return CustomNetworkImage(
-        imageUrl: '${ApiConstants.imageBaseUrl}${chatAttributes.media}',
-        height: 150,
-        width: 150,
-        boxShape: BoxShape.rectangle,
-      );
-    } else if (chatAttributes.messageType == 'text') {
-      return Text(
-        '${chatAttributes.message}',
-        style: TextStyle(
-            color: chatAttributes.sender?.id == _messageInboxController.myID
-                ? Colors.white
-                : Colors.black),
-        textAlign: TextAlign.start,
-      );
-    } else {
-      return SizedBox.shrink();
-    }
+  Widget showMessage(ChatModel chatAttributes) {
+     return Text(
+      '${chatAttributes.message}',
+      style: TextStyle(
+          color: chatAttributes.sender == _messageInboxController.myID
+              ? Colors.white
+              : Colors.black),
+      textAlign: TextAlign.start,
+    );
   }
 }

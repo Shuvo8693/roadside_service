@@ -6,7 +6,7 @@ class ApiConstants{
    /// App Url
     static String baseUrl="https://radwan5000.sobhoy.com";
     static String  imageBaseUrl="http://10.0.80.205:9090";
-    static String socketUrl="ws://10.0.80.205:9000";
+    static String socketUrl="http://radwan5000.sobhoy.com";
 
 
 ///>>>>>>>>>>>>>>>>>>>>>>>>>>> Api End point >>>>>>>>>>>>>>>>>>>

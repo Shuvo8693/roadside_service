@@ -11,34 +11,26 @@ import 'dart:convert';
 
 class MessageInboxController extends GetxController {
   final ScrollController scrollController = ScrollController();
-  Rx<ChatAttributes> chatAttributes= ChatAttributes().obs;
-  RxList<ChatAttributes> chatAttributesList= <ChatAttributes>[].obs;
+  RxList<ChatModel> chatItemList= <ChatModel>[].obs;
   late IO.Socket _socket;
-  RxString chatId = ''.obs;
-  final ChatService _chatService = ChatService();
+  RxString receiverId = ''.obs;
   String? myID;
 
+
   @override
-  void onReady() async {
-    super.onReady();
-   // await getMyId();
+  void onInit() {
+    super.onInit();
     if(Get.arguments != null){
-      getMessengerAttributes();
+      getUserId();
     }
     initSocket();
-    await  fetchAndListenToChatHistory();
     //debounce(chatId, (_)async => await  fetchAndListenToChatHistory(),time: Duration(milliseconds: 300));
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await  fetchAndListenToChatHistory();
       scrollToBottom();
     });
-
   }
 
-  getMyId()async{
-    String  id = await PrefsHelper.getString('userId');
-    myID = id;
-    update();
-  }
 
   void scrollToBottom() {
     if (scrollController.hasClients) {
@@ -49,12 +41,10 @@ class MessageInboxController extends GetxController {
       );
     }
   }
-  getMessengerAttributes(){
-   final messageAttributes = Get.arguments['messengerAttributes'];
-   chatId.value = messageAttributes.sId??'';
-  // messageAttributesMdl.value = messageAttributes;
-   print(chatId.value);
-
+  getUserId(){
+   final receiverId = Get.arguments['receiverId'];
+   receiverId.value = receiverId ?? '';
+   print(receiverId.value);
   }
   void initSocket() {
     _socket = IO.io(
@@ -65,9 +55,8 @@ class MessageInboxController extends GetxController {
 
     _socket.onConnect((_) {
       print('====Connected to server=====');
-      if (chatId.value.isNotEmpty) {
-        listenToNewMessages(chatId.value);
-      }
+        listenToNewMessages();
+
     });
 
     _socket.onDisconnect((_) {
@@ -77,13 +66,12 @@ class MessageInboxController extends GetxController {
   /// =====================Listen_Existing_message======================
   RxBool isLoading= false.obs;
   Future<void> fetchAndListenToChatHistory() async {
-    if (chatId.value.isEmpty) return;
     isLoading.value=true;
     try {
-      chatAttributesList.clear();
-      List<ChatAttributes> fetchedMessages = await _chatService.fetchChatHistory(chatId.value);
-      chatAttributesList.assignAll(fetchedMessages);
-      listenToNewMessages(chatId.value);
+      chatItemList.clear();
+      List<ChatModel> fetchedMessages = await ChatService.fetchChatHistory('');
+      chatItemList.assignAll(fetchedMessages);
+      listenToNewMessages();
     } catch (e) {
       print("Error fetching chat history: $e");
     }finally{
@@ -92,15 +80,15 @@ class MessageInboxController extends GetxController {
   }
 
   /// ===========================Listen_New_message======================
-  void listenToNewMessages(String chatId) {
-    _socket.off('newMessage::$chatId'); // Unsubscribe from any previous listeners
-    _socket.on('newMessage::$chatId', _handleNewMessage); // Listen to the new chatId
+  void listenToNewMessages() {
+    _socket.off('send-message'); // Unsubscribe from any previous listeners
+    _socket.on('send-message', _handleNewMessage); // Listen to the new chatId
   }
 
   void _handleNewMessage(dynamic data) {
     if (data != null) {
-      final dataList = data['data']['attributes'] as List<dynamic>;
-      chatAttributesList.addAll(dataList.map((item) => ChatAttributes.fromJson(item)));
+      final dataList = data as List<dynamic>;
+      chatItemList.addAll(dataList.map((item) => ChatModel.fromJson(item)));
       scrollToBottom();
     } else {
       print("Received invalid message data: $data");
@@ -109,15 +97,11 @@ class MessageInboxController extends GetxController {
 ///================================================== Send_message  =======================================
   sendEmitMessage({
       required String message,
-      required String media,
-      required String messageType}) {
-  //  String? senderIdMdl = messageAttributesMdl.value.participants?.firstWhere((element) => element.id == myID).id;
+      required String receiverId,
+      }) {
     Map<String, dynamic> messageData = {
-      "roomId": 'messageAttributesMdl.value.sId',
-      "senderId": 'senderIdMdl',
-      "message": message,
-      "media": media,
-      "messageType": messageType
+      "to":receiverId,
+      "message" : message
     };
     _socket.emit('send-message', messageData);
   }
@@ -125,7 +109,7 @@ class MessageInboxController extends GetxController {
   @override
   void onClose() {
     _socket.dispose();
-    chatAttributesList.clear();
+    chatItemList.clear();
     super.onClose();
   }
 
@@ -133,26 +117,23 @@ class MessageInboxController extends GetxController {
 
 /// =============== fetch_chat_history =================
 class ChatService {
-  ChatModel chatModel= ChatModel();
+ static ChatModel chatModel = ChatModel();
 
-  Future<List<ChatAttributes>> fetchChatHistory(String chatRoomId) async {
+static List<ChatModel> chatItemList=[];
+
+ static Future<List<ChatModel>> fetchChatHistory(String chatRoomId) async {
     String token = await PrefsHelper.getString('token');
     Map<String, String> headers = {'Authorization': 'Bearer $token'};
     final response = await http.get(Uri.parse(''),headers: headers);
 
     if (response.statusCode == 200) {
       final decodedData = json.decode(response.body);
-      chatModel= ChatModel.fromJson(decodedData);
-      /*for (var item in data['data']['attributes']['data']) {
-        messages.add({
-          'chatId': item['chatId'],
-          'messageType': item['content']['messageType'],
-          'content': item['content']['message'],
-          'senderId': item['senderId']['id'],
-          'id': item['id'],
-        });
-      }*/
-      return chatModel.data?.attributes??[];
+     final dataList = decodedData as List<dynamic>;
+     for(var data in dataList){
+       chatItemList.add(ChatModel.fromJson(data));
+     }
+
+      return chatItemList;
     } else {
       throw Exception("Failed to load chat history");
     }

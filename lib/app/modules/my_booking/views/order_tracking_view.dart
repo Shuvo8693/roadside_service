@@ -203,7 +203,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
                           return  CustomButton(
                             onTap: () {
                               if(mechanicId !=null){
-                                Get.toNamed(Routes.MESSAGEINBOX,arguments: {"mechanicId": mechanicId});
+                                Get.toNamed(Routes.MESSAGEINBOX,arguments: {"receiverId": mechanicId});
                               }
                             },
                             text: 'Message',
