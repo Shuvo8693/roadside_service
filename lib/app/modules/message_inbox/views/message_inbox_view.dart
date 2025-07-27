@@ -154,7 +154,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                               receiverId: receiverId, ///==================== receiver id
                             );
                             _msgCtrl.clear();
-                            _messageInboxController.scrollToBottom();
+                           // _messageInboxController.scrollToBottom();
                           } catch (e) {
                             Get.snackbar('Error', 'Failed to send message: $e');
                           }

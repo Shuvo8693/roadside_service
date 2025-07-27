@@ -49,7 +49,7 @@ class _OrdersListState extends State<OrdersList> {
           final orderDataIndex = ordersData[index];
           return InkWell(
             onTap: () {
-              Get.toNamed(Routes.ORDER_DETAILS);
+              Get.toNamed(Routes.ORDER_DETAILS,arguments: {"orderId":orderDataIndex.id});
             },
             child: OrderCard(order: orderDataIndex , tapIndex: widget.tapIndex,orderIndex: index,),
           );
