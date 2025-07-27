@@ -21,11 +21,12 @@ static String mechanicCancelOrderUrl(String orderId) =>  '/api/v1/order/cancel/$
 static String mechanicMarkAsCompleteUrl(String orderId) =>  '/api/v1/order/markComplete/$orderId';
 static String mechanicServiceWithPriceUrl(String mechanicId) =>  '/api/v1/mechanic/services/$mechanicId';
 static String favouriteUrl(String mechanicId) =>  '/api/v1/favourite/toggle/$mechanicId';
-static String orderStatusUrl(String status) =>  '/api/v1/order/$status';
+static String orderStatusUrl(String status) =>  '/api/v1/order/status/$status';
 static String deleteServiceUrl(String serviceId) => '/api/v1/service/mechanic/$serviceId';
 static String toggleAvailabilityUrl(String mechanicId) =>  '/api/v1/mechanic/toggle-availability/$mechanicId';
 static String paymentMethodDeleteUrl(String methodId) =>  '/api/v1/payment-method/$methodId';
 static String vehicleDeleteUrl(String vehicleId) =>  '/api/v1/vehicle/$vehicleId';
+static String chatHistoryUrl(String receiverId) =>  '/api/v1/chat/$receiverId';
 static String orderTrackingInitializeUrl(String mechanicId) =>  '/api/v1/locationTracking/initialize/$mechanicId';
 static String allMechanicUrl({int? currentPage, int? limit}) =>  '/api/v1/mechanic/all?currentPage=$currentPage&limit=$limit';
 

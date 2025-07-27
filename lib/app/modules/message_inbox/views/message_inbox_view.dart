@@ -40,21 +40,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
   String? tournamentCreatorId;
   String? roomChatId;
 
- @override
-  void initState() {
-    super.initState();
-   getUserId();
-    _messageInboxController.initSocket();
-  }
 
-  getUserId()async{
-    String token = await PrefsHelper.getString('token');
-  final payload = decodeJWT(token);
-  print(payload['id']);
-   setState(() {
-     _messageInboxController.myID = payload['id'];
-   });
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,7 +141,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                   /// =========== Send message ==========
                   SizedBox(width: 8.w),
                   Obx((){
-                   String receiverId = _messageInboxController.receiverId.value;
+                   String receiverId = _messageInboxController.receiveAbleId.value;
                     return CustomButton(
                       loading:_sendMessageController.isLoading.value,
                       height: 55.h,
