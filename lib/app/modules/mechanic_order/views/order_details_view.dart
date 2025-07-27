@@ -181,7 +181,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   children: [
                     TextButton(
                       onPressed: () async {
-                        final result = await Get.toNamed(Routes.MECHANIC_MAP);
+                        final result = await Get.toNamed(Routes.MECHANIC_MAP,arguments: {"userId":orderDetailItems?.result?.user?.id??'',"orderId": orderDetailItems?.result?.id??''});
                         if (result != null && result is LatLng) {
                           setState(() {
                             currentLocation = result; // Update local state

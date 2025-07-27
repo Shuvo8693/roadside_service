@@ -18,7 +18,7 @@ class OrderDetailResponse {
 
 class OrderData {
   final Result? result;
-  final int? appService;
+  final num? appService;
   final MechanicServiceRate? mechanicServiceRate;
 
   OrderData({this.result, this.appService, this.mechanicServiceRate});

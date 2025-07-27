@@ -22,7 +22,7 @@ class OrderTrackingController extends GetxController {
 
   Future<void> initializeTracking() async {
     String token = await PrefsHelper.getString('token');
-    String mechanicId = Get.arguments['mechanicId']??'';
+    String userId = Get.arguments['userId']??'';
     String orderId = Get.arguments['orderId']??'';
 
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
@@ -38,7 +38,7 @@ class OrderTrackingController extends GetxController {
     try {
       isLoading.value = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
-        endpoint: ApiConstants.orderTrackingInitializeUrl(mechanicId),
+        endpoint: ApiConstants.orderTrackingInitializeUrl(userId),
         timeout: Duration(seconds: 10),
         body: body,
         fromJson: (json) => json as Map<String, dynamic>,

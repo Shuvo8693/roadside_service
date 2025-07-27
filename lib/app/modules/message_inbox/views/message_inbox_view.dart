@@ -9,8 +9,7 @@ import 'package:get/get.dart';
 import 'package:roadside_assistance/app/data/api_constants.dart';
 
 import 'package:roadside_assistance/app/modules/message_inbox/controllers/message_inbox_controller.dart';
-import 'package:roadside_assistance/app/modules/message_inbox/model/chat_model.dart'
-    show ChatAttributes, ChatModel;
+import 'package:roadside_assistance/app/modules/message_inbox/model/chat_model.dart' show ChatModel;
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_icons/app_icons.dart';
 import 'package:roadside_assistance/common/app_text_style/style.dart';
@@ -138,7 +137,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                     }
                   }
                   ),
-                  /// =========== Send message ==========
+                  /// =========== Send message ================
                   SizedBox(width: 8.w),
                   Obx((){
                    String receiverId = _messageInboxController.receiveAbleId.value;
