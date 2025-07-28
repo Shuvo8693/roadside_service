@@ -34,6 +34,7 @@ final AccountController _accountController= Get.put(AccountController());
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((__)async{
       await _homeController.fetchMechanicService();
+      await _homeController.fetchMyLocation();
       await _accountController.fetchProfile();
       await _mechanicController.fetchMechanic();
     });
@@ -59,18 +60,28 @@ final AccountController _accountController= Get.put(AccountController());
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// My location
-              CustomTextButtonWithIcon(
-                onTap: () {
-                  Get.toNamed(Routes.MAP);
-                },
-                text: 'New York, Usa',
-                icon: Icon(Icons.location_on, color: Colors.grey, size: 23.h),
-                width: 85.w,
-                height: 30.h,
-                textStyle: GoogleFontStyles.h3(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
+              Obx((){
+               final placeMark = _homeController.placeMark;
+               if(_homeController.isLoading3.value){
+                 return  Text('Location is Loading....');
+               } else if(placeMark.isEmpty){
+                 return Text('Select your location');
+               }
+                return CustomTextButtonWithIcon(
+                  onTap: () {
+                    Get.toNamed(Routes.MAP);
+                  },
+                  text: '${placeMark.first.locality},${placeMark.first.administrativeArea}, ${placeMark.first.country}',
+                  icon: Icon(Icons.location_on, color: Colors.grey, size: 23.h),
+                  width: 85.w,
+                  height: 30.h,
+                  textStyle: GoogleFontStyles.h5(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                );
+              }
+
               ),
               /// Mechanic search
               SizedBox(height: 10.h),
