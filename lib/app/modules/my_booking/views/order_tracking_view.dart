@@ -5,6 +5,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:roadside_assistance/app/modules/mechanic_order/controllers/order_details_controller.dart';
 
 import 'package:roadside_assistance/app/modules/my_booking/controllers/order_tracking_controller.dart';
 import 'package:roadside_assistance/app/modules/my_booking/widgets/bottom_sheet_order_details.dart';
@@ -17,6 +18,8 @@ import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/spacing.dart';
 import 'package:roadside_assistance/sk_key.dart';
 
+import '../../mechanic_order/model/order_details_model.dart';
+
 class OrderTrackingView extends StatefulWidget {
   const OrderTrackingView({super.key});
 
@@ -26,6 +29,7 @@ class OrderTrackingView extends StatefulWidget {
 
 class _OrderTrackingScreenState extends State<OrderTrackingView> {
   final OrderTrackingController _orderTrackingController = Get.put(OrderTrackingController());
+  final OrderDetailsController _orderDetailsController = Get.put(OrderDetailsController());
 
 
   @override
@@ -41,6 +45,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
       await _orderTrackingController.initializeTracking();
       // Then initialize socket for real-time updates
       _orderTrackingController.initSocket();
+      await _orderDetailsController.fetchOrderDetails();
 
       print('App initialization completed');
     } catch (e) {
@@ -142,7 +147,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
            ):SizedBox.shrink(),
           ),
           /// Draggable bottom sheet with order details
-          BottomSheetOrderDetails(),
+          Obx((){
+            OrderData? orderDetailItems = _orderDetailsController.orderDetailResponse.value.data;
+            return BottomSheetOrderDetails(orderDetailItems: orderDetailItems??OrderData(),);
+          }),
 
           /// Provider card and action buttons
           Positioned(
@@ -228,6 +236,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
             ),
           ),
 
+
           // Bottom progress indicator
           Positioned(
             left: 0,
@@ -254,10 +263,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Debug Info:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    Text('User: ${_orderTrackingController.pickupLocation.value}', style: TextStyle(color: Colors.white, fontSize: 10)),
-                    Text('Driver: ${_orderTrackingController.driverLocation.value}', style: TextStyle(color: Colors.white, fontSize: 10)),
-                    Text('Polyline: ${_orderTrackingController.polylineCoordinates.length} points', style: TextStyle(color: Colors.white, fontSize: 10)),
+                    Text('Location Info:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    Text('User: ${_orderTrackingController.pickupLocation.value}', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
+                    Text('Driver: ${_orderTrackingController.driverLocation.value}', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
+                    Text('Polyline: ${_orderTrackingController.polylineCoordinates.length} points', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
                   ],
                 ),
               )),

@@ -111,7 +111,6 @@ class _MapViewState extends State<MapLocationView> {
   }
 
   void moveCamera(LatLng target) {
-    pickedLocation = target;
     mapController?.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(target: target, zoom: 15),
@@ -285,8 +284,7 @@ class _MapViewState extends State<MapLocationView> {
                         );
                       },
                     ),
-                  )
-                : const SizedBox.shrink(),
+                  ) : const SizedBox.shrink(),
           ),
 
           /// Confirm button at the bottom
@@ -294,28 +292,47 @@ class _MapViewState extends State<MapLocationView> {
             bottom: 30.h,
             left: 15.w,
             right: 15.w,
-            child: CustomButton(
-              onTap: () {
-                if(pickedLocation != null){
-                  _locationSelectionCtrl.pickedNewLocation = pickedLocation;
-                  _locationSelectionCtrl.pickupLocationCtrl.text = searchLocationCtrl.text;
-                  Get.back(result: pickedLocation);
-                  confirmLocation(searchLocationCtrl.text);
-                  print(_locationSelectionCtrl.pickedNewLocation);
-                  Get.snackbar('Successfully selected', _locationSelectionCtrl.pickupLocationCtrl.text);
-                }else {
-                  print("No location selected!");
-                  Get.snackbar('No location selected!', 'Please select your location ');
-                }
-              },
-              text: 'Confirm Location',
-              height: 54.h,
-              width: double.infinity,
+            child: Obx((){
+              return CustomButton(
+                loading: _locationSelectionCtrl.isLoading.value,
+                onTap: () async{
+                  if(pickedLocation != null){
+                   await _locationSelectionCtrl.setLocation(latLng:pickedLocation!,callBack: (message){
+                    _resetPickedLocation();
+                     Get.snackbar('Success', message);
+                   });
+                   // Get.back(result: pickedLocation);
+                  }else if( searchLocationCtrl.text.isNotEmpty){
+                  LatLng? location = await  GoogleApiService.fetchAddressToCoordinate(searchLocationCtrl.text, (location){});
+                    await _locationSelectionCtrl.setLocation(latLng: location ,callBack: (message){
+                      if(mounted){
+                        searchLocationCtrl.clear();
+                      }
+                      Get.snackbar('SuccessFully', message);
+                    });
+                  } else {
+                    Get.snackbar('No location selected!', 'Please select your location ');
+                  }
+                },
+                text: 'Confirm Location',
+                height: 54.h,
+                width: double.infinity,
+              );
+            }
+
             ),
           ),
         ],
       ),
     );
+  }
+  // Fixed setState call - add mounted check
+  void _resetPickedLocation() {
+    if (mounted) {
+      setState(() {
+        pickedLocation = null;
+      });
+    }
   }
 }
 

@@ -148,10 +148,10 @@ class _OrderMechanicMapState extends State<MechanicMapView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Debug Info:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    Text('User: ${_orderTrackingController.pickupLocation.value}', style: TextStyle(color: Colors.white, fontSize: 10)),
-                    Text('Driver: ${_orderTrackingController.driverLocation.value}', style: TextStyle(color: Colors.white, fontSize: 10)),
-                    Text('Polyline: ${_orderTrackingController.polylineCoordinates.length} points', style: TextStyle(color: Colors.white, fontSize: 10)),
+                    Text('Location Info:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    Text('User: ${_orderTrackingController.pickupLocation.value}', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
+                    Text('Driver: ${_orderTrackingController.driverLocation.value}', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
+                    Text('Polyline: ${_orderTrackingController.polylineCoordinates.length} points', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
                   ],
                 ),
               )),
