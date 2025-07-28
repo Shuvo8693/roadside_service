@@ -1,18 +1,24 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+
 import 'package:roadside_assistance/app/data/api_constants.dart';
 import 'package:roadside_assistance/app/data/network_caller.dart';
-import 'package:roadside_assistance/app/modules/my_booking/model/order_booking_response_model.dart';
+import 'package:roadside_assistance/app/modules/mechanic_user_side/model/favourite_model.dart';
+import 'package:roadside_assistance/app/modules/mechanic_user_side/model/mechanic_details_model.dart';
+import 'package:roadside_assistance/app/modules/mechanic_user_side/model/mechanic_model.dart';
+import 'package:roadside_assistance/app/modules/mechanic_user_side/model/review_response.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
-class MyBookingController extends GetxController {
-
+class RatingReviewController extends GetxController {
   final NetworkCaller _networkCaller = NetworkCaller.instance;
-  Rx<OrdersResponse> orderResponseModel = OrdersResponse().obs;
+  Rx<ReviewResponse> reviewResponse = ReviewResponse().obs;
   var isLoading = false.obs;
 
-  Future<void> fetchBookings() async {
+
+  Future<void> fetchReview() async {
     String token = await PrefsHelper.getString('token');
+    String  mechanicId = Get.arguments['mechanicId']??'';
+
     _networkCaller.clearInterceptors();
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
@@ -21,17 +27,20 @@ class MyBookingController extends GetxController {
     try {
       isLoading.value = true;
       final response = await _networkCaller.get<Map<String, dynamic>>(
-        endpoint: ApiConstants.bookedOrdersUrl,
+        endpoint:  ApiConstants.reviewUrl(mechanicId),
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
-        final responseData = response.data;
+        Map<String,dynamic>? responseData = response.data;
         print(responseData);
-        orderResponseModel.value = OrdersResponse.fromJson(responseData ?? {});
-        print(orderResponseModel.value);
+        reviewResponse.value = ReviewResponse.fromJson(responseData??{});
+        print(reviewResponse.value);
+
       } else {
-        Get.snackbar('Failed', response.message ?? 'Failed to fetch booking');
+        if (kDebugMode) {
+          print(response.message);
+        }
       }
     } catch (e) {
       if (kDebugMode) {
@@ -41,35 +50,41 @@ class MyBookingController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+
   }
+  ///====================== Mechanic Details =======================
 
+  var isLoading2 = false.obs;
 
-  RxMap<int,bool> isLoading2 = <int,bool>{}.obs;
-  Future<void> makePayment({int? index,String? orderId,VoidCallback? callBack}) async {
+  Future<void> postReview({Review? review,VoidCallback? callBack}) async {
     String token = await PrefsHelper.getString('token');
-     final body ={
-       "transactionId" : UniqueKey().toString()
-     };
+    final body ={
+      "order" : review?.order,
+      "rating" : review?.rating,
+      "comment"  : review?.comment
+    };
     _networkCaller.clearInterceptors();
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
 
     try {
-      isLoading2[index!] = true;
+      isLoading2.value = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
-        endpoint: ApiConstants.makePaymentUrl(orderId??''),
+        endpoint:  ApiConstants.giveReviewUrl,
         body: body,
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
         String responseMessage = response.data?['message'];
-        callBack?.call();
         Get.snackbar('Success', responseMessage);
+        callBack?.call();
       } else {
-        if(!Get.isSnackbarOpen){
-          Get.snackbar('Failed', response.message ?? 'Failed to fetch booking');
+        String responseMessage = response.data?['errorMessage'];
+        Get.snackbar('Failed', responseMessage);
+        if (kDebugMode) {
+          print(response.message);
         }
       }
     } catch (e) {
@@ -78,8 +93,15 @@ class MyBookingController extends GetxController {
       }
       throw NetworkException('$e');
     } finally {
-      isLoading2[index!] = false;
+      isLoading2.value = false;
     }
-  }
 
+  }
+}
+class Review {
+  final String? order;
+  final int? rating;
+  final String? comment;
+
+  Review({this.order, this.rating, this.comment});
 }

@@ -6,13 +6,14 @@ class ReviewCard extends StatelessWidget {
   final String date;
   final int rating;
   final String reviewText;
+  final String imageUrl;
 
   const ReviewCard({
     super.key,
     required this.userName,
     required this.date,
     required this.rating,
-    required this.reviewText,
+    required this.reviewText, required this.imageUrl,
   });
 
   @override
@@ -29,7 +30,7 @@ class ReviewCard extends StatelessWidget {
           // User Avatar
            CircleAvatar(
             radius: 20.r,
-            backgroundColor: Colors.grey,
+             backgroundImage: NetworkImage(imageUrl),
           ),
            SizedBox(width: 12.w),
           // Review Details

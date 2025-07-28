@@ -81,10 +81,11 @@ class _PreviousBookingState extends State<PreviousBooking> {
                             color: Colors.grey,
                           ),
                         ),
+                        // Rating
                         SizedBox(height: 8.h),
                         InkWell(
                           onTap: (){
-                            Get.toNamed(Routes.RATINGANDREVIEW);
+                            Get.toNamed(Routes.RATINGANDREVIEW,arguments: {"mechanicId":orderDetailItems?.result?.mechanic?.id});
                           },
                           child: Row(
                             children: [

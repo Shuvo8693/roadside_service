@@ -30,6 +30,8 @@ static String vehicleDeleteUrl(String vehicleId) =>  '/api/v1/vehicle/$vehicleId
 static String chatHistoryUrl(String receiverId) =>  '/api/v1/chat/$receiverId';
 static String orderTrackingInitializeUrl(String mechanicId) =>  '/api/v1/locationTracking/initialize/$mechanicId';
 static String myLocationUrl(String myId) =>  '/api/v1/user/location/$myId';
+static String makePaymentUrl(String orderId) =>  '/api/v1/order/makePayment/$orderId';
+static String reviewUrl(String mechanicId) =>  '/api/v1/review/$mechanicId';
 static String allMechanicUrl({int? currentPage, int? limit}) =>  '/api/v1/mechanic/all?currentPage=$currentPage&limit=$limit';
 
 static String emailSendUrl= '/api/v1/user/forget-password';
@@ -58,6 +60,7 @@ static String vehicleCreateUrl = '/api/v1/vehicle';
 static String favouriteAllUrl = '/api/v1/favourite/all';
 static String updateProfileUrl = '/api/v1/user/updateProfile';
 static String setLocationUrl = '/api/v1/user/set-location';
+static String giveReviewUrl = '/api/v1/review';
 
 
 }

@@ -13,7 +13,6 @@ import 'package:roadside_assistance/common/bottom_menu/bottom_menu..dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
 
-
 class MyBookingView extends StatefulWidget {
   const MyBookingView({super.key});
 
@@ -22,99 +21,133 @@ class MyBookingView extends StatefulWidget {
 }
 
 class _MyBookingViewState extends State<MyBookingView> {
-  final MyBookingController _myBookingController = Get.put(MyBookingController());
- List<Map<String,dynamic>> bookingStatus = [
-   {
-     'status':'processing'
-   } ,
-   {
-     'status':'completed'
-   },
-   {
-     'status':'canceled'
-   }
- ];
+  final MyBookingController _myBookingController = Get.put(
+    MyBookingController(),
+  );
+  List<Map<String, dynamic>> bookingStatus = [
+    {'status': 'processing'},
+    {'status': 'completed'},
+    {'status': 'canceled'},
+  ];
 
- @override
+  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((__)async{
+    WidgetsBinding.instance.addPostFrameCallback((__) async {
       await _myBookingController.fetchBookings();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomMenu(1),
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('My Bookings'),
-        centerTitle: true,
-      ),
-      body: Obx((){
-        List<OrderData> orderDataList= _myBookingController.orderResponseModel.value.data??[];
-         if(_myBookingController.isLoading.value){
-           return Center(child: CustomPageLoading());
-         }
-         if(orderDataList.isEmpty==true){
-           return Center(child: Text('No bookings are available here'));
-         }
+      appBar: AppBar(title: const Text('My Bookings'), centerTitle: true),
+      body: Obx(() {
+        List<OrderData> orderDataList =
+            _myBookingController.orderResponseModel.value.data ?? [];
+        if (_myBookingController.isLoading.value) {
+          return Center(child: CustomPageLoading());
+        }
+        if (orderDataList.isEmpty == true) {
+          return Center(child: Text('No bookings are available here'));
+        }
         return ListView.builder(
-            itemCount: orderDataList.length,
-            padding: EdgeInsets.all(10.sp),
-            itemBuilder: (context,index){
-              final bookingStatusIndex = orderDataList[index];
+          itemCount: orderDataList.length,
+          padding: EdgeInsets.all(10.sp),
+          itemBuilder: (context, index) {
+            final bookingStatusIndex = orderDataList[index];
 
-              return  ExpansionTile(
-                showTrailingIcon: false,
-                maintainState: true,
-                shape: Border.symmetric(vertical: BorderSide.none),
-                tilePadding: EdgeInsets.all(1),
-                title:  MyBookingCard(
-                  name: bookingStatusIndex.mechanic?.name??'',
-                  title: 'Mechanic',
-                  rating: bookingStatusIndex.rating ?? 0.0,
-                  imageUrl: bookingStatusIndex.mechanic?.image??'',
-                  onTap: (){
-                    switch(bookingStatusIndex.status) {
-                      case 'processing':
-                        Get.toNamed(Routes.ORDERTRACKING,arguments: {'userId': bookingStatusIndex.mechanic?.id,'orderId': bookingStatusIndex.id});
-                        break;
-                      case 'completed' || 'cancelled':
-                        Get.toNamed(Routes.PREVIOUSBOOKING,arguments: {'orderId': bookingStatusIndex.id});
-                        break;
-                      default :
-                        Get.toNamed(Routes.PREVIOUSBOOKING,arguments: {'orderId': bookingStatusIndex.id});
-                    }
-                  },
-                  status: bookingStatusIndex.status??'',
+            return ExpansionTile(
+              showTrailingIcon: false,
+              maintainState: true,
+              shape: Border.symmetric(vertical: BorderSide.none),
+              tilePadding: EdgeInsets.all(1),
+              title: MyBookingCard(
+                name: bookingStatusIndex.mechanic?.name ?? '',
+                title: 'Mechanic',
+                rating: bookingStatusIndex.rating ?? 0.0,
+                imageUrl: bookingStatusIndex.mechanic?.image ?? '',
+                onTap: () {
+                  switch (bookingStatusIndex.status) {
+                    case 'processing':
+                      Get.toNamed(
+                        Routes.ORDERTRACKING,
+                        arguments: {
+                          'userId': bookingStatusIndex.mechanic?.id,
+                          'orderId': bookingStatusIndex.id,
+                        },
+                      );
+                      break;
+                    case 'completed' || 'cancelled':
+                      Get.toNamed(
+                        Routes.PREVIOUSBOOKING,
+                        arguments: {'orderId': bookingStatusIndex.id},
+                      );
+                      break;
+                    default:
+                      Get.toNamed(
+                        Routes.PREVIOUSBOOKING,
+                        arguments: {'orderId': bookingStatusIndex.id},
+                      );
+                  }
+                },
+                status: bookingStatusIndex.status ?? '',
+              ),
+              children: [
+                /// Towing Service Row
+                ...List.generate(bookingStatusIndex.serviceRates!.length, (
+                  int index,
+                ) {
+                  final serviceRate = bookingStatusIndex.serviceRates![index];
+                  return PriceRow(
+                    title: serviceRate.name ?? '',
+                    amount: '\$${serviceRate.price}',
+                  );
+                }),
+
+                /// Divider
+                Divider(),
+
+                /// Total Row
+                PriceRow(
+                  title: 'Total',
+                  amount: '\$${bookingStatusIndex.total}',
+                  isTotal: true,
                 ),
-                children: [
-                  /// Towing Service Row
-                  ...List.generate(bookingStatusIndex.serviceRates!.length, (int index){
-                     final  serviceRate = bookingStatusIndex.serviceRates![index];
-                    return PriceRow(title: serviceRate.name??'',amount: '\$${serviceRate.price}');
+
+                // Pay Now Button
+                SizedBox(height: 16.h),
+                if (bookingStatusIndex.status == 'processing')
+                  Obx(() {
+                    return CustomButton(
+                      loading: _myBookingController.isLoading2[index] ?? false,
+                      onTap: () async {
+                        await _myBookingController.makePayment(
+                          index: index,
+                          orderId: bookingStatusIndex.id,
+                          callBack: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => Padding(
+                                padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                child: ReviewRatingBottomSheet(orderId: bookingStatusIndex.id),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      text: 'Pay Now',
+                    );
                   }),
-                  /// Divider
-                  Divider(),
-                  /// Total Row
-                  PriceRow(title: 'Total', amount: '\$${bookingStatusIndex.total}', isTotal: true),
-
-                  // Pay Now Button
-                  SizedBox(height: 16.h),
-                  CustomButton(
-                    onTap: () {
-                      showDialog(context: context, builder: (context) {
-                        return ReviewRatingDialog();
-                      });
-                    }, text: 'Pay Now',
-                  ),
-                ],
-
-              );
-            });
-         }
-      ),
+              ],
+            );
+          },
+        );
+      }),
     );
   }
 }
