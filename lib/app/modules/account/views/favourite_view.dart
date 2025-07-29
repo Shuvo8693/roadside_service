@@ -60,7 +60,7 @@ class _FavouriteViewState extends State<FavouriteView> {
                 imageUrl: favouriteItem.mechanic?.image??'',
                 isFavourite: favouriteItem.isFavorite??false,
                 onTap: () {
-                  Get.toNamed(Routes.MECHANICDETAILS);
+                  Get.toNamed(Routes.MECHANICDETAILS,arguments: {'mechanicId': favouriteItem.mechanic?.id });
                 }, favouriteTap: () {  },
               );
             },

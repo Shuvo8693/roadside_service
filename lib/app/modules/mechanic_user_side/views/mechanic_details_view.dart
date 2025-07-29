@@ -45,11 +45,12 @@ class _MechanicDetailsViewState extends State<MechanicDetailsView> {
         padding: EdgeInsets.all(16.0.sp),
         child: Obx(() {
           MechanicData?  mechanicData = _mechanicController.mechanicDetailsModel.value.data ?? MechanicData();
-          if(mechanicData.mechanic == null ){
-            return Text('Mechanic details looks empty');
-          } else if(_mechanicController.isLoading2.value){
+          if(_mechanicController.isLoading2.value){
             return Center( child: CustomPageLoading());
+          } else if(mechanicData.mechanic == null ){
+            return Text('Mechanic details looks empty');
           }
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

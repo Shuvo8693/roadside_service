@@ -49,7 +49,7 @@ class _MechanicViewState extends State<MechanicView> {
                 if(value!.isNotEmpty){
                   await _homeController.fetchMechanicQuery(queryService: value);
                 }else{
-                  setState(() {
+                  setState((){
                     _homeController.mechanicModel.value.mechanicData?.data?.clear();
                   });
                 }
