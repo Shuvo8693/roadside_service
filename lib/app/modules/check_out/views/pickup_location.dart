@@ -15,14 +15,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:roadside_assistance/common/widgets/custom_search_field.dart';
 
-class MapLocationView extends StatefulWidget {
-  const MapLocationView({super.key});
+class PickupLocation extends StatefulWidget {
+  const PickupLocation({super.key});
 
   @override
-  _MapViewState createState() => _MapViewState();
+  _PickupLocationState createState() => _PickupLocationState();
 }
 
-class _MapViewState extends State<MapLocationView> {
+class _PickupLocationState extends State<PickupLocation> {
   final MyLocationSelectionController _locationSelectionCtrl = Get.put(MyLocationSelectionController());
   late final TextEditingController searchLocationCtrl = TextEditingController();
 
@@ -41,7 +41,7 @@ class _MapViewState extends State<MapLocationView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       customIcon = await bitmapDescriptorFromSvgAsset();
-      }
+    }
     );
   }
 
@@ -71,7 +71,7 @@ class _MapViewState extends State<MapLocationView> {
 
     return BitmapDescriptor.bytes(bytes.buffer.asUint8List());
   }
- /// My current location
+  /// My current location
   getMyCurrentLocation() async {
     bool isLocationServiceEnabled = await  Geolocator.isLocationServiceEnabled();
     if(!isLocationServiceEnabled){
@@ -128,33 +128,33 @@ class _MapViewState extends State<MapLocationView> {
           /// Google Map view
           Positioned.fill(
             child: SafeArea(
-              child: GoogleMap(
-                zoomControlsEnabled: false,
-                myLocationButtonEnabled: true,
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(
-                  target: center,
-                  zoom: 11.0,
-                ),
-                onTap: (position) {
-                  moveCamera(position);
-                },
-                myLocationEnabled: true,
-                markers: {
-                  if (pickedLocation != null)
-                    Marker(
-                      markerId: MarkerId(pickedLocation.toString()),
-                      draggable: true,
-                      icon: customIcon!,
-                      position: pickedLocation!,
-                      onDragEnd: (newPosition) {
-                        _locationSelectionCtrl.pickedNewLocation = newPosition;
-                        print('New position: ${_locationSelectionCtrl.pickedNewLocation}');
-                      },
-                    ),
-                },
+                child: GoogleMap(
+                  zoomControlsEnabled: false,
+                  myLocationButtonEnabled: true,
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: center,
+                    zoom: 11.0,
+                  ),
+                  onTap: (position) {
+                    moveCamera(position);
+                  },
+                  myLocationEnabled: true,
+                  markers: {
+                    if (pickedLocation != null)
+                      Marker(
+                        markerId: MarkerId(pickedLocation.toString()),
+                        draggable: true,
+                        icon: customIcon!,
+                        position: pickedLocation!,
+                        onDragEnd: (newPosition) {
+                          _locationSelectionCtrl.pickedNewLocation = newPosition;
+                          print('New position: ${_locationSelectionCtrl.pickedNewLocation}');
+                        },
+                      ),
+                  },
 
-              )
+                )
             ),
           ),
 
@@ -190,7 +190,7 @@ class _MapViewState extends State<MapLocationView> {
                   var result = await GoogleApiService.fetchSuggestions(inputValue!);
                   print(result.toString());
                   setState(() {
-                   // latLng = null;
+                    // latLng = null;
                     onChangeTextFieldValue = result;
                   });
                   print(onChangeTextFieldValue.toString());
@@ -209,7 +209,7 @@ class _MapViewState extends State<MapLocationView> {
               color: Colors.white.withValues(alpha: 0.9),
               child: Column(
                 children: [
-                   SizedBox(height: 8.h),
+                  SizedBox(height: 8.h),
                   // Use my current location option
                   ListTile(
                     leading: SvgPicture.asset(AppIcons.paperPlaneIcon,height: 28.h,),
@@ -230,47 +230,47 @@ class _MapViewState extends State<MapLocationView> {
             right: 15.w,
             child: onChangeTextFieldValue.isNotEmpty == true
                 ? Container(
-                    height: 200.h,
-                    width: 50.w,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(1, 1),
-                            blurRadius: 3,
-                            color: AppColors.gray.withOpacity(0.7),
-                          ),
-                        ],
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(12.sp),
-                            bottomRight: Radius.circular(12.sp))),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: onChangeTextFieldValue.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.all(8.0.sp),
-                          child: InkWell(
-                            onTap: () {
-                              String selectedLocation = onChangeTextFieldValue[index].toString();
-                              print(selectedLocation);
-                              if (selectedLocation.isNotEmpty == true) {
-                                searchLocationCtrl.text = selectedLocation;
-                                print(searchLocationCtrl.text);
-                              }
-                              goToSearchLocation(searchLocationCtrl.text);
-                              setState(() {
-                                onChangeTextFieldValue=[];
-                              });
-                            },
-                            child: Text(onChangeTextFieldValue[index].toString(),
-                              style: const TextStyle(fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        );
-                      },
+              height: 200.h,
+              width: 50.w,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(1, 1),
+                      blurRadius: 3,
+                      color: AppColors.gray.withOpacity(0.7),
                     ),
-                  ) : const SizedBox.shrink(),
+                  ],
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(12.sp),
+                      bottomRight: Radius.circular(12.sp))),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: onChangeTextFieldValue.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.all(8.0.sp),
+                    child: InkWell(
+                      onTap: () {
+                        String selectedLocation = onChangeTextFieldValue[index].toString();
+                        print(selectedLocation);
+                        if (selectedLocation.isNotEmpty == true) {
+                          searchLocationCtrl.text = selectedLocation;
+                          print(searchLocationCtrl.text);
+                        }
+                        goToSearchLocation(searchLocationCtrl.text);
+                        setState(() {
+                          onChangeTextFieldValue=[];
+                        });
+                      },
+                      child: Text(onChangeTextFieldValue[index].toString(),
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ) : const SizedBox.shrink(),
           ),
 
           /// Confirm button at the bottom
@@ -278,26 +278,16 @@ class _MapViewState extends State<MapLocationView> {
             bottom: 30.h,
             left: 15.w,
             right: 15.w,
-            child: Obx((){
-              return CustomButton(
-                loading: _locationSelectionCtrl.isLoading.value,
-                onTap: () async{
+            child: CustomButton(
+              onTap: () async{
                   if(pickedLocation != null){
-                   await _locationSelectionCtrl.setLocation(latLng:pickedLocation!,callBack: (message){
-                    _resetPickedLocation();
-                     Get.snackbar('Success', message);
-                   });
-                   Get.back(result: pickedLocation);
-
+                    _locationSelectionCtrl.pickedNewLocation = pickedLocation;
+                    Get.back(result: pickedLocation);
                   }else if( searchLocationCtrl.text.isNotEmpty){
-                  LatLng? location = await  GoogleApiService.fetchAddressToCoordinate(searchLocationCtrl.text, (location){});
-                    await _locationSelectionCtrl.setLocation(latLng: location ,callBack: (message){
-                      if(mounted){
-                        searchLocationCtrl.clear();
-                      }
-                      Get.snackbar('SuccessFully', message);
-                    });
-                   Get.back(result: location);
+                    _locationSelectionCtrl.pickupLocationCtrl.text = searchLocationCtrl.text ;
+                    LatLng? location = await  GoogleApiService.fetchAddressToCoordinate(searchLocationCtrl.text, (location){});
+
+                    Get.back(result: location);
                   } else {
                     Get.snackbar('No location selected!', 'Please select your location ');
                   }
@@ -305,10 +295,8 @@ class _MapViewState extends State<MapLocationView> {
                 text: 'Confirm Location',
                 height: 54.h,
                 width: double.infinity,
-              );
-            }
+              )
 
-            ),
           ),
         ],
       ),

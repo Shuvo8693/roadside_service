@@ -61,6 +61,7 @@ static String favouriteAllUrl = '/api/v1/favourite/all';
 static String updateProfileUrl = '/api/v1/user/updateProfile';
 static String setLocationUrl = '/api/v1/user/set-location';
 static String giveReviewUrl = '/api/v1/review';
+static String notificationUrl = '/api/v1/notification';
 
 
 }

@@ -22,9 +22,7 @@ class CheckoutSignupView extends StatefulWidget {
 }
 
 class _CheckoutSignupViewState extends State<CheckoutSignupView> {
-  final MyLocationSelectionController _locationSelectionCtrl = Get.put(
-    MyLocationSelectionController(),
-  );
+  final MyLocationSelectionController _locationSelectionCtrl = Get.put(MyLocationSelectionController());
   final CheckOutController _checkOutController = Get.put(CheckOutController());
   final VehicleController _vehicleController = Get.put(VehicleController());
   final GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
@@ -98,13 +96,12 @@ class _CheckoutSignupViewState extends State<CheckoutSignupView> {
                     Text('Set on map', style: GoogleFontStyles.h4()),
                     TextButton(
                       onPressed: () async {
-                        final result = await Get.toNamed(Routes.MAP);
+                        final result = await Get.toNamed(Routes.PICKUPLOCATION);
                         if (result != null && result is LatLng) {
                           setState(() {
                             currentLocation = result; // Update local state
                             _locationSelectionCtrl.pickedNewLocation = result;
-                            _checkOutController.pickupAddressCtrl.text =
-                                _locationSelectionCtrl.pickupLocationCtrl.text;
+                            _checkOutController.pickupAddressCtrl.text = _locationSelectionCtrl.pickupLocationCtrl.text;
                           });
                           moveCamera(result); // Move map to new location
                         }

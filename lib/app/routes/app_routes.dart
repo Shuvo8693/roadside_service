@@ -44,6 +44,7 @@ abstract class Routes {
   static const MECHANIC_SERVICE = _Paths.MECHANIC_SERVICE;
   static const MECHANIC_ADD_PAYMENT = _Paths.MECHANIC_ADD_PAYMENT;
   static const MECHANIC_PAYMENT_METHOD = _Paths.MECHANIC_PAYMENT_METHOD;
+  static const PICKUPLOCATION = _Paths.PICKUPLOCATION;
 }
 
 abstract class _Paths {
@@ -89,4 +90,5 @@ abstract class _Paths {
   static const MECHANIC_SERVICE = '/mechanic-service';
   static const MECHANIC_ADD_PAYMENT = '/mechanic-add-payment-info';
   static const MECHANIC_PAYMENT_METHOD = '/mechanic-payment-method';
+  static const PICKUPLOCATION = '/pickup-loaction';
 }

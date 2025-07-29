@@ -156,7 +156,7 @@ class MessageInboxController extends GetxController {
 class ChatService {
  static ChatModel chatModel = ChatModel();
 
-static List<ChatModel> chatItemList = [];
+ static List<ChatModel> chatItemList = [];
 
  static Future<List<ChatModel>> fetchChatHistory({String? receiverId}) async {
     String token = await PrefsHelper.getString('token');

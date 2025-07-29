@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
+import 'package:roadside_assistance/app/modules/check_out/views/pickup_location.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/views/add_payment_info.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/views/payment_method.dart';
 
@@ -267,6 +268,11 @@ class AppPages {
       name: _Paths.MECHANIC_PAYMENT_METHOD,
       page: () => const PaymentMethodsScreen(),
       binding: MechanicPaymentBinding(),
+    ),
+    GetPage(
+      name: _Paths.PICKUPLOCATION,
+      page: () => PickupLocation(),
+      binding: MyLocationSelectionBinding(),
     ),
 
   ];

@@ -21,14 +21,14 @@ class NotificationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
-      leading:  CustomNetworkImage(
-        imageUrl: image??'',
-        boxShape: BoxShape.circle,
-        height: 48.h,width: 48.h,
-        boxFit: BoxFit.cover,
-      ),
-      title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(subtitle),
+      // leading:  CustomNetworkImage(
+      //   imageUrl: image??'',
+      //   boxShape: BoxShape.circle,
+      //   height: 48.h,width: 48.h,
+      //   boxFit: BoxFit.cover,
+      // ),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13)),
+      subtitle: Text(subtitle,style: TextStyle(color: Colors.blueAccent),),
       trailing: Text(
         time,
         style: TextStyle(color: Colors.grey, fontSize: 12),
