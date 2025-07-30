@@ -56,6 +56,7 @@ class MyLocationSelectionController extends GetxController {
       if (response.isSuccess && response.data != null) {
         String responseMessage = response.data?['message'];
         callBack?.call(responseMessage);
+
       } else {
         if (kDebugMode) {
           print(response.message);

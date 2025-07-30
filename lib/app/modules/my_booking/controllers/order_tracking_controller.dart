@@ -51,7 +51,7 @@ class OrderTrackingController extends GetxController {
         // Initialize map after getting initial data
         await fetchRoutePolyline();
       } else {
-        Get.snackbar('Failed', response.message ?? 'Failed to fetch booking');
+        Get.snackbar('Failed', response.message.toString());
       }
     } catch (e) {
       if (kDebugMode) {

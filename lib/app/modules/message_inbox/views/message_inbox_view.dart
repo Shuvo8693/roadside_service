@@ -6,16 +6,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
-import 'package:roadside_assistance/app/data/api_constants.dart';
 
 import 'package:roadside_assistance/app/modules/message_inbox/controllers/message_inbox_controller.dart';
 import 'package:roadside_assistance/app/modules/message_inbox/model/chat_model.dart' show ChatModel;
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_icons/app_icons.dart';
-import 'package:roadside_assistance/common/app_text_style/style.dart';
 import 'package:roadside_assistance/common/date_time_formation/data_age_formation.dart';
-import 'package:roadside_assistance/common/jwt_decoder/jwt_decoder.dart';
-import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 import 'package:roadside_assistance/common/widgets/casess_network_image.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/custom_page_loading.dart';
@@ -201,7 +197,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                 children: [
                   showMessage(chatAttributes),
                   Text(
-                    DataAgeFormation().formatAge(chatAttributes.timestamp!),
+                    DateAgeFormation().formatAge(chatAttributes.timestamp!),
                     style: TextStyle(color: Colors.white, fontSize: 12.sp),
                   ),
                 ],
@@ -247,7 +243,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                 children: [
                   showMessage(chatAttributes),
                   Text(
-                    DataAgeFormation().formatAge(chatAttributes.timestamp!),
+                    DateAgeFormation().formatAge(chatAttributes.timestamp!),
                     style: TextStyle(
                         color: Colors.black.withOpacity(0.6), fontSize: 12.sp),
                   ),

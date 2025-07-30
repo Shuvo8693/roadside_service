@@ -18,7 +18,7 @@ class MechanicMapView extends StatefulWidget {
 }
 
 class _OrderMechanicMapState extends State<MechanicMapView> {
-  final OrderTrackingController _orderTrackingController = Get.put(OrderTrackingController(),tag: 'Mechanic');
+  final OrderTrackingController _orderTrackingController = Get.put(OrderTrackingController());
 
 
   @override

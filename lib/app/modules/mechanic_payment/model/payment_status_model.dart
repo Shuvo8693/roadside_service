@@ -26,16 +26,18 @@ class PaymentRequest {
   final String? status;
   final double? amount;
   final String? user;
+  final String? name;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  PaymentRequest({
+  PaymentRequest( {
     this.id,
     this.status,
     this.amount,
     this.user,
     this.createdAt,
     this.updatedAt,
+    this.name,
   });
 
   factory PaymentRequest.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class PaymentRequest {
       status: json['status'] ?? '',
       amount: (json['amount'] is int)? (json['amount'] as int).toDouble() : json['amount'],
       user: json['user'] ?? '',
+      name: json['name'] ?? '',
       createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
     );

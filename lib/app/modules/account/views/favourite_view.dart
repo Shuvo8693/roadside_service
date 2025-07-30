@@ -46,7 +46,7 @@ class _FavouriteViewState extends State<FavouriteView> {
         return  Padding(
           padding:  EdgeInsets.all(8.0.sp),
           child: ListView.builder(
-            itemCount: 3,
+            itemCount: favouriteLIst.length,
             shrinkWrap: true,
             itemBuilder: (BuildContext context, int index) {
             final favouriteItem = favouriteLIst[index];

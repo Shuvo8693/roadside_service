@@ -13,7 +13,7 @@ class MyBookingController extends GetxController {
 
   Future<void> fetchBookings() async {
     String token = await PrefsHelper.getString('token');
-    _networkCaller.clearInterceptors();
+   // _networkCaller.clearInterceptors();
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
     _networkCaller.addResponseInterceptor(LoggingInterceptor());

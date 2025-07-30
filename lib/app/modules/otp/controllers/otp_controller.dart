@@ -18,7 +18,7 @@ class OtpController extends GetxController {
     final body = {
       "otp": otpCtrl.text.trim(),
     };
-
+     _networkCaller.clearInterceptors();
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
@@ -39,9 +39,9 @@ class OtpController extends GetxController {
           Get.toNamed(Routes.CHANGE_PASSWORD,arguments: {'isResetPass': true});
         }else{
           if(role =='user'){
-            Get.toNamed(Routes.HOME);
+            Get.toNamed(Routes.SIGN_IN);
           } else if(role =='mechanic'){
-            Get.toNamed(Routes.MECHANIC_HOME);
+            Get.toNamed(Routes.SIGN_IN);
           }else{
             Get.snackbar('Failed route', ' Select your role before route home');
           }

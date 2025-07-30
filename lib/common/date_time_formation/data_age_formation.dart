@@ -1,6 +1,6 @@
 import 'difference_formation.dart';
 
-class DataAgeFormation extends DifferenceFormation {
+class DateAgeFormation extends DifferenceFormation {
   String formatAge(DateTime dateTime) {
    Duration difference = formatDifference(dateTime);
     return formatContentAge(difference);

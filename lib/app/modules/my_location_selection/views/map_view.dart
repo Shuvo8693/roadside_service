@@ -10,6 +10,7 @@ import 'package:roadside_assistance/app/modules/my_location_selection/controller
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_icons/app_icons.dart';
+import 'package:roadside_assistance/common/toast/toast.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
@@ -285,9 +286,8 @@ class _MapViewState extends State<MapLocationView> {
                   if(pickedLocation != null){
                    await _locationSelectionCtrl.setLocation(latLng:pickedLocation!,callBack: (message){
                     _resetPickedLocation();
-                     Get.snackbar('Success', message);
+                    Toast.showMaterialToast(context, message);
                    });
-                   Get.back(result: pickedLocation);
 
                   }else if( searchLocationCtrl.text.isNotEmpty){
                   LatLng? location = await  GoogleApiService.fetchAddressToCoordinate(searchLocationCtrl.text, (location){});
@@ -295,7 +295,7 @@ class _MapViewState extends State<MapLocationView> {
                       if(mounted){
                         searchLocationCtrl.clear();
                       }
-                      Get.snackbar('SuccessFully', message);
+                      Toast.showMaterialToast(context, message);
                     });
                    Get.back(result: location);
                   } else {
@@ -316,6 +316,7 @@ class _MapViewState extends State<MapLocationView> {
   }
   // Fixed setState call - add mounted check
   void _resetPickedLocation() {
+    Get.back(result: pickedLocation);
     if (mounted) {
       setState(() {
         pickedLocation = null;

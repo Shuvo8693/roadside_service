@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:roadside_assistance/app/modules/mechanic_payment/model/payment_status_model.dart';
+import 'package:roadside_assistance/common/date_time_formation/data_age_formation.dart';
 
 class TransactionItemCard extends StatelessWidget {
   final PaymentRequest transaction;
@@ -27,7 +28,7 @@ class TransactionItemCard extends StatelessWidget {
               children: [
                 // service
                 Text(
-                  transaction.id??'',
+                  transaction.name??'',
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
@@ -36,8 +37,7 @@ class TransactionItemCard extends StatelessWidget {
                 ),
                 // Date
                 SizedBox(height: 4.h),
-                Text(
-                  transaction.createdAt.toString(),
+                Text(DateAgeFormation().formatAge(transaction.createdAt!),
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: Colors.grey[600],
@@ -52,8 +52,7 @@ class TransactionItemCard extends StatelessWidget {
               _buildStatusChip(transaction.status??''),
               // amount
               SizedBox(height: 4.h),
-              Text(
-                transaction.amount.toString(),
+              Text(transaction.amount.toString(),
                 style: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w600,

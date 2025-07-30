@@ -65,11 +65,23 @@ final AccountController _accountController= Get.put(AccountController());
                if(_homeController.isLoading3.value){
                  return  Text('Location is Loading....');
                } else if(placeMark.isEmpty){
-                 return Text('Select your location');
+                 return InkWell(
+                   onTap: ()async{
+                    final result =await Get.toNamed(Routes.MAP);
+                    if(result != null){
+                      await _homeController.fetchMyLocation();
+                      await _mechanicController.fetchMechanic();
+                    }
+                   },
+                     child: Text('Select your location'));
                }
                 return CustomTextButtonWithIcon(
-                  onTap: () {
-                    Get.toNamed(Routes.MAP);
+                  onTap: ()async{
+                    final result =await Get.toNamed(Routes.MAP);
+                    if(result != null){
+                      await _homeController.fetchMyLocation();
+                      await _mechanicController.fetchMechanic();
+                    }
                   },
                   text: '${placeMark.first.locality},${placeMark.first.administrativeArea}, ${placeMark.first.country}',
                   icon: Icon(Icons.location_on, color: Colors.grey, size: 23.h),

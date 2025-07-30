@@ -51,7 +51,7 @@ class _NotificationViewState extends State<NotificationView> {
               image: 'Disabled now',
               title: notification.msg??'',
               subtitle: 'Tap to complete order' ,
-              time: DataAgeFormation().formatAge(notification.createdAt??DateTime.now()),
+              time: DateAgeFormation().formatAge(notification.createdAt??DateTime.now()),
             );
           },
         );

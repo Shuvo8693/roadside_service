@@ -171,7 +171,7 @@ class _MechanicPaymentViewState extends State<MechanicPaymentView> with SingleTi
                   _buildTransactionList(paymentRequestData), // All
                   _buildTransactionList(_getTransactionsByStatus('processing')),
                   _buildTransactionList(_getTransactionsByStatus('completed')),
-                  _buildTransactionList(_getTransactionsByStatus('withdrawn')),
+                  _buildTransactionList(_getTransactionsByStatus('withdraw')),
                 ],
               ),
             );
