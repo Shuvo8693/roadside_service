@@ -26,10 +26,9 @@ class MessageInboxController extends GetxController {
     }
     getUserIdFromToken();
     initSocket();
-    //debounce(chatId, (_)async => await  fetchAndListenToChatHistory(),time: Duration(milliseconds: 300));
+    //debounce(receiveAbleId, (_)async => await  fetchAndListenToChatHistory(),time: Duration(milliseconds: 300));
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await  fetchAndListenToChatHistory();
-      scrollToBottom();
     });
   }
 
@@ -37,7 +36,7 @@ class MessageInboxController extends GetxController {
   void scrollToBottom() {
     if (scrollController.hasClients) {
       scrollController.animateTo(
-        scrollController.position.maxScrollExtent + 8000,
+        scrollController.position.maxScrollExtent + 1000,
         duration: const Duration(milliseconds: 300),
         curve: Curves.decelerate,
       );
@@ -56,6 +55,7 @@ class MessageInboxController extends GetxController {
     print(payload['id']);
       myID = payload['id'];
       update();
+      print(myID);
   }
 
   ///=========== setup socket ==================
@@ -104,6 +104,7 @@ class MessageInboxController extends GetxController {
       List<ChatModel> fetchedMessages = await ChatService.fetchChatHistory(receiverId:receiveAbleId.value );
       chatItemList.assignAll(fetchedMessages);
       listenToNewMessages();
+
     } catch (e) {
       print("Error fetching chat history: $e");
     }finally{
@@ -113,8 +114,8 @@ class MessageInboxController extends GetxController {
 
   /// ===========================Listen_New_message======================
   void listenToNewMessages() {
-    _socket?.off('send-message'); // Unsubscribe from any previous listeners
-    _socket?.on('send-message', _handleNewMessage); // Listen to the new chat
+    _socket?.off('send-message:'); // Unsubscribe from any previous listeners
+    _socket?.on('send-message:$myID', _handleNewMessage); // Listen to the new chat
   }
 
   void _handleNewMessage(dynamic data) {
@@ -136,6 +137,7 @@ class MessageInboxController extends GetxController {
       "message" : message
     };
     _socket?.emit('send-message', messageData);
+    listenToNewMessages();
   }
 
   void disposeSocket() {

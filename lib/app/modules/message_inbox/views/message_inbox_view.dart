@@ -30,12 +30,24 @@ class _MessageInboxViewState extends State<MessageInboxView> {
   final TextEditingController _msgCtrl = TextEditingController();
   final SendMessageController _sendMessageController = Get.put(SendMessageController());
   final MessageInboxController _messageInboxController = Get.put(MessageInboxController());
-  final List<String> menuOptions = ['View Profile'];
   String? messageType;
   String? tournamentCreatorId;
   String? roomChatId;
 
-
+ // @override
+ //  void initState() {
+ //    super.initState();
+ //    if(Get.arguments != null){
+ //      _messageInboxController.getUserId();
+ //    }
+ //    _messageInboxController.getUserIdFromToken();
+ //    _messageInboxController.initSocket();
+ //    //debounce(receiveAbleId, (_)async => await  fetchAndListenToChatHistory(),time: Duration(milliseconds: 300));
+ //    WidgetsBinding.instance.addPostFrameCallback((_) async {
+ //      await  _messageInboxController.fetchAndListenToChatHistory();
+ //      _messageInboxController.scrollToBottom();
+ //    });
+ //  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,12 +74,16 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                     padding: EdgeInsets.only(bottom: 10.h),
                     itemCount: chatAttributesList.length,
                     itemBuilder: (context, index) {
+                      print(_messageInboxController.myID);
                       final chatAttributesIndex = chatAttributesList[index];
-                      if (chatAttributesIndex.sender == _messageInboxController.myID) {
+                      print(chatAttributesIndex);
+
+                      if (chatAttributesIndex.sender == _messageInboxController.myID ) {
                         return senderBubble(context, chatAttributesIndex);
-                      } else {
+                      } else if(chatAttributesIndex.receiver == _messageInboxController.myID) {
                         return receiverBubble(context, chatAttributesIndex);
                       }
+                      return SizedBox.shrink();
                     },
                   );
                 }),
@@ -101,7 +117,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                       suffixIcon: InkWell(
                         onTap: tournamentCreatorId.toString() == _messageInboxController.myID && messageType == 'group' ? () async {
                           await _sendMessageController.pickImageFromGallery();
-                        }:messageType == 'single'?()async{
+                           }:messageType == 'single'?()async{
                           await _sendMessageController.pickImageFromGallery();
                         }: null ,
                         child: Padding(
@@ -138,7 +154,6 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                   Obx((){
                    String receiverId = _messageInboxController.receiveAbleId.value;
                     return CustomButton(
-                      loading:_sendMessageController.isLoading.value,
                       height: 55.h,
                       width: 52.w,
                       onTap: () async {
@@ -153,17 +168,6 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                           } catch (e) {
                             Get.snackbar('Error', 'Failed to send message: $e');
                           }
-                        }
-
-                        String filePath = _sendMessageController.filePath.value;
-                        if (roomChatId != null && filePath.isNotEmpty) {
-                          _sendMessageController.sendMessage(() async {
-                            await _messageInboxController.fetchAndListenToChatHistory();
-                            _sendMessageController.filePath.value = '';
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _messageInboxController.scrollToBottom();
-                            });
-                          }, filePath, roomChatId!);
                         }
                       }, text: 'Send',
                     );
