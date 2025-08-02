@@ -80,7 +80,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
 
                       if (chatAttributesIndex.sender == _messageInboxController.myID ) {
                         return senderBubble(context, chatAttributesIndex);
-                      } else if(chatAttributesIndex.receiver == _messageInboxController.myID) {
+                      } else  {
                         return receiverBubble(context, chatAttributesIndex);
                       }
                       return SizedBox.shrink();
@@ -156,10 +156,10 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                     return CustomButton(
                       height: 55.h,
                       width: 52.w,
-                      onTap: () async {
+                      onTap: () {
                         if (_msgCtrl.text.isNotEmpty) {
                           try {
-                            await _messageInboxController.sendEmitMessage(
+                             _messageInboxController.sendEmitMessage(
                               message: _msgCtrl.text,
                               receiverId: receiverId, ///==================== receiver id
                             );
@@ -211,8 +211,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
         ),
         SizedBox(width: 4.w),
         CustomNetworkImage(
-          imageUrl:
-              "${chatAttributes.senderImage}",
+          imageUrl: "${chatAttributes.senderImage}",
           height: 40.h,
           width: 40.w,
           boxShape: BoxShape.circle,
@@ -271,4 +270,5 @@ class _MessageInboxViewState extends State<MessageInboxView> {
       textAlign: TextAlign.start,
     );
   }
+
 }

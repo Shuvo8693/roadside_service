@@ -13,10 +13,10 @@ import 'dart:convert';
 class MessageInboxController extends GetxController {
   final ScrollController scrollController = ScrollController();
   RxList<ChatModel> chatItemList= <ChatModel>[].obs;
-   IO.Socket? _socket;
+  IO.Socket? _socket;
   RxString receiveAbleId = ''.obs;
   String? myID;
-
+  RxBool isSocketConnected = false.obs;
 
   @override
   void onInit() {
@@ -24,14 +24,17 @@ class MessageInboxController extends GetxController {
     if(Get.arguments != null){
       getUserId();
     }
-    getUserIdFromToken();
-    initSocket();
-    //debounce(receiveAbleId, (_)async => await  fetchAndListenToChatHistory(),time: Duration(milliseconds: 300));
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await  fetchAndListenToChatHistory();
-    });
+    _initializeChat();
+    fetchChatHistoryOnly();
   }
 
+  // Initialize chat in proper sequence
+  Future<void> _initializeChat() async {
+    await getUserIdFromToken();
+    await initSocket();
+
+    // Wait for socket connection before fetching chat history
+  }
 
   void scrollToBottom() {
     if (scrollController.hasClients) {
@@ -42,24 +45,23 @@ class MessageInboxController extends GetxController {
       );
     }
   }
+
   getUserId(){
-   final receiverId = Get.arguments['receiverId'];
-   receiveAbleId.value = receiverId ?? '';
-   print(receiveAbleId.value);
+    final receiverId = Get.arguments['receiverId'];
+    receiveAbleId.value = receiverId ?? '';
+    print('Receiver ID: ${receiveAbleId.value}');
   }
 
-
-  getUserIdFromToken()async{
+  Future<void> getUserIdFromToken() async {
     String token = await PrefsHelper.getString('token');
     final payload = decodeJWT(token);
-    print(payload['id']);
-      myID = payload['id'];
-      update();
-      print(myID);
+    myID = payload['id'];
+    print('My ID from token: $myID');
+    update();
   }
 
   ///=========== setup socket ==================
-   initSocket() async{
+  Future<void> initSocket() async {
     String token = await PrefsHelper.getString('token');
     try {
       Map<String, dynamic> options = {
@@ -78,69 +80,127 @@ class MessageInboxController extends GetxController {
 
       _socket?.onConnect((_) {
         print('====Connected to server=====');
+        isSocketConnected.value = true;
+        // Only setup listeners after connection is established
         listenToNewMessages();
-      });
 
-      // Setup listeners before connecting
-      if (_socket?.connected != true) {
-        _socket?.connect();
-      }
+      });
 
       _socket?.onDisconnect((_) {
         print('====Disconnected from server====');
-      } );
+        isSocketConnected.value = false;
+      });
+
+      _socket?.onConnectError((error) {
+        print('Connection Error: $error');
+        isSocketConnected.value = false;
+      });
+
+      // Connect to socket
+      _socket?.connect();
 
     } catch (e) {
       print('Socket connection error: $e');
     }
   }
 
-  /// =====================Listen_Existing_message======================
-  RxBool isLoading= false.obs;
-  Future<void> fetchAndListenToChatHistory() async {
-    isLoading.value=true;
+  /// =====================Fetch chat history only======================
+  RxBool isLoading = false.obs;
+
+  Future<void> fetchChatHistoryOnly() async {
+    isLoading.value = true;
     try {
       chatItemList.clear();
-      List<ChatModel> fetchedMessages = await ChatService.fetchChatHistory(receiverId:receiveAbleId.value );
+      List<ChatModel> fetchedMessages = await ChatService.fetchChatHistory(
+          receiverId: receiveAbleId.value
+      );
       chatItemList.assignAll(fetchedMessages);
-      listenToNewMessages();
+
+      // Scroll to bottom after loading messages
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollToBottom();
+      });
 
     } catch (e) {
       print("Error fetching chat history: $e");
-    }finally{
-      isLoading.value=false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// =====================Listen_Existing_message======================
+  Future<void> fetchAndListenToChatHistory() async {
+    await fetchChatHistoryOnly();
+    if (isSocketConnected.value) {
+      listenToNewMessages();
     }
   }
 
   /// ===========================Listen_New_message======================
   void listenToNewMessages() {
-    _socket?.off('send-message:'); // Unsubscribe from any previous listeners
-    _socket?.on('send-message:$myID', _handleNewMessage); // Listen to the new chat
+    if (myID == null) {
+      print('Error: myID is null, cannot listen to messages');
+      return;
+    }
+
+    String eventName = 'send-message:$myID';
+    String eventReceived = 'send-message:$receiveAbleId';
+    print('Listening to event: $eventName');
+
+    // Unsubscribe from any previous listeners
+    _socket?.off(eventName);
+
+    // Listen to the new chat
+    _socket?.on(eventName, _handleNewMessage);
+
   }
 
   void _handleNewMessage(dynamic data) {
+    print('Received new message: $data');
+
     if (data != null) {
-      chatItemList.add(ChatModel.fromJson(data));
-      print(chatItemList);
-      scrollToBottom();
+      try {
+        //chatItemList.clear();
+        ChatModel newMessage = ChatModel.fromJson(data);
+        chatItemList.add(newMessage);
+
+        // Scroll to bottom when new message arrives
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollToBottom();
+        });
+
+      } catch (e) {
+        print("Error parsing new message: $e");
+      }
     } else {
       print("Received invalid message data: $data");
     }
   }
-///================================================== Send_message  =======================================
-  sendEmitMessage({
-      required String message,
-      required String receiverId,
-      }) {
+
+  ///================================================== Send_message =======================================
+
+  void sendEmitMessage({
+    required String message,
+    required String receiverId,
+  }) {
+    if (!isSocketConnected.value) {
+      print('Socket not connected, cannot send message');
+      return;
+    }
+
     Map<String, dynamic> messageData = {
-      "to":receiverId,
-      "message" : message
+      "to": receiverId,
+      "message": message
     };
+
+    print('Sending message: $messageData');
     _socket?.emit('send-message', messageData);
-    listenToNewMessages();
   }
 
   void disposeSocket() {
+    if (myID != null) {
+      _socket?.off('send-message:$myID');
+    }
     _socket?.disconnect();
     _socket?.dispose();
   }
@@ -151,26 +211,27 @@ class MessageInboxController extends GetxController {
     chatItemList.clear();
     super.onClose();
   }
-
 }
 
 /// =============== fetch_chat_history =================
 class ChatService {
- static ChatModel chatModel = ChatModel();
-
- static List<ChatModel> chatItemList = [];
-
- static Future<List<ChatModel>> fetchChatHistory({String? receiverId}) async {
+  static Future<List<ChatModel>> fetchChatHistory({String? receiverId}) async {
     String token = await PrefsHelper.getString('token');
     Map<String, String> headers = {'Authorization': 'Bearer $token'};
-    final response = await http.get(Uri.parse('${ApiConstants.baseUrl}${ApiConstants.chatHistoryUrl(receiverId??'')}'),headers: headers);
+
+    final response = await http.get(
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.chatHistoryUrl(receiverId ?? '')}'),
+        headers: headers
+    );
 
     if (response.statusCode == 200) {
       final decodedData = json.decode(response.body);
-     final dataList = decodedData['data'] as List<dynamic>;
-     for(var data in dataList){
-       chatItemList.add(ChatModel.fromJson(data));
-     }
+      final dataList = decodedData['data'] as List<dynamic>;
+
+      List<ChatModel> chatItemList = [];
+      for (var data in dataList) {
+        chatItemList.add(ChatModel.fromJson(data));
+      }
 
       return chatItemList;
     } else {
@@ -178,5 +239,3 @@ class ChatService {
     }
   }
 }
-
-
