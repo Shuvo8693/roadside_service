@@ -211,7 +211,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
         ),
         SizedBox(width: 4.w),
         CustomNetworkImage(
-          imageUrl: "${chatAttributes.senderImage}",
+          imageUrl: _messageInboxController.myID == chatAttributes.sender? "${chatAttributes.senderImage}" : "${chatAttributes.receiverImage}",
           height: 40.h,
           width: 40.w,
           boxShape: BoxShape.circle,
@@ -222,12 +222,13 @@ class _MessageInboxViewState extends State<MessageInboxView> {
 
   /// Receive Message bubble
   Widget receiverBubble(BuildContext context, ChatModel chatAttributes) {
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         CustomNetworkImage(
-          imageUrl: "${chatAttributes.receiverImage}",
+          imageUrl: _messageInboxController.myID == chatAttributes.receiver ?  "${chatAttributes.receiverImage}" : "${chatAttributes.senderImage}",
           height: 40.h,
           width: 40.w,
           boxShape: BoxShape.circle,

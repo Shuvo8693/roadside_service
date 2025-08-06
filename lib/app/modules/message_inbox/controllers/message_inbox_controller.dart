@@ -39,7 +39,7 @@ class MessageInboxController extends GetxController {
   void scrollToBottom() {
     if (scrollController.hasClients) {
       scrollController.animateTo(
-        scrollController.position.maxScrollExtent + 1000,
+        scrollController.position.maxScrollExtent ,
         duration: const Duration(milliseconds: 300),
         curve: Curves.decelerate,
       );
@@ -83,7 +83,6 @@ class MessageInboxController extends GetxController {
         isSocketConnected.value = true;
         // Only setup listeners after connection is established
         listenToNewMessages();
-
       });
 
       _socket?.onDisconnect((_) {
@@ -143,15 +142,12 @@ class MessageInboxController extends GetxController {
       return;
     }
 
-    String eventName = 'send-message:$myID';
-    String eventReceived = 'send-message:$receiveAbleId';
-    print('Listening to event: $eventName');
-
     // Unsubscribe from any previous listeners
-    _socket?.off(eventName);
+    _socket?.off('message-sent');
 
     // Listen to the new chat
-    _socket?.on(eventName, _handleNewMessage);
+    _socket?.on('message-sent', _handleNewMessage);
+
 
   }
 
@@ -183,10 +179,10 @@ class MessageInboxController extends GetxController {
     required String message,
     required String receiverId,
   }) {
-    if (!isSocketConnected.value) {
-      print('Socket not connected, cannot send message');
-      return;
-    }
+    // if (!isSocketConnected.value) {
+    //   print('Socket not connected, cannot send message');
+    //   return;
+    // }
 
     Map<String, dynamic> messageData = {
       "to": receiverId,
@@ -194,13 +190,14 @@ class MessageInboxController extends GetxController {
     };
 
     print('Sending message: $messageData');
+    // Try these different event names:
     _socket?.emit('send-message', messageData);
+
+
   }
 
   void disposeSocket() {
-    if (myID != null) {
-      _socket?.off('send-message:$myID');
-    }
+    _socket?.off('message-sent');
     _socket?.disconnect();
     _socket?.dispose();
   }
