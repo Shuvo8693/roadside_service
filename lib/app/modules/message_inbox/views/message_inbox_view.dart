@@ -77,10 +77,11 @@ class _MessageInboxViewState extends State<MessageInboxView> {
                       print(_messageInboxController.myID);
                       final chatAttributesIndex = chatAttributesList[index];
                       print(chatAttributesIndex);
-
-                      if (chatAttributesIndex.sender == _messageInboxController.myID ) {
+                     bool sender = _messageInboxController.myID == chatAttributesIndex.sender;
+                      bool receiver = _messageInboxController.myID == chatAttributesIndex.receiver;
+                      if (sender ) {
                         return senderBubble(context, chatAttributesIndex);
-                      } else  {
+                      }else {
                         return receiverBubble(context, chatAttributesIndex);
                       }
                       return SizedBox.shrink();
@@ -211,7 +212,7 @@ class _MessageInboxViewState extends State<MessageInboxView> {
         ),
         SizedBox(width: 4.w),
         CustomNetworkImage(
-          imageUrl: _messageInboxController.myID == chatAttributes.sender? "${chatAttributes.senderImage}" : "${chatAttributes.receiverImage}",
+          imageUrl:  "${chatAttributes.senderImage}",
           height: 40.h,
           width: 40.w,
           boxShape: BoxShape.circle,
@@ -222,13 +223,14 @@ class _MessageInboxViewState extends State<MessageInboxView> {
 
   /// Receive Message bubble
   Widget receiverBubble(BuildContext context, ChatModel chatAttributes) {
+    print(chatAttributes);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         CustomNetworkImage(
-          imageUrl: _messageInboxController.myID == chatAttributes.receiver ?  "${chatAttributes.receiverImage}" : "${chatAttributes.senderImage}",
+          imageUrl: _messageInboxController.myID == chatAttributes.receiver ? "${chatAttributes.senderImage}" : "${chatAttributes.receiverImage}",
           height: 40.h,
           width: 40.w,
           boxShape: BoxShape.circle,

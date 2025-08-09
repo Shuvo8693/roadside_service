@@ -331,21 +331,25 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
   void _refreshLocation() async {
     try {
       await _orderTrackingController.fetchRoutePolyline();
-      Get.snackbar(
-        'Success',
-        'Location refreshed',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        duration: Duration(seconds: 2),
-      );
+      if(!Get.isSnackbarOpen){
+        Get.snackbar(
+          'Success',
+          'Location refreshed',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2),
+        );
+      }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to refresh location',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: Duration(seconds: 2),
-      );
+      if(!Get.isSnackbarOpen) {
+        Get.snackbar(
+          'Error',
+          'Failed to refresh location',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2),
+        );
+      }
     }
   }
 
