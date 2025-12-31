@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +15,7 @@ class ChangePasswordController extends GetxController {
   var isLoading = false.obs;
 
   Future<void> resetPassword({bool isResetPass = false, Function( String)? responseMessage}) async {
+
     String token = await PrefsHelper.getString('token');
     var body = {
      if(isResetPass==false) "oldPassword": oldPassCtrl.text.trim(),

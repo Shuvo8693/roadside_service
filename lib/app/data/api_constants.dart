@@ -4,9 +4,9 @@ class ApiConstants{
   static String googleBaseUrl="https://maps.googleapis.com/maps/api/place/autocomplete/json";
   static String estimatedTimeUrl="https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&";
    /// App Url
-    static String baseUrl="https://radwan5000.sobhoy.com";
+    static String baseUrl="http://18.117.98.254:5000";
     static String  imageBaseUrl="http://10.0.80.205:9090";
-    static String socketUrl="http://radwan5000.sobhoy.com";
+    static String socketUrl="http://18.117.98.254:5000";
 
 
 ///>>>>>>>>>>>>>>>>>>>>>>>>>>> Api End point >>>>>>>>>>>>>>>>>>>
