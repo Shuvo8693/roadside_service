@@ -43,7 +43,10 @@ class HomeController extends GetxController {
         print(mechanicModel.value);
 
       } else {
-        Get.snackbar('Failed', response.message ?? 'Failed to fetch mechanic');
+        if(!Get.isSnackbarOpen){
+          Get.snackbar('Failed', response.message ?? 'Failed to fetch mechanic');
+        }
+
       }
     } catch (e) {
       if (kDebugMode) {
