@@ -66,7 +66,7 @@ class _NotificationViewState extends State<NotificationView> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(
-            'Confirm Payment',
+            'Confirm Order',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           content: Column(
@@ -75,14 +75,13 @@ class _NotificationViewState extends State<NotificationView> {
             children:  [
               Text('Amount: \$29.99'),
               SizedBox(height: 16.h),
-              Text('Do you want to proceed with this payment?'),
+              Text('Do you want to proceed with this order confirmation?'),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Cancel',
+              child: const Text('Cancel',
                 style: TextStyle(color: Colors.grey),
               ),
             ),
@@ -91,12 +90,12 @@ class _NotificationViewState extends State<NotificationView> {
                 loading: _notificationController.isLoading2.value,
                 width: 100.w,
                 height: 40.h,
-                onTap: () async{
-                  await _notificationController.makePayment(orderId: orderId,callBack: (){
+                onTap: () async {
+                  await _notificationController.makePayment(orderId: orderId,callBack: () {
                     Navigator.of(context).pop();
                   });
                 },
-                text: 'Pay Now',
+                text: 'Confirm',
               );
              }
             ),

@@ -145,9 +145,7 @@ class _MechanicProfileState extends State<MechanicProfile> {
                     return CustomButton(
                         loading: _accountController.isLoading3.value ,
                         onTap: () async {
-                          if (_accountController.selectedMecProfileImage?.path != null) {
-                            await _accountController.updateMechProfile(_accountController.selectedMecProfileImage ?? File(''));
-                          }
+                          await _accountController.updateMechProfile(_accountController.selectedMecProfileImage ?? File(''));
                         },
                         text: 'Update'
                     );

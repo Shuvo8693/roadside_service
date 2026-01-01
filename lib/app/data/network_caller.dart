@@ -383,6 +383,7 @@ class NetworkCaller {
   /// MULTIPART request for file uploads
   Future<NetworkResponse<T>> multipart<T>({
     required String endpoint,
+    HttpMethod httpMethod = HttpMethod.multipart,
     List<MultipartFile>? files,
     Map<String, String>? fields,
     Map<String, String>? headers,
@@ -391,7 +392,7 @@ class NetworkCaller {
   }) async {
     return request<T>(
       endpoint: endpoint,
-      method: HttpMethod.multipart,
+      method: httpMethod,
       files: files,
       fields: fields,
       headers: headers,

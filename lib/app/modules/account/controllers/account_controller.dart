@@ -37,6 +37,7 @@ class AccountController extends GetxController {
       if (response.isSuccess && response.data != null) {
         Map<String,dynamic>? responseData = response.data;
         profileModel.value =  ProfileModel.fromJson(responseData??{});
+        print(profileModel.value);
         getProfile(isUser: isUser);
       } else {
         if (kDebugMode) {
@@ -97,6 +98,7 @@ class AccountController extends GetxController {
       isLoading2.value = true;
       final response = await _networkCaller.multipart<Map<String, dynamic>>(
         endpoint:  ApiConstants.updateProfileUrl,
+        httpMethod: HttpMethod.patch,
         fields: {
           'data' : jsonEncode(userData)
         },
@@ -171,6 +173,7 @@ class AccountController extends GetxController {
       isLoading3.value = true;
       final response = await _networkCaller.multipart<Map<String, dynamic>>(
         endpoint:  ApiConstants.updateProfileUrl,
+        httpMethod: HttpMethod.patch,
         fields: {
           'data' : jsonEncode(userData)
         },

@@ -74,25 +74,21 @@ class AppPages {
       name: _Paths.ONBOARDING,
       page: () => const Onboarding1View(),
       binding: OnboardingBinding(),
-      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.ONBOARDING2,
       page: () => const Onboarding2View(),
       binding: OnboardingBinding(),
-      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.ONBOARDING3,
       page: () => const Onboarding3View(),
       binding: OnboardingBinding(),
-      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.ROLE,
       page: () => const RoleView(),
       binding: OnboardingBinding(),
-      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.SIGNUP,
@@ -110,20 +106,20 @@ class AppPages {
       binding: SplashBinding(),
     ),
     GetPage(
-        name: _Paths.SIGN_IN,
-        page: () => const SignInView(),
-        binding: SignInBinding(),
-        transition: Transition.cupertino),
+      name: _Paths.SIGN_IN,
+      page: () => const SignInView(),
+      binding: SignInBinding(),
+    ),
     GetPage(
-        name: _Paths.FORGOT_PASSWORD,
-        page: () => const ForgotPasswordView(),
-        binding: ForgotPasswordBinding(),
-        transition: Transition.cupertino),
+      name: _Paths.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
+    ),
     GetPage(
-        name: _Paths.CHANGE_PASSWORD,
-        page: () => const ChangePasswordView(),
-        binding: ChangePasswordBinding(),
-        transition: Transition.cupertino),
+      name: _Paths.CHANGE_PASSWORD,
+      page: () => const ChangePasswordView(),
+      binding: ChangePasswordBinding(),
+    ),
     GetPage(
       name: _Paths.HOME,
       page: () => const HomeView(),
@@ -274,6 +270,5 @@ class AppPages {
       page: () => PickupLocation(),
       binding: MyLocationSelectionBinding(),
     ),
-
   ];
 }
