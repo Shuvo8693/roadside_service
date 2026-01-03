@@ -81,11 +81,15 @@ class AccountController extends GetxController {
   Future<void> updateProfile( File imageFile ) async {
     String token = await PrefsHelper.getString('token');
 
-    final multipartFile = await MultipartFile.fromFile(
-      field: 'image',
-      file: imageFile,
-      contentType: 'image/jpeg',
-    );
+
+    MultipartFile? multipartFile;
+    if (imageFile.path.isNotEmpty) {
+      multipartFile = await MultipartFile.fromFile(
+        field: 'image',
+        file: imageFile,
+        contentType: 'image/jpeg',
+      );
+    }
     Map<String,dynamic> userData = {};
     if(nameCtrl.text.isNotEmpty) userData['name'] = nameCtrl.text;
     if(phoneNumber.text.isNotEmpty) userData['phone'] = phoneNumber.text;
@@ -98,13 +102,13 @@ class AccountController extends GetxController {
       isLoading2.value = true;
       final response = await _networkCaller.multipart<Map<String, dynamic>>(
         endpoint:  ApiConstants.updateProfileUrl,
-        httpMethod: HttpMethod.patch,
         fields: {
           'data' : jsonEncode(userData)
         },
-        files: [multipartFile],
-        timeout: Duration(seconds: 10),
+        files: imageFile.path.isNotEmpty ? [multipartFile!] : [],
+        timeout: Duration(seconds: 15),
         fromJson: (json) => json as Map<String, dynamic>,
+        multipartMethodType: 'PATCH',
       );
       if (response.isSuccess && response.data != null) {
         String responseMessage = response.data!['message'];
@@ -153,12 +157,14 @@ class AccountController extends GetxController {
   Future<void> updateMechProfile( File imageFile ) async {
     String token = await PrefsHelper.getString('token');
 
-    final multipartFile = await MultipartFile.fromFile(
-      field: 'image',
-      file: imageFile,
-      contentType: 'image/jpeg',
-    );
-
+    MultipartFile? multipartFile;
+    if (imageFile.path.isNotEmpty) {
+      multipartFile = await MultipartFile.fromFile(
+        field: 'image',
+        file: imageFile,
+        contentType: 'image/jpeg',
+      );
+    }
     Map<String,dynamic> userData = {};
     if(mechanicNameCtrl.text.isNotEmpty) userData['name'] = mechanicNameCtrl.text;
     if(mechanicExpCtrl.text.isNotEmpty) userData['experience'] = mechanicExpCtrl.text;
@@ -173,13 +179,13 @@ class AccountController extends GetxController {
       isLoading3.value = true;
       final response = await _networkCaller.multipart<Map<String, dynamic>>(
         endpoint:  ApiConstants.updateProfileUrl,
-        httpMethod: HttpMethod.patch,
         fields: {
           'data' : jsonEncode(userData)
         },
-        files: [multipartFile],
+        files: imageFile.path.isNotEmpty? [multipartFile!] : [],
         timeout: Duration(seconds: 10),
         fromJson: (json) => json as Map<String, dynamic>,
+        multipartMethodType: 'PATCH',
       );
       if (response.isSuccess && response.data != null) {
         String responseMessage = response.data!['message'];

@@ -207,6 +207,7 @@ class NetworkCaller {
   Future<NetworkResponse<T>> request<T>({
     required String endpoint,
     required HttpMethod method,
+     String multipartMethodType ='POST',
     Map<String, dynamic>? body,
     Map<String, String>? headers,
     Map<String, dynamic>? queryParameters,
@@ -251,13 +252,7 @@ class NetworkCaller {
               .timeout(timeoutDuration);
           break;
         case HttpMethod.patch:
-          response = await _client
-              .patch(
-                uri,
-                headers: requestHeaders,
-                body: body != null ? jsonEncode(body) : null,
-              )
-              .timeout(timeoutDuration);
+          response = await _client.patch(uri, headers: requestHeaders, body: body != null ? jsonEncode(body) : null).timeout(timeoutDuration);
           break;
         case HttpMethod.delete:
           response = await _client
@@ -271,6 +266,7 @@ class NetworkCaller {
             files: files,
             fields: fields,
             timeout: timeoutDuration,
+            methodType: multipartMethodType ,
           );
           break;
       }
@@ -383,7 +379,7 @@ class NetworkCaller {
   /// MULTIPART request for file uploads
   Future<NetworkResponse<T>> multipart<T>({
     required String endpoint,
-    HttpMethod httpMethod = HttpMethod.multipart,
+    required String multipartMethodType ,
     List<MultipartFile>? files,
     Map<String, String>? fields,
     Map<String, String>? headers,
@@ -392,18 +388,20 @@ class NetworkCaller {
   }) async {
     return request<T>(
       endpoint: endpoint,
-      method: httpMethod,
+      method: HttpMethod.multipart,
       files: files,
       fields: fields,
       headers: headers,
       timeout: timeout,
       fromJson: fromJson,
+      multipartMethodType: multipartMethodType,
     );
   }
 
   /// Upload single file
   Future<NetworkResponse<T>> uploadFile<T>({
     required String endpoint,
+    required String multipartMethodType,
     required MultipartFile file,
     Map<String, String>? fields,
     Map<String, String>? headers,
@@ -417,12 +415,14 @@ class NetworkCaller {
       headers: headers,
       timeout: timeout,
       fromJson: fromJson,
+      multipartMethodType: multipartMethodType,
     );
   }
 
   /// Upload multiple files
   Future<NetworkResponse<T>> uploadFiles<T>({
     required String endpoint,
+    required String multipartMethodType,
     required List<MultipartFile> files,
     Map<String, String>? fields,
     Map<String, String>? headers,
@@ -436,18 +436,21 @@ class NetworkCaller {
       headers: headers,
       timeout: timeout,
       fromJson: fromJson,
+      multipartMethodType: multipartMethodType,
     );
   }
 
-  /// Send multipart request
+  /// ================== Send multipart request =====================
+
   Future<http.Response> _sendMultipartRequest({
     required Uri uri,
+    required String methodType,
     required Map<String, String> headers,
     List<MultipartFile>? files,
     Map<String, String>? fields,
     required Duration timeout,
   }) async {
-    final request = http.MultipartRequest('POST', uri);
+    final request = http.MultipartRequest(methodType , uri);
 
     // Add headers (remove content-type as it will be set automatically)
     final filteredHeaders = Map<String, String>.from(headers);
@@ -721,7 +724,7 @@ class ApiService {
           'user_id': userId.toString(),
           'description': 'Profile picture upload',
         },
-        fromJson: (json) => json as Map<String, dynamic>,
+        fromJson: (json) => json as Map<String, dynamic>, multipartMethodType: 'POST',
       );
 
       if (response.isSuccess && response.data != null) {
@@ -754,7 +757,7 @@ class ApiService {
           'upload_type': 'batch',
           'total_files': files.length.toString(),
         },
-        fromJson: (json) => json as Map<String, dynamic>,
+        fromJson: (json) => json as Map<String, dynamic>, multipartMethodType: 'POST',
       );
 
       if (response.isSuccess && response.data != null) {
@@ -789,6 +792,7 @@ class ApiService {
           'submission_date': DateTime.now().toIso8601String(),
         },
         fromJson: (json) => json as Map<String, dynamic>,
+        multipartMethodType: 'PATCH',
       );
 
       if (response.isSuccess && response.data != null) {

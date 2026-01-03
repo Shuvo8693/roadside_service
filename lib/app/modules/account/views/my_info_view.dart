@@ -139,9 +139,7 @@ class _MyInfoState extends State<MyInfo> {
                     return CustomButton(
                       loading: _accountController.isLoading2.value ,
                         onTap: () async {
-                          if (_accountController.selectedProfileImage?.path != null) {
-                            await _accountController.updateProfile(_accountController.selectedProfileImage ?? File(''));
-                          }
+                          await _accountController.updateProfile(_accountController.selectedProfileImage ?? File(''));
                         },
                         text: 'Update'
                     );
