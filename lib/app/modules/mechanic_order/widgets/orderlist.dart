@@ -20,9 +20,7 @@ class OrdersList extends StatefulWidget {
 }
 
 class _OrdersListState extends State<OrdersList> {
-  final MechanicOrderController _mechanicOrderController = Get.put(
-    MechanicOrderController(),
-  );
+  final MechanicOrderController _mechanicOrderController = Get.put(MechanicOrderController());
 
   @override
   void initState() {
@@ -35,11 +33,12 @@ class _OrdersListState extends State<OrdersList> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      List<Order> ordersData = _mechanicOrderController.orderStatusModel.value.data?.orders??[];
-      if(_mechanicOrderController.isLoading.value){
+      List<Order> ordersData =
+          _mechanicOrderController.orderStatusModel.value.data?.orders ?? [];
+      if (_mechanicOrderController.isLoading.value) {
         return Center(child: CustomPageLoading());
       }
-      if(ordersData.isEmpty==true){
+      if (ordersData.isEmpty == true) {
         return Center(child: Text("No ${widget.status} are available"));
       }
       return ListView.builder(
@@ -49,9 +48,26 @@ class _OrdersListState extends State<OrdersList> {
           final orderDataIndex = ordersData[index];
           return InkWell(
             onTap: () {
-              Get.toNamed(Routes.ORDER_DETAILS,arguments: {"orderId":orderDataIndex.id});
+              Get.toNamed(
+                Routes.ORDER_DETAILS,
+                arguments: {"orderId": orderDataIndex.id},
+              );
             },
-            child: OrderCard(order: orderDataIndex , tapIndex: widget.tapIndex,orderIndex: index,),
+            // mechanicOrderController.isLoading2[orderIndex]??false,
+
+            // mechanicOrderController.acceptOrder(order.id??'',orderIndex);
+            child: OrderCard(
+              order: orderDataIndex,
+              tapIndex: widget.tapIndex,
+              orderIndex: index,
+              callback: () async {
+                await _mechanicOrderController.acceptOrder(orderDataIndex.id ?? '', index,(){
+                  setState(() {
+                    ordersData.removeAt(index);
+                  });
+                });
+              },
+            ),
           );
         },
       );

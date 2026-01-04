@@ -14,12 +14,12 @@ class OrderCard extends StatelessWidget {
   final Order order;
   final int tapIndex;
   final int orderIndex;
-   OrderCard({super.key, required this.order, required this.tapIndex, required this.orderIndex});
-
-  final MechanicOrderController mechanicOrderController= Get.put(MechanicOrderController());
+  final VoidCallback callback;
+   const OrderCard({super.key, required this.order, required this.tapIndex, required this.orderIndex, required this.callback});
 
   @override
   Widget build(BuildContext context) {
+    final mechanicOrderController= Get.find<MechanicOrderController>();
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
       decoration: BoxDecoration(
@@ -154,17 +154,17 @@ class OrderCard extends StatelessWidget {
                   ),
                 ),
                 horizontalSpacing(8),
+                // mechanicOrderController.isLoading2[orderIndex]??false,
+
+                // mechanicOrderController.acceptOrder(order.id??'',orderIndex);
                 Expanded(
                   child: Obx((){
                     return  CustomButton(
                         loading: mechanicOrderController.isLoading2[orderIndex]??false,
                         height: 48.h,
-                        onTap: ()async{
-                          await mechanicOrderController.acceptOrder(order.id??'',orderIndex);
-                         },
+                        onTap: callback ,
                         text: 'Accept');
                         }
-
                   ),
                 ),
               ],

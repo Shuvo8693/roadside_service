@@ -15,6 +15,7 @@ class MechanicOrderController extends GetxController {
   Future<void> fetchStatus(String status) async {
     String token = await PrefsHelper.getString('token');
 
+    _networkCaller.clearInterceptors();
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
@@ -50,10 +51,10 @@ class MechanicOrderController extends GetxController {
 
   RxMap<int,bool> isLoading2 = <int,bool>{}.obs;
 
-  Future<void> acceptOrder(String orderId,int index) async {
+  Future<void> acceptOrder(String orderId,int index,VoidCallback callBack) async {
     String token = await PrefsHelper.getString('token');
 
-
+    _networkCaller.clearInterceptors();
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
@@ -68,6 +69,7 @@ class MechanicOrderController extends GetxController {
 
       if (response.isSuccess && response.data != null) {
         String responseMessage = response.data!['message'];
+        callBack.call();
         Get.snackbar('Successfully', responseMessage);
       } else {
         if (kDebugMode) {
@@ -91,7 +93,7 @@ class MechanicOrderController extends GetxController {
   Future<void> cancelOrder(String orderId, int index) async {
     String token = await PrefsHelper.getString('token');
 
-
+    _networkCaller.clearInterceptors();
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
