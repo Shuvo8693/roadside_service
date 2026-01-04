@@ -34,7 +34,7 @@ class _MechanicViewState extends State<MechanicView> {
       bottomNavigationBar: BottomMenu(2,chooseServiceOrOrder: 'Mechanic',),
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('MechanicView'),
+        title: const Text('Mechanic'),
         centerTitle: true,
       ),
       body: Padding(

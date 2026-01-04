@@ -71,207 +71,209 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
             statusBarIconBrightness: Brightness.dark
         ),
       ),
-      body: Stack(
-        children: [
-          // Map layer with proper reactive updates
-          Obx(() {
-            // Get current locations from controller
-            LatLng userLocation = _orderTrackingController.pickupLocation.value;
-            LatLng driverLocation = _orderTrackingController.driverLocation.value;
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Map layer with proper reactive updates
+            Obx(() {
+              // Get current locations from controller
+              LatLng userLocation = _orderTrackingController.pickupLocation.value;
+              LatLng driverLocation = _orderTrackingController.driverLocation.value;
 
-            // Create markers set
-            Set<Marker> markers = _buildMarkers(userLocation, driverLocation);
+              // Create markers set
+              Set<Marker> markers = _buildMarkers(userLocation, driverLocation);
 
-            // Create polylines set
-            Set<Polyline> polylines = _buildPolylines();
+              // Create polylines set
+              Set<Polyline> polylines = _buildPolylines();
 
-            // Show loading indicator if locations are not available
-            if (userLocation.latitude == 0 && userLocation.longitude == 0) {
-              return Container(
-                color: Colors.grey[200],
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 16.h),
-                      Text('Loading map...'),
-                    ],
-                  ),
-                ),
-              );
-            }
-
-            return GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: userLocation,
-                zoom: 15,
-              ),
-              mapType: MapType.hybrid,
-              polylines: polylines,
-              markers: markers,
-              onMapCreated: (GoogleMapController controller) {
-                _orderTrackingController.setMapController(controller);
-                print('Map created with controller');
-              },
-              padding: EdgeInsets.only(bottom: 150.h),
-              myLocationEnabled: false, // Disable default location button
-              compassEnabled: true,
-              mapToolbarEnabled: false,
-            );
-          }),
-
-          // Connection status indicator
-          Obx(() => _orderTrackingController.connectionStatus.value != 'Connected'
-              ? Positioned(
-            top: 100.h,
-            left: 16.w,
-            right: 16.w,
-            child: Container(
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.warning, color: Colors.white),
-                  SizedBox(width: 8.w),
-                  Text(
-                    'Status: ${_orderTrackingController.connectionStatus.value}',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-           ):SizedBox.shrink(),
-          ),
-          /// Draggable bottom sheet with order details
-          Obx((){
-            OrderData? orderDetailItems = _orderDetailsController.orderDetailResponse.value.data;
-            return BottomSheetOrderDetails(orderDetailItems: orderDetailItems??OrderData(),);
-          }),
-
-          /// Provider card and action buttons
-          Positioned(
-            left: 16.w,
-            right: 16.w,
-            bottom: 70.h,
-            child: Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                      child: Row(
-                        children: [
-                          CustomNetworkImage(
-                            imageUrl: AppConstants.mechanicImage,
-                            width: 60.h,
-                            height: 60.h,
-                            boxFit: BoxFit.cover,
-                            borderRadius: BorderRadius.circular(10.r),
-                          ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Car Mechanic', style: TextStyle(color: Colors.grey)),
-                                Obx(() => Text(
-                                  _orderTrackingController.trackingModel.value.mechanicId ?? 'Darrell Steward',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                )),
-                              ],
-                            ),
-                          ),
-                          OutlinedButton(
-                            onPressed: () {
-                              // Add cancel order functionality
-                              _showCancelDialog();
-                            },
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.red),
-                            ),
-                            child: Text('Cancel', style: TextStyle(color: Colors.red)),
-                          ),
-                        ],
-                      ),
+              // Show loading indicator if locations are not available
+              if (userLocation.latitude == 0 && userLocation.longitude == 0) {
+                return Container(
+                  color: Colors.grey[200],
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 16.h),
+                        Text('Loading map...'),
+                      ],
                     ),
                   ),
-                  verticalSpacing(8.h),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Obx((){
-                        String? mechanicId = _orderTrackingController.trackingModel.value.mechanicId;
-                          return  CustomButton(
-                            onTap: () {
-                              if(mechanicId !=null){
-                                Get.toNamed(Routes.MESSAGEINBOX,arguments: {"receiverId": mechanicId});
-                              }
-                            },
-                            text: 'Message',
-                          );
-                        }
+                );
+              }
 
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: CustomButton(
-                          onTap: _refreshLocation,
-                          text: 'Refresh',
-                          color: Colors.grey[300],
-                          textStyle: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+              return GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: userLocation,
+                  zoom: 15,
+                ),
+                mapType: MapType.hybrid,
+                polylines: polylines,
+                markers: markers,
+                onMapCreated: (GoogleMapController controller) {
+                  _orderTrackingController.setMapController(controller);
+                  print('Map created with controller');
+                },
+                padding: EdgeInsets.only(bottom: 150.h),
+                myLocationEnabled: false, // Disable default location button
+                compassEnabled: true,
+                mapToolbarEnabled: false,
+              );
+            }),
 
-
-          // Bottom progress indicator
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Obx(() => ProgressBar(
-              steps: ['Order Confirmed', 'Out For Pickup', 'Almost Done'],
-              currentStep: _getProgressStep(),
-             ),
-            ),
-          ),
-
-          // Debug info (remove in production)
-          if (kDebugMode)
-            Positioned(
-              top: 120.h,
+            // Connection status indicator
+            Obx(() => _orderTrackingController.connectionStatus.value != 'Connected'
+                ? Positioned(
+              top: 100.h,
+              left: 16.w,
               right: 16.w,
-              child: Obx(() => Container(
-                padding: EdgeInsets.all(8.w),
+              child: Container(
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: Colors.black54,
+                  color: Colors.orange,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Text('Location Info:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    Text('User: ${_orderTrackingController.pickupLocation.value}', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
-                    Text('Driver: ${_orderTrackingController.driverLocation.value}', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
-                    Text('Polyline: ${_orderTrackingController.polylineCoordinates.length} points', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
+                    Icon(Icons.warning, color: Colors.white),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'Status: ${_orderTrackingController.connectionStatus.value}',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
-              )),
+              ),
+             ):SizedBox.shrink(),
             ),
-        ],
+            /// Draggable bottom sheet with order details
+            Obx((){
+              OrderData? orderDetailItems = _orderDetailsController.orderDetailResponse.value.data;
+              return BottomSheetOrderDetails(orderDetailItems: orderDetailItems??OrderData(),);
+            }),
+
+            /// Provider card and action buttons
+            Positioned(
+              left: 16.w,
+              right: 16.w,
+              bottom: 70.h,
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                        child: Row(
+                          children: [
+                            CustomNetworkImage(
+                              imageUrl: AppConstants.mechanicImage,
+                              width: 60.h,
+                              height: 60.h,
+                              boxFit: BoxFit.cover,
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Car Mechanic', style: TextStyle(color: Colors.grey)),
+                                  Obx(() => Text(
+                                    _orderTrackingController.trackingModel.value.mechanicId ?? 'Darrell Steward',
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                  )),
+                                ],
+                              ),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                // Add cancel order functionality
+                                _showCancelDialog();
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: Colors.red),
+                              ),
+                              child: Text('Cancel', style: TextStyle(color: Colors.red)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    verticalSpacing(8.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Obx((){
+                          String? mechanicId = _orderTrackingController.trackingModel.value.mechanicId;
+                            return  CustomButton(
+                              onTap: () {
+                                if(mechanicId !=null){
+                                  Get.toNamed(Routes.MESSAGEINBOX,arguments: {"receiverId": mechanicId});
+                                }
+                              },
+                              text: 'Message',
+                            );
+                          }
+
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: CustomButton(
+                            onTap: _refreshLocation,
+                            text: 'Refresh',
+                            color: Colors.grey[300],
+                            textStyle: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+
+            // Bottom progress indicator
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Obx(() => ProgressBar(
+                steps: ['Order Confirmed', 'Out For Pickup', 'Almost Done'],
+                currentStep: _getProgressStep(),
+               ),
+              ),
+            ),
+
+            // Debug info (remove in production)
+            if (kDebugMode)
+              Positioned(
+                top: 120.h,
+                right: 16.w,
+                child: Obx(() => Container(
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Location Info:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      Text('User: ${_orderTrackingController.pickupLocation.value}', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
+                      Text('Driver: ${_orderTrackingController.driverLocation.value}', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
+                      Text('Polyline: ${_orderTrackingController.polylineCoordinates.length} points', style: TextStyle(color: Colors.white, fontSize: 8.sp)),
+                    ],
+                  ),
+                )),
+              ),
+          ],
+        ),
       ),
     );
   }

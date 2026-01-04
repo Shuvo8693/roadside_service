@@ -54,9 +54,9 @@ class ThankYouDialog {
                   CustomOutlineButton(
                     width: 80.w,
                     onTap: () {
-                      Get.offAllNamed(Routes.HOME); // Navigate to Home screen
+                      Get.offAllNamed(Routes.SERVICE); // Navigate to Home screen
                     },
-                    text: 'Go Home',
+                    text: 'Go Bookings',
                   ),
                   // Track Booking Button (Filled)
                   CustomButton(
@@ -64,9 +64,9 @@ class ThankYouDialog {
                     width: 80.w,
                     onTap: () {
                       Get.back(); // Close dialog
-                      Get.toNamed(Routes.ORDERTRACKING); // Navigate to Track Booking screen
+                      // Get.toNamed(Routes.ORDERTRACKING); // Navigate to Track Booking screen
                     },
-                    text: 'Track Booking',
+                    text: 'Back',
                   ),
                 ],
               ),

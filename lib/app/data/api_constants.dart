@@ -31,6 +31,7 @@ static String paymentMethodDeleteUrl(String methodId) =>  '/api/v1/payment-metho
 static String vehicleDeleteUrl(String vehicleId) =>  '/api/v1/vehicle/$vehicleId';
 static String chatHistoryUrl(String receiverId) =>  '/api/v1/chat/$receiverId';
 static String orderTrackingInitializeUrl(String mechanicId) =>  '/api/v1/locationTracking/initialize/$mechanicId';
+static String orderCancelUrl(String mechanicId) =>  '/api/v1/order/cancel/$mechanicId';
 static String myLocationUrl(String myId) =>  '/api/v1/user/location/$myId';
 static String makePaymentUrl(String orderId) =>  '/api/v1/order/makePayment/$orderId';
 static String reviewUrl(String mechanicId) =>  '/api/v1/review/$mechanicId';

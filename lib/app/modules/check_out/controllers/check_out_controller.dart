@@ -57,6 +57,8 @@ class CheckOutController extends GetxController {
   final TextEditingController streetNoCtrl = TextEditingController();
   final TextEditingController additionalNoteCtrl = TextEditingController();
 
+  RxBool isBookingLoading=false.obs;
+
   Future<void> book({String? vehicleId,LatLng? coordinates, VoidCallback? callBack}) async {
     String token = await PrefsHelper.getString('token');
    String mechanicId = Get.arguments['mechanicId'] ?? '';
@@ -76,7 +78,7 @@ class CheckOutController extends GetxController {
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
 
     try {
-      isLoading.value = true;
+      isBookingLoading.value = true;
       final response = await _networkCaller.post<Map<String, dynamic>>(
         endpoint:  ApiConstants.bookOrderUrl,
         body: body,
@@ -98,7 +100,7 @@ class CheckOutController extends GetxController {
       }
       throw NetworkException('$e');
     } finally {
-      isLoading.value = false;
+      isBookingLoading.value = false;
     }
 
   }

@@ -86,7 +86,7 @@ class OrderTrackingController extends GetxController {
         };
       }
 
-      socket = IO.io('https://radwan5000.sobhoy.com', options);
+      socket = IO.io(ApiConstants.baseUrl, options);
 
       setupSocketListeners(); // Setup listeners before connecting
       socket?.connect();
