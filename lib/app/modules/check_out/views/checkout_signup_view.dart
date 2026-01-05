@@ -251,20 +251,19 @@ class _CheckoutSignupViewState extends State<CheckoutSignupView> {
 
                   /// Vehicle Selection (Radio Button)
                   Obx(() {
-                    List<Vehicle>? vehicleListData =
-                        _vehicleController.vehicleListModel.value.data;
+                    List<Vehicle>? vehicleListData = _vehicleController.vehicleListModel.value.data;
                     if (_vehicleController.isLoading.value) {
                       return CustomPageLoading();
-                    } else if (vehicleListData!.isEmpty) {
+                    } else if (vehicleListData != null && vehicleListData.isEmpty) {
                       return Text("Vehicle isn't added yet Or looks empty");
                     }
                     return SizedBox(
                       height: 80.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: vehicleListData.length,
+                        itemCount: vehicleListData?.length,
                         itemBuilder: (context, index) {
-                          final vehicleDataIndex = vehicleListData[index];
+                          final vehicleDataIndex = vehicleListData![index];
                           return IntrinsicWidth(
                             child: RadioListTile(
                               value: vehicleDataIndex.id,
