@@ -5,6 +5,7 @@ import 'package:roadside_assistance/app/data/api_constants.dart';
 import 'package:roadside_assistance/app/data/network_caller.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/model/order_details_model.dart';
 import 'package:roadside_assistance/app/modules/mechanic_order/model/order_status_model.dart';
+import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
 
@@ -18,6 +19,7 @@ class OrderDetailsController extends GetxController {
     String token = await PrefsHelper.getString('token');
       String orderId = Get.arguments['orderId']??'';
 
+    _networkCaller.clearInterceptors();
     _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
     _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
@@ -46,6 +48,44 @@ class OrderDetailsController extends GetxController {
       throw NetworkException('$e');
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  /// =================== Order Cancel ==================
+
+  var isLoading2 = false.obs;
+
+  Future<void> cancelOrder({String? orderId}) async {
+    String token = await PrefsHelper.getString('token');
+
+    _networkCaller.clearInterceptors();
+    _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
+    _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
+    _networkCaller.addResponseInterceptor(LoggingInterceptor());
+
+    try {
+      isLoading2.value = true;
+      final response = await _networkCaller.post<Map<String, dynamic>>(
+        endpoint: ApiConstants.cancelOrderUrl(orderId??''),
+        timeout: Duration(seconds: 15),
+        fromJson: (json) => json as Map<String, dynamic>,
+      );
+      if (response.isSuccess && response.data != null) {
+        Get.toNamed(Routes.SERVICE);
+        Get.snackbar('Success', response.message.toString());
+      } else {
+        if (kDebugMode) {
+          Get.snackbar('Response Error', response.data!['errorMessage'].toString());
+          print(response.message);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      throw NetworkException('$e');
+    } finally {
+      isLoading2.value = false;
     }
   }
 }

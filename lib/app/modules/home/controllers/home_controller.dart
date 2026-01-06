@@ -98,6 +98,7 @@ class HomeController extends GetxController {
     }
 
   }
+
   ///======================= fetch my location ===============
 
   RxList<dynamic> myLocation = <dynamic>[].obs;

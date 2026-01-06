@@ -162,46 +162,54 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
                 color: Colors.white,
                 child: Column(
                   children: [
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                        child: Row(
-                          children: [
-                            CustomNetworkImage(
-                              imageUrl: AppConstants.mechanicImage,
-                              width: 60.h,
-                              height: 60.h,
-                              boxFit: BoxFit.cover,
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Car Mechanic', style: TextStyle(color: Colors.grey)),
-                                  Obx(() => Text(
-                                    _orderTrackingController.trackingModel.value.mechanicId ?? 'Darrell Steward',
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                  )),
-                                ],
+                    Obx((){
+                      OrderData? orderDetailItems = _orderDetailsController.orderDetailResponse.value.data ;
+                      if(orderDetailItems == null){
+                        return SizedBox.shrink();
+                      }
+                      return Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                          child: Row(
+                            children: [
+                              CustomNetworkImage(
+                                imageUrl: orderDetailItems.result?.mechanic?.image??'',
+                                width: 60.h,
+                                height: 60.h,
+                                boxFit: BoxFit.cover,
+                                borderRadius: BorderRadius.circular(10.r),
                               ),
-                            ),
-                            OutlinedButton(
-                              onPressed: () {
-                                // Add cancel order functionality
-                                _showCancelDialog();
-                              },
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Colors.red),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Car Mechanic', style: TextStyle(color: Colors.grey)),
+                                    Text(orderDetailItems.result?.mechanic?.name ?? '',
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              child: Text('Cancel', style: TextStyle(color: Colors.red)),
-                            ),
-                          ],
+                              OutlinedButton(
+                                onPressed: () {
+                                  // Add cancel order functionality
+                                  if(orderDetailItems.result?.id!=null){
+                                    _showCancelDialog(orderId: orderDetailItems.result?.id??'');
+                                  }
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(color: Colors.red),
+                                ),
+                                child: Text('Cancel', style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                        );
+                      }
                     ),
                     verticalSpacing(8.h),
                     Row(
@@ -355,7 +363,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
     }
   }
 
-  void _showCancelDialog() {
+  void _showCancelDialog({required String orderId}) {
     Get.dialog(
       AlertDialog(
         title: Text('Cancel Order'),
@@ -366,10 +374,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingView> {
             child: Text('No'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async{
               // Add cancel order logic here
-              Get.back();
-              Get.snackbar('Cancelled', 'Order cancellation requested');
+             await _orderDetailsController.cancelOrder(orderId: orderId);
+
             },
             child: Text('Yes', style: TextStyle(color: Colors.red)),
           ),

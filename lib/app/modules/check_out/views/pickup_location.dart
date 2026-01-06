@@ -46,7 +46,7 @@ class _PickupLocationState extends State<PickupLocation> {
   }
 
   /// convert svg to bitmap
-  Future<BitmapDescriptor> bitmapDescriptorFromSvgAsset([Size size = const Size(20, 20),]) async {
+  Future<BitmapDescriptor> bitmapDescriptorFromSvgAsset([Size size = const Size(60, 60),]) async {
     final pictureInfo = await vg.loadPicture(SvgAssetLoader('assets/icons/map_pin.svg'), null);
 
     double devicePixelRatio = ui.PlatformDispatcher.instance.views.first.devicePixelRatio;
@@ -69,7 +69,7 @@ class _PickupLocationState extends State<PickupLocation> {
     final image = rasterPicture.toImageSync(width, height);
     final bytes = (await image.toByteData(format: ui.ImageByteFormat.png))!;
 
-    return BitmapDescriptor.bytes(bytes.buffer.asUint8List());
+    return BitmapDescriptor.bytes(bytes.buffer.asUint8List(),height: 60);
   }
   /// My current location
   getMyCurrentLocation() async {
@@ -123,182 +123,184 @@ class _PickupLocationState extends State<PickupLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          /// Google Map view
-          Positioned.fill(
-            child: SafeArea(
-                child: GoogleMap(
-                  zoomControlsEnabled: false,
-                  myLocationButtonEnabled: true,
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                    target: center,
-                    zoom: 11.0,
-                  ),
-                  onTap: (position) {
-                    moveCamera(position);
-                  },
-                  myLocationEnabled: true,
-                  markers: {
-                    if (pickedLocation != null)
-                      Marker(
-                        markerId: MarkerId(pickedLocation.toString()),
-                        draggable: true,
-                        icon: customIcon!,
-                        position: pickedLocation!,
-                        onDragEnd: (newPosition) {
-                          _locationSelectionCtrl.pickedNewLocation = newPosition;
-                          print('New position: ${_locationSelectionCtrl.pickedNewLocation}');
-                        },
-                      ),
-                  },
-
-                )
-            ),
-          ),
-
-          /// Back button
-          Positioned(
-            top: 55.h,
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(Icons.arrow_back_ios_new_outlined),
-            ),
-          ),
-
-          /// Search bar at the top
-          Positioned(
-            top: 40.h,
-            left: 25.w,
-            right: 15.w,
-            child:  CustomSearchField(
-              searchCtrl:searchLocationCtrl,
-              fillColor: Colors.white,
-              iconOnTap: (){
-                setState(() {
-                  searchLocationCtrl.clear();
-                  //_myLocationSelectionController.latLng = null;
-                  onChangeTextFieldValue = [];
-                });
-              },
-              suffixIcon: Icons.clear,
-              onChanged: (inputValue) async {
-                if (inputValue?.isNotEmpty == true) {
-                  var result = await GoogleApiService.fetchSuggestions(inputValue!);
-                  print(result.toString());
-                  setState(() {
-                    // latLng = null;
-                    onChangeTextFieldValue = result;
-                  });
-                  print(onChangeTextFieldValue.toString());
-                }
-              },
-            ),
-          ),
-          /// Use my current location option
-          Positioned(
-            top: 110.h,
-            left: 25.w,
-            right: 15.w,
-            child: Container(
-              height: 80.h,
-              width: 200.w,
-              color: Colors.white.withValues(alpha: 0.9),
-              child: Column(
-                children: [
-                  SizedBox(height: 8.h),
-                  // Use my current location option
-                  ListTile(
-                    leading: SvgPicture.asset(AppIcons.paperPlaneIcon,height: 28.h,),
-                    title: const Text('Use my current location'),
-                    onTap: () {
-                      getMyCurrentLocation();
+      body: SafeArea(
+        child: Stack(
+          children: [
+            /// Google Map view
+            Positioned.fill(
+              child: SafeArea(
+                  child: GoogleMap(
+                    zoomControlsEnabled: false,
+                    myLocationButtonEnabled: true,
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: center,
+                      zoom: 11.0,
+                    ),
+                    onTap: (position) {
+                      moveCamera(position);
                     },
-                  ),
-                ],
+                    myLocationEnabled: true,
+                    markers: {
+                      if (pickedLocation != null)
+                        Marker(
+                          markerId: MarkerId(pickedLocation.toString()),
+                          draggable: true,
+                          icon: customIcon!,
+                          position: pickedLocation!,
+                          onDragEnd: (newPosition) {
+                            _locationSelectionCtrl.pickedNewLocation = newPosition;
+                            print('New position: ${_locationSelectionCtrl.pickedNewLocation}');
+                          },
+                        ),
+                    },
+
+                  )
               ),
             ),
-          ),
 
-          /// Location Suggestion List
-          Positioned(
-            top: 105.h,
-            left: 25.w,
-            right: 15.w,
-            child: onChangeTextFieldValue.isNotEmpty == true
-                ? Container(
-              height: 200.h,
-              width: 50.w,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(1, 1),
-                      blurRadius: 3,
-                      color: AppColors.gray.withOpacity(0.7),
-                    ),
-                  ],
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(12.sp),
-                      bottomRight: Radius.circular(12.sp))),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: onChangeTextFieldValue.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.all(8.0.sp),
-                    child: InkWell(
-                      onTap: () {
-                        String selectedLocation = onChangeTextFieldValue[index].toString();
-                        print(selectedLocation);
-                        if (selectedLocation.isNotEmpty == true) {
-                          searchLocationCtrl.text = selectedLocation;
-                          print(searchLocationCtrl.text);
-                        }
-                        goToSearchLocation(searchLocationCtrl.text);
-                        setState(() {
-                          onChangeTextFieldValue=[];
-                        });
-                      },
-                      child: Text(onChangeTextFieldValue[index].toString(),
-                        style: const TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  );
+            /// Back button
+            Positioned(
+              top: 55.h,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
                 },
+                child: Icon(Icons.arrow_back_ios_new_outlined),
               ),
-            ) : const SizedBox.shrink(),
-          ),
+            ),
 
-          /// Confirm button at the bottom
-          Positioned(
-            bottom: 30.h,
-            left: 15.w,
-            right: 15.w,
-            child: CustomButton(
-              onTap: () async{
-                  if(pickedLocation != null){
-                    _locationSelectionCtrl.pickedNewLocation = pickedLocation;
-                    Get.back(result: pickedLocation);
-                  }else if( searchLocationCtrl.text.isNotEmpty){
-                    _locationSelectionCtrl.pickupLocationCtrl.text = searchLocationCtrl.text ;
-                    LatLng? location = await  GoogleApiService.fetchAddressToCoordinate(searchLocationCtrl.text, (location){});
-
-                    Get.back(result: location);
-                  } else {
-                    Get.snackbar('No location selected!', 'Please select your location ');
+            /// Search bar at the top
+            Positioned(
+              top: 40.h,
+              left: 25.w,
+              right: 15.w,
+              child:  CustomSearchField(
+                searchCtrl:searchLocationCtrl,
+                fillColor: Colors.white,
+                iconOnTap: (){
+                  setState(() {
+                    searchLocationCtrl.clear();
+                    //_myLocationSelectionController.latLng = null;
+                    onChangeTextFieldValue = [];
+                  });
+                },
+                suffixIcon: Icons.clear,
+                onChanged: (inputValue) async {
+                  if (inputValue?.isNotEmpty == true) {
+                    var result = await GoogleApiService.fetchSuggestions(inputValue!);
+                    print(result.toString());
+                    setState(() {
+                      // latLng = null;
+                      onChangeTextFieldValue = result;
+                    });
+                    print(onChangeTextFieldValue.toString());
                   }
                 },
-                text: 'Confirm Location',
-                height: 54.h,
-                width: double.infinity,
-              )
+              ),
+            ),
+            /// Use my current location option
+            Positioned(
+              top: 110.h,
+              left: 25.w,
+              right: 15.w,
+              child: Container(
+                height: 80.h,
+                width: 200.w,
+                color: Colors.white.withValues(alpha: 0.9),
+                child: Column(
+                  children: [
+                    SizedBox(height: 8.h),
+                    // Use my current location option
+                    ListTile(
+                      leading: SvgPicture.asset(AppIcons.paperPlaneIcon,height: 28.h,),
+                      title: const Text('Use my current location'),
+                      onTap: () {
+                        getMyCurrentLocation();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
-          ),
-        ],
+            /// Location Suggestion List
+            Positioned(
+              top: 105.h,
+              left: 25.w,
+              right: 15.w,
+              child: onChangeTextFieldValue.isNotEmpty == true
+                  ? Container(
+                height: 200.h,
+                width: 50.w,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(1, 1),
+                        blurRadius: 3,
+                        color: AppColors.gray.withOpacity(0.7),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(12.sp),
+                        bottomRight: Radius.circular(12.sp))),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: onChangeTextFieldValue.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.all(8.0.sp),
+                      child: InkWell(
+                        onTap: () {
+                          String selectedLocation = onChangeTextFieldValue[index].toString();
+                          print(selectedLocation);
+                          if (selectedLocation.isNotEmpty == true) {
+                            searchLocationCtrl.text = selectedLocation;
+                            print(searchLocationCtrl.text);
+                          }
+                          goToSearchLocation(searchLocationCtrl.text);
+                          setState(() {
+                            onChangeTextFieldValue=[];
+                          });
+                        },
+                        child: Text(onChangeTextFieldValue[index].toString(),
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ) : const SizedBox.shrink(),
+            ),
+
+            /// Confirm button at the bottom
+            Positioned(
+              bottom: 30.h,
+              left: 15.w,
+              right: 15.w,
+              child: CustomButton(
+                onTap: () async{
+                    if(pickedLocation != null){
+                      _locationSelectionCtrl.pickedNewLocation = pickedLocation;
+                      Get.back(result: pickedLocation);
+                    }else if( searchLocationCtrl.text.isNotEmpty){
+                      _locationSelectionCtrl.pickupLocationCtrl.text = searchLocationCtrl.text ;
+                      LatLng? location = await  GoogleApiService.fetchAddressToCoordinate(searchLocationCtrl.text, (location){});
+
+                      Get.back(result: location);
+                    } else {
+                      Get.snackbar('No location selected!', 'Please select your location ');
+                    }
+                  },
+                  text: 'Confirm Location',
+                  height: 54.h,
+                  width: double.infinity,
+                )
+
+            ),
+          ],
+        ),
       ),
     );
   }

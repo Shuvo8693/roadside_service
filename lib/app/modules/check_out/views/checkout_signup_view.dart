@@ -273,8 +273,7 @@ class _CheckoutSignupViewState extends State<CheckoutSignupView> {
                               //number
                               subtitle: Text('${vehicleDataIndex.number}'),
                               onChanged: (value) {
-                                _vehicleController.selectedValue.value =
-                                    value ?? '';
+                                _vehicleController.selectedValue.value = value ?? '';
                                 setState(() {});
                                 print(_vehicleController.selectedValue.value);
                               },

@@ -25,6 +25,7 @@ static String mechanicServiceWithPriceUrl(String mechanicId) =>  '/api/v1/mechan
 static String favouriteUrl(String mechanicId) =>  '/api/v1/favourite/toggle/$mechanicId';
 static String orderStatusUrl(String status) =>  '/api/v1/order/status/$status';
 static String orderDetailsUrl(String orderId) =>  '/api/v1/order/$orderId';
+static String cancelOrderUrl(String orderId) =>  '/api/v1/order/cancel/$orderId';
 static String deleteServiceUrl(String serviceId) => '/api/v1/service/mechanic/$serviceId';
 static String toggleAvailabilityUrl(String mechanicId) =>  '/api/v1/mechanic/toggle-availability/$mechanicId';
 static String paymentMethodDeleteUrl(String methodId) =>  '/api/v1/payment-method/$methodId';
