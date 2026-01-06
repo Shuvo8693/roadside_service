@@ -72,7 +72,7 @@ class OrderDetailsController extends GetxController {
       );
       if (response.isSuccess && response.data != null) {
         Get.toNamed(Routes.SERVICE);
-        Get.snackbar('Success', response.message.toString());
+        Get.snackbar('Success', response.data!['message'].toString());
       } else {
         if (kDebugMode) {
           Get.snackbar('Response Error', response.data!['errorMessage'].toString());

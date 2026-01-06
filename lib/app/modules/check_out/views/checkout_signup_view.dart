@@ -346,8 +346,8 @@ class _CheckoutSignupViewState extends State<CheckoutSignupView> {
                       text: 'Book',
                     );
                   }
-
                   ),
+                  SizedBox(height: 16.h),
                 ],
               ),
             ),
