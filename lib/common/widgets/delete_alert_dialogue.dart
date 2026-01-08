@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:roadside_assistance/common/app_string/app_string.dart';
 import 'package:roadside_assistance/common/widgets/spacing.dart';
 
+import '../../app/modules/account/controllers/account_controller.dart';
+import '../../app/routes/app_pages.dart';
 import 'custom_button.dart';
 import 'custom_outlinebutton.dart';
 
@@ -13,6 +16,7 @@ class DeleteAlertDialogue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accountController = Get.find<AccountController>();
     return AlertDialog(
       title: Text(AppString.deleteText),
       content: Text(AppString.areYouSureYouDeleteText),
@@ -28,8 +32,7 @@ class DeleteAlertDialogue extends StatelessWidget {
               flex: 5,
               child: CustomOutlineButton(
                 onTap: () {
-                  Navigator.of(context)
-                      .pop(); // Close the dialog
+                  Navigator.of(context).pop(); // Close the dialog
                 },
                 text: "No",
               ),
@@ -37,14 +40,17 @@ class DeleteAlertDialogue extends StatelessWidget {
             horizontalSpacing(10.w),
             Expanded(
               flex: 5,
-              child: CustomButton(
-                color: Colors.redAccent,
-                onTap: () {
-                  // Perform delete operation here
-                  Navigator.of(context)
-                      .pop(); // Close the dialog
-                },
-                text: "Yes",
+              child: Obx(() {
+                return CustomButton(
+                  loading: accountController.isDeleteLoading.value,
+                  color: Colors.redAccent,
+                  onTap: () async {
+                    // Perform delete operation here
+                    await accountController.deleteAccount();
+                  },
+                  text: "Yes",
+                );
+              }
               ),
             ),
           ],

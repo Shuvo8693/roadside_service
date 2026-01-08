@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:roadside_assistance/app/data/api_constants.dart';
 import 'package:roadside_assistance/app/modules/account/model/user_profile_model.dart';
+import 'package:roadside_assistance/app/routes/app_pages.dart';
 
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 
@@ -224,7 +225,7 @@ class AccountController extends GetxController {
 
   /// ====================== Delete Account =========================
 
-
+  var isDeleteLoading = false.obs;
   Future<void> deleteAccount() async {
     String token = await PrefsHelper.getString('token');
 
@@ -233,15 +234,18 @@ class AccountController extends GetxController {
     _networkCaller.addResponseInterceptor(LoggingInterceptor());
 
     try {
-      isLoading.value = true;
+      isDeleteLoading.value = true;
       final response = await _networkCaller.patch<Map<String, dynamic>>(
-        endpoint:  ApiConstants.userProfileUrl,
+        endpoint:  ApiConstants.deleteAccountUrl,
         timeout: Duration(seconds: 15),
         fromJson: (json) => json as Map<String, dynamic>,
       );
       if (response.isSuccess && response.data != null) {
         Map<String,dynamic>? responseData = response.data;
         Get.snackbar('Successfully', responseData!['message']);
+        await PrefsHelper.remove('token');
+        await PrefsHelper.remove('role');
+        Get.offAllNamed(Routes.SIGN_IN);
       } else {
         if (kDebugMode) {
           print(response.message);
@@ -253,7 +257,7 @@ class AccountController extends GetxController {
       }
       throw NetworkException('$e');
     } finally {
-      isLoading.value = false;
+      isDeleteLoading.value = false;
     }
   }
 
