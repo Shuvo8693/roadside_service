@@ -3,7 +3,8 @@ import 'package:roadside_assistance/app/modules/account/widgets/mechanic_tile.da
 import 'package:roadside_assistance/app/modules/account/widgets/user_tile.dart';
 import 'package:roadside_assistance/common/app_text_style/google_app_style.dart';
 import 'package:roadside_assistance/common/bottom_menu/bottom_menu..dart';
-import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart'; // Adjust based on your routes
+import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
+import 'package:roadside_assistance/common/widgets/delete_alert_dialogue.dart'; // Adjust based on your routes
 
 class AccountView extends StatefulWidget {
   const AccountView({super.key});
@@ -40,11 +41,21 @@ class _AccountViewState extends State<AccountView> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: userRole == 'user'
-              ? UserTile()
+      body:
+          userRole == 'user'
+              ? UserTile(onTap: () {deleteAccount();},
+          )
               : userRole == 'mechanic'
-              ? MechanicTile()
+              ? MechanicTile(
+                onTap: () {deleteAccount();},
+              )
               : SizedBox.shrink(),
+    );
+  }
+  deleteAccount(){
+    showDialog(
+      context: context,
+      builder: (context) => DeleteAlertDialogue(),
     );
   }
 }

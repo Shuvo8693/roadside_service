@@ -7,11 +7,13 @@ import 'package:roadside_assistance/common/app_drawer/custom_drawer_tile.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 import 'package:roadside_assistance/common/widgets/custom_outlinebutton.dart';
+import 'package:roadside_assistance/common/widgets/delete_alert_dialogue.dart';
 
 import '../../../../common/app_text_style/style.dart';
 class UserTile extends StatelessWidget {
+  final Function() onTap;
   const UserTile({
-    super.key,
+    super.key, required this.onTap,
   });
 
   @override
@@ -68,6 +70,9 @@ class UserTile extends StatelessWidget {
           routeName:  Routes.SIGN_IN,
           isLogout: true,
         ),
+        SizedBox(height: 100.h),
+        CustomButton(
+          onTap: onTap, text: "Delete Account",color: Colors.red,),
       ],
     );
   }

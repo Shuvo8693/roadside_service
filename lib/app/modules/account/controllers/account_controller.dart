@@ -220,4 +220,41 @@ class AccountController extends GetxController {
 
   }
 
+
+
+  /// ====================== Delete Account =========================
+
+
+  Future<void> deleteAccount() async {
+    String token = await PrefsHelper.getString('token');
+
+    _networkCaller.addRequestInterceptor(ContentTypeInterceptor());
+    _networkCaller.addRequestInterceptor(AuthInterceptor(token: token));
+    _networkCaller.addResponseInterceptor(LoggingInterceptor());
+
+    try {
+      isLoading.value = true;
+      final response = await _networkCaller.patch<Map<String, dynamic>>(
+        endpoint:  ApiConstants.userProfileUrl,
+        timeout: Duration(seconds: 15),
+        fromJson: (json) => json as Map<String, dynamic>,
+      );
+      if (response.isSuccess && response.data != null) {
+        Map<String,dynamic>? responseData = response.data;
+        Get.snackbar('Successfully', responseData!['message']);
+      } else {
+        if (kDebugMode) {
+          print(response.message);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      throw NetworkException('$e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
 }

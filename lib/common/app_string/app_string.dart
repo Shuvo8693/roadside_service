@@ -88,7 +88,7 @@ class AppString {
   static String editWinnerSkinText="Edit Winner Skin";
   static String completedTournamentText="Completed Tournament";
   static String requestedToPlayMySmallOutingText="Requested To Play My Small outing";
-  static String areYouSureYouDeleteText='Are you sure you want to delete this item?';
+  static String areYouSureYouDeleteText='Are you sure you want to delete this account?';
 
 
 

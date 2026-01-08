@@ -4,9 +4,12 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_drawer/custom_drawer_tile.dart';
+import 'package:roadside_assistance/common/widgets/custom_button.dart';
+import 'package:roadside_assistance/common/widgets/delete_alert_dialogue.dart';
 class MechanicTile extends StatelessWidget {
+  final Function() onTap;
   const MechanicTile({
-    super.key,
+    super.key , required this.onTap,
   });
 
   @override
@@ -57,6 +60,9 @@ class MechanicTile extends StatelessWidget {
           routeName: Routes.SIGN_IN,
           isLogout: true,
         ),
+        SizedBox(height: 100.h),
+        CustomButton(
+          onTap: onTap, text: "Delete Account",color: Colors.red,),
       ],
     );
   }

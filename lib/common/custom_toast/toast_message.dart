@@ -11,9 +11,7 @@ class CustomToast {
     Color textColor = Colors.white,
     int durationInSeconds = 3,
   }) {
-    Get.snackbar(
-      '',
-      '',
+    Get.snackbar('', '',
       titleText: SizedBox.shrink(),
       messageText: Center(
         child: Text(

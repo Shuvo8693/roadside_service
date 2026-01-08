@@ -4,20 +4,19 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
-        android:label="roadside_assistance"
+        android:label="Roadside Assistance"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:theme="@style/LaunchTheme">
         <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBFi80uuJIWkkLCpodFa8oXmD8XD_h8LMc"
-            />
+            android:value="AIzaSyBFi80uuJIWkkLCpodFa8oXmD8XD_h8LMc" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:icon="@mipmap/ic_launcher"
             android:launchMode="singleTop"
             android:taskAffinity=""
-            android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
