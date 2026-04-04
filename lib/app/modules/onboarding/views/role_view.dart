@@ -6,6 +6,7 @@ import 'package:roadside_assistance/app/routes/app_pages.dart';
 import 'package:roadside_assistance/common/app_color/app_colors.dart';
 import 'package:roadside_assistance/common/app_text_style/google_app_style.dart';
 import 'package:roadside_assistance/common/prefs_helper/prefs_helpers.dart';
+import 'package:roadside_assistance/common/widgets/casess_network_image.dart';
 import 'package:roadside_assistance/common/widgets/custom_button.dart';
 
 class RoleView extends StatefulWidget {
@@ -29,6 +30,8 @@ class _RoleViewState extends State<RoleView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Spacer(),
+            // CustomNetworkImage(imageUrl: "https://faisal5000.merinasib.shop/images/Screenshot_2026-02-05_at_3.53.29_PM.png",height: 200,width: 200),
+            // Image.network("https://faisal5000.merinasib.shop/images/Screenshot_2026-02-05_at_3.53.29_PM.png",height: 80,),
             Text(
               'Who you are',
               style: GoogleFontStyles.h1(fontWeight: FontWeight.bold),

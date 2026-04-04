@@ -43,14 +43,12 @@ class CustomNetworkImage extends StatelessWidget {
               borderRadius: borderRadius,
               shape: boxShape,
               color: backgroundColor,
-              image:
-                  imageUrl.isEmpty
+              image: imageUrl.isEmpty
                       ? DecorationImage(
                         image: imageProvider,
                         fit: BoxFit.fitHeight,
                         colorFilter: colorFilter,
-                      )
-                      : DecorationImage(
+                      ) : DecorationImage(
                         image: imageProvider,
                         fit: BoxFit.cover,
                         colorFilter: colorFilter,

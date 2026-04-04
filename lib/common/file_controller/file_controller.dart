@@ -25,7 +25,7 @@ class FileController extends GetxController{
 
  /* Future<void> pickImageFile() async {
     try {
-      // Let the user pick multiple files (images or PDFs)
+      // Let the user pick multiple files (app_image or PDFs)
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: true,  // Allows selecting multiple files
         type: FileType.image,

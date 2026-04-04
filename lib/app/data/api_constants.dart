@@ -4,11 +4,11 @@ class ApiConstants{
   static String googleBaseUrl="https://maps.googleapis.com/maps/api/place/autocomplete/json";
   static String estimatedTimeUrl="https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&";
    /// App Url
-    static String baseUrl="https://qwkbmjl3-6000.inc1.devtunnels.ms";
-    // static String baseUrl="http://18.117.98.254:5000";
+   //  static String baseUrl="https://qwkbmjl3-6000.inc1.devtunnels.ms";
+    static String baseUrl="https://api.beeproadsideassistance.com";
     static String  imageBaseUrl="http://10.0.80.205:9090";
-    static String socketUrl="https://qwkbmjl3-6000.inc1.devtunnels.ms";
-    // static String socketUrl="http://18.117.98.254:5000";
+    // static String socketUrl="https://qwkbmjl3-6000.inc1.devtunnels.ms";
+    static String socketUrl="https://api.beeproadsideassistance.com";
 
 
 ///>>>>>>>>>>>>>>>>>>>>>>>>>>> Api End point >>>>>>>>>>>>>>>>>>>
